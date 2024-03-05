@@ -1,0 +1,307 @@
+@import url(mycolor.css);
+main {
+    height: 100%;
+}
+
+.navbar-nav > .nav-item > .nav-link > a .active {
+    color: var(--forth-color);
+}
+/*points*/
+.points-container {
+    background: linear-gradient(#00FF00, #212529);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 2px 5px rgb(33, 37, 41);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.points-container:hover {
+    background: linear-gradient(#33FF33, #000);
+    transform: translateY(-5px);
+}
+
+.points {
+    color: #00FF00;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.points i {
+    margin-right: 5px;
+}
+
+.points-value {
+    font-size: 1.5em;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.points:hover {
+    border: 2px solid #00FF00;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #00FF00;
+}
+
+.points-info {
+    display: none;
+    position: absolute;
+    background: #222;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.points:hover .points-info {
+    display: block;
+}
+
+.points-progress {
+    /* Style your progress bar element here */
+}
+
+.points-value {
+    transition: transform 0.2s ease;
+}
+
+.points-container:hover .points-value {
+    transform: scale(1.1);
+}
+
+/* job intro form */
+.jobtxtguide::after {
+    content: "";
+}
+.jobtxtguide:hover::after {
+    content: " >>";
+    transition: transform 0.5s ease-in-out;
+}
+.jobOwl {
+    width: 30rem;
+}
+
+.jobintromaster .job-intro-text {
+    margin-top: 20px;
+}
+
+.jobmastertwo {
+    height: 100dvh;
+}
+
+.jobintromoti {
+    font-size: 2rem;
+}
+
+.jobintroguide {
+    font-size: 20px;
+}
+/*-----------------*/
+
+
+
+/* Media query for tablet and phone screens */
+@media only screen and (max-width: 767px) {
+    .l-nv {
+        font-size: 10px;
+    }
+
+    .jobintromoti {
+        font-size: 20px;
+    }
+
+    .jobimg-intro-column {
+        text-align: center;
+        padding-top: 2rem;
+    }
+
+    .jobimg-intro-column .jobOwl {
+        width: 15rem;
+    }
+
+    .jobintro-title {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+
+/* Tablets */
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+    .jobimg-intro-column {
+        text-align: center;
+    }
+
+    .jobimg-intro-column .jobOwl {
+        width: 15rem;
+    }
+
+    .jobintromoti {
+        font-size: 20px;
+    }
+}
+
+/* footer */
+
+/* glitch effect */
+.glitch-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--second-color);
+}
+
+.glitch {
+    position: relative;
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 3px;
+    z-index: 1;
+}
+
+.glitch:before,
+.glitch:after {
+    display: block;
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+}
+
+.glitch:before {
+    animation: glitch-it 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    color: #00ffff;
+    z-index: -1;
+}
+
+.glitch:after {
+    animation: glitch-it 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both
+        infinite;
+    color: #ff00ff;
+    z-index: -2;
+}
+
+@keyframes glitch-it {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    to {
+        transform: translate(0);
+    }
+}
+
+/* window scroll */
+
+/* WebKit (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #555; /* Dark color for the thumb */
+    border-radius: 5px;
+}
+
+/* Firefox */
+::-moz-scrollbar {
+    width: 10px;
+}
+
+::-moz-scrollbar-thumb {
+    background-color: #555; /* Dark color for the thumb */
+    border-radius: 5px;
+}
+
+
+/*footer*/
+ .cur-poi {
+     cursor: pointer;
+     transition: ease-in-out;
+
+ }
+
+.bi-facebook:hover {
+    color: blue;
+    transform: translateY(-5px);
+    /* Move the icon 2px up */
+    transition: transform 0.5s ease-in-out;
+}
+
+.bi-twitter-x:hover {
+    color: black;
+    transform: translateY(-5px);
+    transition: transform 0.5s ease-in-out;
+}
+
+.bi-telegram:hover {
+    color: #0095ff;
+    transform: translateY(-5px);
+    transition: transform 0.5s ease-in-out;
+}
+
+.bi-github:hover {
+    color: black;
+    transform: translateY(-5px);
+    transition: transform 0.5s ease-in-out;
+}
+
+.bi-google:hover {
+    color: rgb(255, 0, 0);
+    transform: translateY(-5px);
+    transition: transform 0.5s ease-in-out;
+}
+
+.socialmedia:hover .col:not(:hover) {
+    filter: blur(3px);
+    transition: transform 0.3s ease-in-out;
+}
+
+.custom-hr {
+    max-width: 50%;
+    margin: 2em auto;
+}
+
+.list-unstyled li {
+    list-style: none;
+    /* Removes the default list bullet */
+}
+
+.list-unstyled li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.list-unstyled li a:hover {
+    text-decoration: underline;
+    color: var(--forth-color);
+}
+
+.glass-bg {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+

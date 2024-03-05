@@ -1,0 +1,56 @@
+{
+    "name": "en",
+    "options": {
+      "months": [
+        "ဇန်နဝါရီ",
+        "ဖေဖော်ဝါရီ",
+        "မတ်",
+        "ဧပြီ",
+        "မေ",
+        "ဇွန်",
+        "ဇူလိုင်",
+        "ဩဂုတ်",
+        "စက်တင်ဘာ",
+        "အောက်တိုဘာ",
+        "နိုဝင်ဘာ",
+        "ဒီဇင်ဘာ"
+      ],
+      "shortMonths": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      "days": [
+        "တနင်္ဂနွေ",
+        "တနင်္လာ",
+        "အင်္ဂါ",
+        "ဗုဒ္ဓဟူး",
+        "ကြာသပတေး",
+        "သောကြာ",
+        "စနေ"
+      ],
+      "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "toolbar": {
+        "exportToSVG": "ဒေါင်းလုဒ် SVG",
+        "exportToPNG": "ဒေါင်းလုဒ် PNG",
+        "exportToCSV": "ဒေါင်းလုဒ် CSV",
+        "menu": "စာရင်း",
+        "selection": "ရွေးချယ်မှု",
+        "selectionZoom": "Selection Zoom",
+        "zoomIn": "မြင်ကွင်းသေး",
+        "zoomOut": "မြင်ကွင် ကျယ်",
+        "pan": "Panning",
+        "reset": "မြင်ကွင်း ပုံသေ"
+      }
+    }
+  }
+  
