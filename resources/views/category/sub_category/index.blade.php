@@ -76,6 +76,9 @@
                                     @method('DELETE')
                                     @csrf
                                     <div class="col">
+                                        <button type="button" class="btn btn-primary mt-3"><i class="bi bi-binoculars"></i> {{__('btnText.over_v')}}</button>
+                                    </div>
+                                    <div class="col">
                                         <button type="button" class="btn btn-warning mt-3" onclick="window.location='{{ url('category/mdf/'.$sub_category->id) }}'"><i class="bi bi-pencil-square"></i> {{__('btnText.modify')}}</button>
                                     </div>
                                     <div class="col">

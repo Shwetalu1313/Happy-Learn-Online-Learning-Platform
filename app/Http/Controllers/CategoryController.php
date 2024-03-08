@@ -32,9 +32,6 @@ class CategoryController extends Controller
         if ($request->hasFile('avatar')) {
             // Store the uploaded image and get its path
             $img_path = $request->file('avatar')->store('cate','public');
-        } else {
-            // If no image is uploaded, set the path to null
-            $img_path = null;
         }
 
         Category::create([

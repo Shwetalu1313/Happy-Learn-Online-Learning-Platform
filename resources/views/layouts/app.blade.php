@@ -27,8 +27,9 @@
     'resources/css/app.css',
     'resources/sass/app.scss',
     'resources/js/app.js',
-    is_active_route_val('job.detail', 'resources/css/quill_val.css',''),
+    'resources/css/quill_val.css',
     ])
+
 
     @yield('styles')
 </head>

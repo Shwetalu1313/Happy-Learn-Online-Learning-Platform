@@ -54,9 +54,12 @@ if (!function_exists('is_active_route_val')){
      * @param string $what_ever_val
      * @return string
      */
-    function is_active_route_val($routeNames, string $firstvalue, string $nextvalue): string{
+    function is_active_route_val($routeNames, string $firstvalue, string $nextvalue){
         if (!is_array($routeNames)) {
             $routeNames = [$routeNames];
+        }
+        if ($nextvalue === ''){
+            $nextvalue = null;
         }
 
         foreach ($routeNames as $routeName) {

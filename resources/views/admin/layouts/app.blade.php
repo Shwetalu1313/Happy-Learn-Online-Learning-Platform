@@ -103,11 +103,12 @@
 
 <!-- Template Main JS File -->
 {{--  <script src="{{'./assets/js/main.js'}}"></script>--}}
-@if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['job.post', 'job.store']))
+@if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['job.post', 'job.store','course.create','course.store']))
     <script>
         $('#btn-submit').on('click', () => {
             const body = $('.ql-editor').html();
             $('#req_input').val(body)
+            console.log($('#req_input').val(body));
 
             const title = $('#title').text();
             $('#title_input').val(title);

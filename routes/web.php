@@ -41,14 +41,14 @@ Route::post('/email/verification-notification', function (Request $request) {
 /*========================================================================================*/
 
 
-//guest+++++++++++++++
+//guest +++++++++++++++
 
 //job
 Route::get('/job/intro', [\App\Http\Controllers\PageController::class, 'jobformIntro'])->name('job.intro');
 Route::get('/job/listV2', [\App\Http\Controllers\JobPostController::class, 'joblist'])->name('job.listV2');
 Route::get('job/{JobPost}/detail', [\App\Http\Controllers\JobPostController::class, 'jobDetail'])->name('job.detail');
 
-//
+//authenticator +++++++++++++
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     //home
@@ -111,6 +111,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         'update' => 'sub_category.update',
         'destroy' => 'sub_category.destroy',
     ])->middleware('isAdmin');
+
+    Route::resource('course', \App\Http\Controllers\CourseController::class)->middleware(['notStudent']);
 
 });
 

@@ -15,12 +15,14 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->mediumText('description');
+            $table->string('image')->default('course/sample.jpg');
             $table->char('courseType')->default(CourseTypeEnums::BASIC->value);
             $table->integer('fees')->default(0);
             $table->char('state')->default(CourseStateEnums::PENDING->value);
-            $table->unsignedBigInteger('createdUser_id');
-            $table->unsignedBigInteger('approvedUser_id');
+            $table->unsignedTinyInteger('createdUser_id');
+            $table->unsignedTinyInteger('approvedUser_id')->nullable();
+            $table->unsignedTinyInteger('sub_category_id');
             $table->timestamps();
         });
     }

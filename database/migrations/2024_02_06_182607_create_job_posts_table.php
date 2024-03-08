@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('job_posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable(false);
-            $table->longText('requirements')->nullable(false);
+            $table->string('title');
+            $table->longText('requirements');
             $table->timestamps();
         });
     }

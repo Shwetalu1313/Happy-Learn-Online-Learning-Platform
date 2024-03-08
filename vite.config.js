@@ -8,9 +8,10 @@ export default defineConfig({
             input: [
                 'resources/sass/app.scss',
                 'resources/js/app.js',
+                'resources/css/app.css',
                 'resources/js/admin.js',
                 'resources/css/style.css',
-                'resources/css/quill.css',
+                'resources/css/quill_val.css',
             ],
             refresh: true,
         }),

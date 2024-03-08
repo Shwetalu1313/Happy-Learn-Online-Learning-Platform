@@ -35,19 +35,9 @@ class PageController extends Controller
 
     public static function welcome(){
         $titlePage = __('nav.wel_pg');
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
         return view('welcome', compact('titlePage', 'categories'));
     }
-
-    /*this code takes title name and breadcrumbs values to UI.*/
-
-    /*
-     *
-     * $breadcrumbs = [
-            ['link' => route('home'), 'name' => 'Dashboard'],
-            ['name' => 'Job'],
-            ['link' => route('job.intro'), 'name'=>'Job Post', 'active' => true],
-        ];*/
 
 
 }

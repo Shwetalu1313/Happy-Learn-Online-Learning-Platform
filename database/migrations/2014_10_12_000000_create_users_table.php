@@ -17,9 +17,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->required()->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->unique();
             $table->string('phone')->required()->nullable();
-            $table->date('birthdate')->nullable();
+            $table->date('birthdate');
             $table->integer('points')->default(0);
             $table->string('avatar')->default('user.png');
             $table->string('role')->default(UserRoleEnums::STUDENT->value);

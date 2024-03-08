@@ -3,10 +3,13 @@
 return [
     'login' =>  "Login",
     'register' =>  'Register',
+    'home' => 'Home',
     'opportunities' => 'Opportunities',
     'admin' => 'Admin',
     'dashboard' => 'Dashboard',
     'extra' => 'Extra',
+    'basic_data' => 'Basic Data',
+    'import_data' => 'Important Data',
     'j_post_f' => 'Post Form',
     'j_post_f_u' => 'Post Form Update',
     'j_post_l' => 'Job lists',

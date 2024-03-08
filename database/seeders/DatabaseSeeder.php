@@ -3,20 +3,70 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\UserRoleEnums;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\User;
 
 use App\Models\JobPost;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
+        User::factory()->create([
+           'name' => 'Authorize User',
+           'email' => 'testthemail2023@gmail.com',
+           'phone' => '45454',
+           'birthdate' => fake()->date,
+            'points' => '987',
+            'avatar' => 'avatars/user.png',
+            'role' => UserRoleEnums::ADMIN->value,
+            'about' => 'I will control you 🤏🏻',
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Student User',
+            'email' => 'student@example.com',
+            'phone' => '09454545454',
+            'birthdate' => fake()->date,
+            'points' => '4341',
+            'avatar' => 'avatars/user.png',
+            'role' => UserRoleEnums::STUDENT->value,
+            'about' => 'I will learn from you 🤏🏻',
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Teacher User',
+            'email' => 'teacher@example.com',
+            'phone' => '09454545454',
+            'birthdate' => fake()->date,
+            'points' => '98745642',
+            'avatar' => 'avatars/user.png',
+            'role' => UserRoleEnums::TEACHER->value,
+            'about' => 'I will teach for you 🤏🏻',
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
+
         User::factory(15)->create();
         JobPost::factory(10)->create();
 
@@ -30,6 +80,7 @@ class DatabaseSeeder extends Seeder
         Category::factory()->create(['name' => 'Personal Development', 'img_path' => 'cate/sample.jpg']);
         Category::factory()->create(['name' => 'Career & Professional Growth', 'img_path' => 'cate/sample.jpg']);
         Category::factory()->create(['name' => 'Lifestyle & Hobbies', 'img_path' => 'cate/sample.jpg']);
+        Category::factory()->create(['name' => 'Primary School (MM)', 'img_path' => 'cate/sample.jpg']);
 
         /*(1)*/
         SubCategory::factory()->create(['name' => 'Web Development', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 1]);
@@ -79,10 +130,6 @@ class DatabaseSeeder extends Seeder
         SubCategory::factory()->create(['name' => 'Medicine & Surgery', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
         SubCategory::factory()->create(['name' => 'Nursing & Healthcare', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
         SubCategory::factory()->create(['name' => 'Nutrition & Dietetics', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
-        SubCategory::factory()->create(['name' => 'Public Health', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
-        SubCategory::factory()->create(['name' => 'Mental Health & Psychology', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
-        SubCategory::factory()->create(['name' => 'Fitness & Exercise Science', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
-        SubCategory::factory()->create(['name' => 'Alternative Medicine', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
         SubCategory::factory()->create(['name' => 'Pharmaceutical Sciences', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
         SubCategory::factory()->create(['name' => 'Healthcare Administration', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 5]);
 
@@ -103,18 +150,12 @@ class DatabaseSeeder extends Seeder
         SubCategory::factory()->create(['name' => 'Sociology', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
         SubCategory::factory()->create(['name' => 'Anthropology', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
         SubCategory::factory()->create(['name' => 'Political Science', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
-        SubCategory::factory()->create(['name' => 'Archaeology', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
-        SubCategory::factory()->create(['name' => 'Geography', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
-        SubCategory::factory()->create(['name' => 'Religious Studies', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
         SubCategory::factory()->create(['name' => 'Cultural Studies', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 7]);
 
         /*(8)*/
         SubCategory::factory()->create(['name' => 'Time Management', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
         SubCategory::factory()->create(['name' => 'Goal Setting & Productivity', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
         SubCategory::factory()->create(['name' => 'Emotional Intelligence', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
-        SubCategory::factory()->create(['name' => 'Stress Management', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
-        SubCategory::factory()->create(['name' => 'Mindfulness & Meditation', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
-        SubCategory::factory()->create(['name' => 'Self-Esteem & Confidence Building', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
         SubCategory::factory()->create(['name' => 'Creativity & Innovation', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
         SubCategory::factory()->create(['name' => 'Critical Thinking', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
         SubCategory::factory()->create(['name' => 'Decision Making', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 8]);
@@ -134,11 +175,6 @@ class DatabaseSeeder extends Seeder
         SubCategory::factory()->create(['name' => 'Cooking & Culinary Arts', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
         SubCategory::factory()->create(['name' => 'Gardening & Horticulture', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
         SubCategory::factory()->create(['name' => 'DIY & Home Improvement', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
-        SubCategory::factory()->create(['name' => 'Travel & Adventure', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
-        SubCategory::factory()->create(['name' => 'Arts & Crafts', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
-        SubCategory::factory()->create(['name' => 'Pet Care & Training', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
-        SubCategory::factory()->create(['name' => 'Sports & Fitness Activities', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
-        SubCategory::factory()->create(['name' => 'Gaming & Entertainment', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
         SubCategory::factory()->create(['name' => 'Fashion & Beauty', 'img_path' => 'cate/sub_cate/sample.jpg', 'category_id' => 10]);
 
         // \App\Models\User::factory()->create([
