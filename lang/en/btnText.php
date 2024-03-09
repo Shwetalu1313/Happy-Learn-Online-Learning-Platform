@@ -11,5 +11,6 @@ return [
     'edt' => 'Edit',
     'choose' => 'Choose',
     'reset' => 'Reset',
-    'sch' => 'Search'
+    'sch' => 'Search',
+    'share' => 'Share',
 ];

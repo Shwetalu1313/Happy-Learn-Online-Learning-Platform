@@ -18,4 +18,5 @@ return [
     'label_state_app' => 'Approved',
     'label_creator' => 'Created by',
     'label_approver' => 'Approved by',
+    'label_contributors' => 'Contributors',
 ];

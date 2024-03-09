@@ -113,7 +113,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     ])->middleware('isAdmin');
 
     Route::resource('course', \App\Http\Controllers\CourseController::class)->middleware(['notStudent']);
-
+    Route::resource('contributor', \App\Http\Controllers\CourseContributorController::class)->middleware(['notStudent']);
 });
 
 

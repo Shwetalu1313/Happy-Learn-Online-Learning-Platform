@@ -53,4 +53,8 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orWhere('approvedUser_id', $this->id);
     }
 
+    public function contributor(): HasMany {
+        return $this->hasMany(CourseContributor::class);
+    }
+
 }
