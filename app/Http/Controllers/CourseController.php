@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,15 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        $titlePage = __('course.list_title');
+        $user = \auth()->user();
+        if (Auth::user()->role->value != UserRoleEnums::ADMIN->value){
+            $courses = $user->courses;
+        }
+        else {
+            $courses = Course::all();
+        }
+        return view('course.courseList', compact('courses','titlePage'));
     }
 
     /**
@@ -83,6 +92,7 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        dd($id);
     }
 }

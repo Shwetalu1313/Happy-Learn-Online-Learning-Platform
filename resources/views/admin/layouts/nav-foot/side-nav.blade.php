@@ -21,6 +21,9 @@
                     <a href="{{route('course.create')}}" class="{{is_active_route('course.create')}}">
                         <i class="bi bi-circle"></i><span>{{__('course.entry_title')}}</span>
                     </a>
+                    <a href="{{route('course.index')}}" class="{{is_active_route('course.index')}}">
+                        <i class="bi bi-circle"></i><span>{{__('course.list_title')}}</span>
+                    </a>
                 </li>
 
             </ul>

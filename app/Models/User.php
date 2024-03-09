@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\UserRoleEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -23,7 +24,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = ['name','email','phone','birthdate','points','avatar','role','about','password'];
 
-    protected $guarded = [];
     protected $table = 'users';
 
     /**
@@ -46,4 +46,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
         'role' => UserRoleEnums::class,
     ];
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'createdUser_id')
+            ->orWhere('approvedUser_id', $this->id);
+    }
+
 }
