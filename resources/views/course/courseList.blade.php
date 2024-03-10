@@ -1,5 +1,10 @@
 @extends('admin.layouts.app')
 @section('content')
+    @php
+        use App\Enums\UserRoleEnums;
+        use App\Enums\CourseStateEnums;
+        use App\Enums\CourseTypeEnums;
+    @endphp
     <div class="row">
         <div class="col-lg-12">
             @if ($errors->any())
@@ -54,8 +59,8 @@
                                     {{ $course->title }}
                                 </td>
 
-                                <td class="">
-                                    @if($course->courseType === \App\Enums\CourseTypeEnums::BASIC->value)
+                                <td class="text-center">
+                                    @if($course->courseType === CourseTypeEnums::BASIC->value)
                                         <span class="badge text-bg-primary">{{__('course.label_t_basic')}}</span>
                                     @else
                                         <span class="badge text-bg-info">{{__('course.label_t_advanced')}}</span>
@@ -63,7 +68,7 @@
                                 </td>
 
                                 <td class="text-center">
-                                    @if($course->state === \App\Enums\CourseStateEnums::PENDING->value)
+                                    @if($course->state === CourseStateEnums::PENDING->value)
                                         <span class="badge text-bg-warning">{{__('course.label_state_pen')}}</span>
                                     @else
                                         <span class="badge text-bg-success">{{__('course.label_state_app')}}</span>
@@ -72,11 +77,11 @@
 
                                 <td class="text-end"><strong>{{ $course->fees }} ks</strong></td>
 
-                                <td>{{ $course->creator->email}} </td>
+                                <td>{{ $course->creator->name}} </td>
 
                                 <td>
                                     @if($course->approver != null)
-                                        {{ $course->approver->email}}
+                                        {{ $course->approver->name}}
                                     @endif
                                 </td>
 
@@ -85,64 +90,66 @@
                                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="dropdown-text"><i class="bi bi-activity"></i></span>
                                         </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li class="dropdown-item d-flex justify-content-between align-items-center">
-                                                <form action="{{route('course.destroy',$course->id)}}" class="w-100" method="post">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button onclick="return confirm('Are You Sure 🤨')" class="btn btn-danger w-100">
-                                                        <i class="bi bi-journal-x me-3"></i>{{__('btnText.delete')}}
-                                                    </button>
-                                                </form>
-                                            </li>
-                                            <li class="dropdown-item d-flex justify-content-between align-items-center">
-                                                <div class="w-100">
-                                                    <button class="btn border-0 btn-secondary w-100" title="share to others" data-bs-toggle="modal" data-bs-target="#share{{$i}}" data-bs-whatever="share">
-                                                        <i class="bi bi-share"></i> {{__('btnText.share')}}
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="share{{$i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <h5>Giving Access as Contributor</h5>
+                                        @if(Auth::id() === $course->createdUser_id || Auth::user()->role->value === UserRoleEnums::ADMIN->value)
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                                    <form action="{{route('course.destroy',$course->id)}}" class="w-100" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button onclick="return confirm('Are You Sure 🤨')" class="btn btn-danger w-100">
+                                                            <i class="bi bi-journal-x me-3"></i>{{__('btnText.delete')}}
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                                    <div class="w-100">
+                                                        <button class="btn border-0 btn-secondary w-100" title="share to others" data-bs-toggle="modal" data-bs-target="#share{{$i}}" data-bs-whatever="share">
+                                                            <i class="bi bi-share"></i> {{__('btnText.share')}}
+                                                        </button>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <small class="text-info">*** User who with teacher role are only allow.</small>
-                                                        <form method="post" action="{{route('contributor.store')}}">
-                                                            @csrf
-                                                            @method('POST')
-                                                            <div class="row mb-3">
-                                                                <input type="hidden" value="{{$course->id}}" name="course_id">
-                                                                <input type="email" placeholder="m@gmail.com" name="email" class="form-control">
-                                                            </div>
-                                                            <div class="text-center">
-                                                                <button type="submit" class="mb-3">
-                                                                    <i class="bi bi-share-fill"></i> Share <span class="badge text-bg-primary">{{ $course->contribute_courses()->count() }}</span>
-                                                                </button>
-                                                            </div>
-                                                        </form>
+                                                </li>
+                                            </ul>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="share{{$i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <h5>Giving Access as Contributor</h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <small class="text-info">*** User who with teacher role are only allow.</small>
+                                                            <form method="post" action="{{route('contributor.store')}}">
+                                                                @csrf
+                                                                @method('POST')
+                                                                <div class="row mb-3">
+                                                                    <input type="hidden" value="{{$course->id}}" name="course_id">
+                                                                    <input type="email" placeholder="m@gmail.com" name="email" class="form-control">
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <button type="submit" class="mb-3">
+                                                                        <i class="bi bi-share-fill"></i> Share <span class="badge text-bg-primary">{{ $course->contribute_courses()->count() }}</span>
+                                                                    </button>
+                                                                </div>
+                                                            </form>
 
-                                                        {{--list of users who get access this to view--}}
-                                                        <ul class="list-group text-start">
-                                                            @foreach($course->contribute_courses as $j => $contributeCourse)
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                                    {{$j+1 .". ". $contributeCourse->user->name . " (" . $contributeCourse->user->email . ")"}}
-                                                                    <form action="{{route('contributor.destroy',$contributeCourse->id)}}" method="post">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" onclick="return confirm('Are you sure? This schedule will be completely deleted.')"><i class="bi bi-trash"></i></button>
-                                                                    </form>
-                                                                </li>
-                                                            @endforeach
-                                                        </ul>
+                                                            {{--list of users who get access this to view--}}
+                                                            <ul class="list-group text-start">
+                                                                @foreach($course->contribute_courses as $j => $contributeCourse)
+                                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                        {{$j+1 .". ". $contributeCourse->user->name . " (" . $contributeCourse->user->email . ")"}}
+                                                                        <form action="{{route('contributor.destroy',$contributeCourse->id)}}" method="post">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" onclick="return confirm('Are you sure? This schedule will be completely deleted.')"><i class="bi bi-trash"></i></button>
+                                                                        </form>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </td>
 

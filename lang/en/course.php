@@ -19,4 +19,6 @@ return [
     'label_creator' => 'Created by',
     'label_approver' => 'Approved by',
     'label_contributors' => 'Contributors',
+
+    'title_update' => 'Course Update',
 ];

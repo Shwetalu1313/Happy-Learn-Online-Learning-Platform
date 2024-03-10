@@ -1,4 +1,9 @@
 <!-- ======= Sidebar ======= -->
+@php
+    use App\Enums\UserRoleEnums;
+
+    $authUser = auth()->user()->role->value;
+@endphp
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -10,56 +15,62 @@
             </a>
         </li><!-- End Dashboard Nav -->
 
-        <li class="nav-heading">{{__('nav.import_data')}}</li>
-        <li class="nav-item">
-            <a class="nav-link {{is_active_route(['course.create'])}}" data-bs-target="#course" data-bs-toggle="collapse" href="#">
-                <i class="bi {{is_active_route_val(['course.create'], 'bi-journal-bookmark-fill active','bi-journal-bookmark')}}"></i>
-                <span>{{__('course.title')}}</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="course" class="nav-content collapse {{is_active_route_val(['course.create'], 'show', '')}}" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{route('course.create')}}" class="{{is_active_route('course.create')}}">
-                        <i class="bi bi-circle"></i><span>{{__('course.entry_title')}}</span>
-                    </a>
-                    <a href="{{route('course.index')}}" class="{{is_active_route('course.index')}}">
-                        <i class="bi bi-circle"></i><span>{{__('course.list_title')}}</span>
-                    </a>
-                </li>
+        @if($authUser === UserRoleEnums::ADMIN->value || $authUser === UserRoleEnums::TEACHER->value)
+            <li class="nav-heading">{{__('nav.import_data')}}</li>
+            <li class="nav-item">
+                <a class="nav-link {{is_active_route(['course.create','course.index','course.show'])}}" data-bs-target="#course" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val(['course.create','course.index','course.show'], 'bi-journal-bookmark-fill active','bi-journal-bookmark')}}"></i>
+                    <span>{{__('course.title')}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="course" class="nav-content collapse {{is_active_route_val(['course.create'], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{route('course.create')}}" class="{{is_active_route('course.create')}}">
+                            <i class="bi bi-circle"></i><span>{{__('course.entry_title')}}</span>
+                        </a>
+                        <a href="{{route('course.index')}}" class="{{is_active_route('course.index')}}">
+                            <i class="bi bi-circle"></i><span>{{__('course.list_title')}}</span>
+                        </a>
+                    </li>
 
-            </ul>
-        </li><!-- End Important Data-->
+                </ul>
+            </li>
+        @endif
+        <!-- End Important Data-->
+        @if($authUser === UserRoleEnums::ADMIN->value)
+            <li class="nav-heading">{{__('nav.basic_data')}}</li>
+            <li class="nav-item">
+                <a class="nav-link {{is_active_route(['category.index','category.lst_V1','sub_category.create'])}}" data-bs-target="#category_page" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val(['category.index','category.lst_V1','sub_category.create'], 'bi-box-seam-fill active','bi-box-seam')}}"></i>
+                    <span>{{__('cate.cates')}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="category_page" class="nav-content collapse {{is_active_route_val(['category.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{route('category.index')}}" class="{{is_active_route('category.index')}}">
+                            <i class="bi bi-circle"></i><span>{{__('cate.cate_ent')}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('category.lst_V1') }}" class="{{ is_active_route('category.lst_V1') }}">
+                            <i class="bi bi-circle"></i><span>{{ __('cate.cate_lst') }}</span>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="{{route('sub_category.create')}}" class="{{is_active_route('sub_category.create')}}">
+                            <i class="bi bi-circle"></i><span>{{__('cate.sub_cate_ent')}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('sub_category.index')}}" class="{{is_active_route('sub_category.index')}}">
+                            <i class="bi bi-circle"></i><span>{{__('cate.sub_cate_lst')}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
+        <!-- End Basic Data-->
 
-        <li class="nav-heading">{{__('nav.basic_data')}}</li>
-        <li class="nav-item">
-            <a class="nav-link {{is_active_route(['category.index','category.lst_V1','sub_category.create'])}}" data-bs-target="#category_page" data-bs-toggle="collapse" href="#">
-                <i class="bi {{is_active_route_val(['category.index','category.lst_V1','sub_category.create'], 'bi-box-seam-fill active','bi-box-seam')}}"></i>
-                <span>{{__('cate.cates')}}</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="category_page" class="nav-content collapse {{is_active_route_val(['category.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{route('category.index')}}" class="{{is_active_route('category.index')}}">
-                        <i class="bi bi-circle"></i><span>{{__('cate.cate_ent')}}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('category.lst_V1') }}" class="{{ is_active_route('category.lst_V1') }}">
-                        <i class="bi bi-circle"></i><span>{{ __('cate.cate_lst') }}</span>
-                    </a>
-                </li>
-                <hr>
-                <li>
-                    <a href="{{route('sub_category.create')}}" class="{{is_active_route('sub_category.create')}}">
-                        <i class="bi bi-circle"></i><span>{{__('cate.sub_cate_ent')}}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('sub_category.index')}}" class="{{is_active_route('sub_category.index')}}">
-                        <i class="bi bi-circle"></i><span>{{__('cate.sub_cate_lst')}}</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Basic Data-->
-
+        @if($authUser === UserRoleEnums::ADMIN->value)
         <li class="nav-item">
             <a class="nav-link " data-bs-target="#user_page" data-bs-toggle="collapse" href="#">
                 <i class="bi {{is_active_route_val(['user.role.index','user.role.bulkInsert','user.dtl.index'], 'bi-people-fill','bi-people')}}"></i>
@@ -74,8 +85,11 @@
                 </li>
 
             </ul>
-        </li><!-- End Users Page Nav -->
+        </li>
+        @endif
+        <!-- End Users Page Nav -->
 
+        @if($authUser === UserRoleEnums::ADMIN->value)
         <li class="nav-heading">{{__('nav.extra')}}</li>
 
         <li class="nav-item">
@@ -96,7 +110,7 @@
                 </li>
             </ul>
         </li><!-- End Job Page Nav -->
-
+        @endif
     </ul>
 
 </aside><!-- End Sidebar-->

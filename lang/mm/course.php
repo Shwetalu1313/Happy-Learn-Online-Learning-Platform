@@ -20,4 +20,6 @@ return [
     'label_creator' => 'ဖန်တီးသူ',
     'label_approver' => 'အတည်ပြုသူ',
     'label_contributors' => 'ပါဝင်သူများ',
+
+    'title_update' => 'သင်ရိုး မြှင့်တင်ခြင်း',
 ];

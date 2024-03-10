@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRoleEnums;
-use App\Mail\NotificationEmail;
 use App\Models\Course;
 use App\Models\CourseContributor;
 use App\Models\User;
 use App\Notifications\ContributorEmailNotification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
 class CourseContributorController extends Controller
@@ -47,6 +44,10 @@ class CourseContributorController extends Controller
 
         if (!$user) {
             return redirect()->back()->with('error', 'No user found with the provided email');
+        }
+
+        if ($email === \auth()->user()->email){
+            return redirect()->back()->with('error', 'You shared your own course. This action is not allowed.');
         }
 
         // Check if the user is a teacher
