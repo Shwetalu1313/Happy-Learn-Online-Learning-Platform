@@ -62,7 +62,7 @@
                                     @endif
                                 </td>
 
-                                <td class="">
+                                <td class="text-center">
                                     @if($course->state === \App\Enums\CourseStateEnums::PENDING->value)
                                         <span class="badge text-bg-warning">{{__('course.label_state_pen')}}</span>
                                     @else
