@@ -103,20 +103,38 @@
 
 <!-- Template Main JS File -->
 {{--  <script src="{{'./assets/js/main.js'}}"></script>--}}
-@if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['job.post', 'job.store','course.create','course.store']))
+@php
+    use Illuminate\Support\Facades\Route;
+
+    $currentRouter = Route::currentRouteName();
+    $data = '';
+
+    $storingCondition = in_array($currentRouter, ['job.post', 'job.store', 'course.create', 'course.store']);
+    $updatingCondition = in_array($currentRouter, ['job.show', 'job.update', 'course.edit']);
+
+    if (isset($job) && isset($job->requirements)) {
+        $dataJob = $job->requirements;
+    } elseif (isset($course) && isset($course->description)) {
+        $dataCourse = $course->description;
+    }
+
+    $data = isset($dataJob) ? $dataJob : (isset($dataCourse) ? $dataCourse : '');
+@endphp
+
+@if($storingCondition)
     <script>
         $('#btn-submit').on('click', () => {
             const body = $('.ql-editor').html();
-            $('#req_input').val(body)
+            $('#req_input').val(body);
             console.log($('#req_input').val(body));
 
             const title = $('#title').text();
             $('#title_input').val(title);
-        })
+        });
     </script>
 @endif
 
-@if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['job.show', 'job.update']))
+@if($updatingCondition)
     <script>
         // Function to decode HTML entities
         function decodeHtml(html) {
@@ -126,21 +144,21 @@
         }
 
         $(document).ready(function () {
-            $('.ql-editor').html(decodeHtml("{{ $job->requirements }}"));
+            $('.ql-editor').html(decodeHtml("{{ $data }}"));
 
             $('#btn-submit').on('click', () => {
                 const body = $('.ql-editor').html();
-                $('#req_input').val(body)
+                $('#req_input').val(body);
 
                 const title = $('#title').text();
                 $('#title_input').val(title);
-
-            })
-        })
-
+            });
+        });
     </script>
 @endif
+
 @yield('scripts')
+
 
 </body>
 

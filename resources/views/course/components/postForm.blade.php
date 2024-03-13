@@ -1,9 +1,24 @@
-<form action="{{ route('course.store') }}" class="px-lg-5 py-lg-2" method="post" enctype="multipart/form-data">
+@php
+    use App\Enums\CourseTypeEnums;
+    use Illuminate\Support\Facades\Route;
+    $currentRoute = Route::currentRouteName();
+@endphp
+
+<form action="{{ route('course.store')}}"
+      class="px-lg-5 py-lg-2"
+      method="post"
+      enctype="multipart/form-data">
     @csrf
     @method('POST')
     <div class="mb-3">
         <label for="name" class="form-label">{{__('course.label_name')}}</label>
-        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required placeholder="">
+        <input type="text"
+               class="form-control
+               @error('name') is-invalid @enderror"
+               id="name"
+               name="name"
+               required
+               placeholder="How to Play Guitar like a Pro">
         @error('name')
         <span class="invalid-feedback" role="alert">
            <strong>{{ $message }}</strong>
@@ -16,13 +31,21 @@
     <div class="row mb-3">
         <small class="my-3">{{__('course.label_type')}} -></small>
         <div class="form-check col">
-            <input class="form-check-input" type="radio" name="courseType" id="basic" value="{{\App\Enums\CourseTypeEnums::BASIC->value}}">
+            <input class="form-check-input"
+                   type="radio"
+                   name="courseType"
+                   id="basic"
+                   value="{{CourseTypeEnums::BASIC->value}}">
             <label class="form-check-label" for="basic">
                 {{__('course.label_t_basic')}}
             </label>
         </div>
         <div class="form-check col">
-            <input class="form-check-input" type="radio" name="courseType" id="advanced" value="{{\App\Enums\CourseTypeEnums::ADVANCED->value}}" checked>
+            <input class="form-check-input"
+                   type="radio"
+                   name="courseType"
+                   id="advanced"
+                   value="{{CourseTypeEnums::ADVANCED->value}}">
             <label class="form-check-label" for="advanced">
                 {{__('course.label_t_advanced')}}
             </label>
@@ -35,7 +58,15 @@
         <div class="col-md-6">
             <label for="name" class="form-label">{{__('course.label_fee')}}</label>
             <div class="input-group">
-                <input type="number" class="form-control @error('fee') is-invalid @enderror" id="fee" name="fee" required placeholder="5000" min="0" max="100000">
+                <input type="number"
+                       class="form-control
+                       @error('fee') is-invalid @enderror"
+                       id="fee"
+                       name="fee"
+                       required
+                       placeholder="5000"
+                       min="0"
+                       max="100000">
                 <span class="input-group-text">{{__('course.label_kyat')}}</span>
             </div>
             @error('fee')
@@ -50,8 +81,18 @@
         <div class="col-md-6">
             <label for="name" class="form-label">{{__('course.label_ask_cate')}}</label>
             <div class="input-group">
-                <input type="text" class="form-control @error('sub_cate') is-invalid @enderror" id="sub_cate" name="sub_cate" required placeholder="somethings...." readonly>
-                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Choose</button>
+                <input type="text"
+                       class="form-control
+                       @error('sub_cate') is-invalid @enderror"
+                       id="sub_cate"
+                       name="sub_cate"
+                       required
+                       placeholder="somethings...." disabled>
+
+                <button type="button"
+                        class="btn btn-outline-info"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">Choose</button>
             </div>
             @error('sub_cate')
             <span class="invalid-feedback" role="alert">

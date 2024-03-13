@@ -25,6 +25,6 @@ class Course extends Model
     }
 
     public function contribute_courses(): HasMany {
-        return $this->hasMany(CourseContributor::class);
+        return $this->hasMany(CourseContributor::class,'course_id');
     }
 }

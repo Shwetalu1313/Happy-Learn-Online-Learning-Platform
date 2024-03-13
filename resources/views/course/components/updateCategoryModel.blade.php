@@ -14,7 +14,8 @@
                     <select class="form-select" aria-label="Choose Sub-Category" id="sub_category" name="sub_cate_select">
                         @foreach($subcategories as $subcategory)
                             <option
-                                value="{{ $subcategory->id }}">{{ $loop->iteration }}. {{ $subcategory->name }}</option>
+                                value="{{ $subcategory->id }}"
+                                @if($subcategory->id === $course->sub_category_id) selected @endif>{{ $loop->iteration }}. {{ $subcategory->name }}</option>
                         @endforeach
                     </select>
                     @error('sub_cate_select')
@@ -51,8 +52,7 @@
             copySubcategoryText();
         });
     });
-
-
 </script>
+
 
 

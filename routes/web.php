@@ -112,8 +112,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         'destroy' => 'sub_category.destroy',
     ])->middleware('isAdmin');
 
-    Route::resource('course', \App\Http\Controllers\CourseController::class)->middleware(['notStudent']);
-    Route::resource('contributor', \App\Http\Controllers\CourseContributorController::class)->middleware(['notStudent']);
+    Route::group(['middleware' => 'notStudent'], function (){
+        Route::any('course/toApprove/{id}', [\App\Http\Controllers\CourseController::class, 'updateToApproveState'])->name('course.toApprove');
+        Route::resource('course', \App\Http\Controllers\CourseController::class);
+        Route::resource('contributor', \App\Http\Controllers\CourseContributorController::class);
+    });
 });
 
 

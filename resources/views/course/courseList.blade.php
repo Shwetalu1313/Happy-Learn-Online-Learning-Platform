@@ -54,7 +54,7 @@
                             <tr>
                                 <td>{{$loop->iteration}}</td>
 
-                                <td class="hover-name" data-toggle="tooltip" title="{{__('nav.click_to_see_dtl')}}" onclick="window.location='';">
+                                <td class="hover-name" data-toggle="tooltip" title="{{__('nav.click_to_see_dtl')}}" onclick="window.location='{{url('course/'.$course->id.'/edit')}}';">
                                     <img src="{{asset('/storage/'.$course->image)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success me-3" alt="profile">
                                     {{ $course->title }}
                                 </td>
