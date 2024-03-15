@@ -4,6 +4,7 @@
     @php
         use App\Enums\CourseTypeEnums;
         use App\Enums\CourseStateEnums;
+        use App\Enums\UserRoleEnums;
         use App\Models\Category;
         use App\Models\SubCategory;
 
@@ -190,22 +191,35 @@
             </form>
             <div class="d-flex justify-content-between px-5">
                 <div>
-                    <button class="btn btn-outline-primary me-3">Create a Lesson</button>
+                    <button class="btn btn-outline-primary me-3" onclick="window.location='{{url('lesson/'.$course->id.'/createForm')}}';"><i class="bi bi-file-earmark-richtext"></i> {{__('course.create_ls')}}</button>
                 </div>
-                <div class="" id="#approve-button-container">
-
+                <div id="approve-button-container">
                     @if($course->state === $pendingState)
-                        @foreach($course->contribute_courses as $contributor)
-                            @if(Auth::id() === $contributor->user->id)
-                                <div>
-                                    <button class="btn btn-warning approve-course-btn" data-course-id="{{ $course->id }}">
-                                        Approve
-                                    </button>
-                                </div>
-                            @endif
-                        @endforeach
+                        @php
+                            $isAdmin = Auth::user()->role->value === UserRoleEnums::ADMIN->value;
+                        @endphp
+
+                        @if($isAdmin && $course->creator->id != Auth::id())
+                            <div>
+                                <button class="btn btn-warning approve-course-btn" data-course-id="{{ $course->id }}">
+                                    Approve
+                                </button>
+                            </div>
+                        @else
+                            @foreach($course->contribute_courses as $contributor)
+                                @if(Auth::id() === $contributor->user->id)
+                                    <div>
+                                        <button class="btn btn-warning approve-course-btn" data-course-id="{{ $course->id }}">
+                                            Approve
+                                        </button>
+                                    </div>
+                                    @break <!-- Break out of the loop if contributor is found -->
+                                @endif
+                            @endforeach
+                        @endif
                     @endif
                 </div>
+
 
             </div>
 
@@ -237,7 +251,11 @@
                     },
                     success: function(data) {
                         if (data.success) {
-                            alert(data.message);
+                            Swal.fire({
+                                title: "Good job!",
+                                text: data.message,
+                                icon: "success"
+                            });
                             $('.approve-course-btn').remove();
                         } else {
                             alert(data.message);

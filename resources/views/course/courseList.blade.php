@@ -4,6 +4,10 @@
         use App\Enums\UserRoleEnums;
         use App\Enums\CourseStateEnums;
         use App\Enums\CourseTypeEnums;
+
+        function isCreatorOfAdmin($course){
+            return Auth::id() === $course->createdUser_id || Auth::user()->role->value === UserRoleEnums::ADMIN->value;
+        }
     @endphp
     <div class="row">
         <div class="col-lg-12">
@@ -90,8 +94,8 @@
                                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="dropdown-text"><i class="bi bi-activity"></i></span>
                                         </button>
-                                        @if(Auth::id() === $course->createdUser_id || Auth::user()->role->value === UserRoleEnums::ADMIN->value)
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                @if(isCreatorOfAdmin($course))
                                                 <li class="dropdown-item d-flex justify-content-between align-items-center">
                                                     <form action="{{route('course.destroy',$course->id)}}" class="w-100" method="post">
                                                         @csrf
@@ -105,6 +109,14 @@
                                                     <div class="w-100">
                                                         <button class="btn border-0 btn-secondary w-100" title="share to others" data-bs-toggle="modal" data-bs-target="#share{{$i}}" data-bs-whatever="share">
                                                             <i class="bi bi-share"></i> {{__('btnText.share')}}
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                                @endif
+                                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                                    <div class="w-100">
+                                                        <button class="btn border-0 btn-secondary w-100" onclick="window.location='{{url('lesson/'.$course->id.'/createForm')}}';">
+                                                            <i class="bi bi-file-earmark-richtext"></i> {{__('course.create_ls')}}
                                                         </button>
                                                     </div>
                                                 </li>
@@ -149,7 +161,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endif
                                     </div>
                                 </td>
 

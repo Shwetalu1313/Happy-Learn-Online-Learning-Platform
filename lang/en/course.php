@@ -24,4 +24,6 @@ return [
     'success_update_alert_msg' => 'You updated a new Course but it will not see learners. Somebody need to approve it.',
     'success_update_approve_alert_msg' => 'You update \'Pending\' condition to \'Approved\'',
     'success_error_approve_alert_msg' => 'Course state update fail',
+
+    'create_ls' => 'Create a lesson',
 ];

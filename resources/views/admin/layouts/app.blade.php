@@ -52,6 +52,10 @@
         .category-item:hover .hover-overlay {
             opacity: 1; /* Show on hover */
         }
+
+        .softGradient {
+            background: linear-gradient(72deg, rgba(97,247,47,0.1092086492800245) 23%, rgba(6,171,255,0.09520304703912819) 97%);
+        }
     </style>
 </head>
 
@@ -109,7 +113,7 @@
     $currentRouter = Route::currentRouteName();
     $data = '';
 
-    $storingCondition = in_array($currentRouter, ['job.post', 'job.store', 'course.create', 'course.store']);
+    $storingCondition = in_array($currentRouter, ['job.post', 'job.store', 'course.create', 'course.store', 'lesson.createForm', 'lesson.store']);
     $updatingCondition = in_array($currentRouter, ['job.show', 'job.update', 'course.edit']);
 
     if (isset($job) && isset($job->requirements)) {

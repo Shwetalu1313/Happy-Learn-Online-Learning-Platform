@@ -17,22 +17,7 @@ class CourseController extends Controller
     {
         $titlePage = __('course.list_title');
         $user = \auth()->user();
-        if (Auth::user()->role->value != UserRoleEnums::ADMIN->value){
-            $directCourses = $user->courses;
-            $indirectCourses = $user->contributor->map(function ($contributor) {
-                return $contributor->course;
-            });
-
-            // Merge the two collections
-            $mergedCourses = $directCourses->merge($indirectCourses);
-
-            // Unique courses based on course ID
-            $courses = $mergedCourses->unique('id');
-
-        }
-        else {
-            $courses = Course::all();
-        }
+        $courses = Course::getCoursesForUser($user);
         return view('course.courseList', compact('courses','titlePage'));
     }
 

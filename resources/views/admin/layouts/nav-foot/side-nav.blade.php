@@ -33,6 +33,21 @@
                     </li>
 
                 </ul>
+                {{--end course--}}
+
+                <a class="nav-link {{is_active_route(['lesson.index'])}}" data-bs-target="#lesson" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val(['lesson.index'], 'bi-file-earmark-richtext-fill active','bi-file-earmark-richtext')}}"></i>
+                    <span>{{__('lesson.title')}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="lesson" class="nav-content collapse {{is_active_route_val(['lesson.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{route('lesson.index')}}" class="{{is_active_route('lesson.index')}}">
+                            <i class="bi bi-circle"></i><span>{{__('lesson.entry_title')}}</span>
+                        </a>
+
+                    </li>
+
+                </ul>
             </li>
         @endif
         <!-- End Important Data-->
