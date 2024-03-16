@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::any('course/toApprove/{id}', [\App\Http\Controllers\CourseController::class, 'updateToApproveState'])->name('course.toApprove');
         Route::resource('course', \App\Http\Controllers\CourseController::class);
         Route::resource('contributor', \App\Http\Controllers\CourseContributorController::class);
+        Route::get('lesson/{lesson_id}/review', [\App\Http\Controllers\LessonController::class, 'showAtAdmin'])->name('lesson.review');
         Route::any('lesson/{course_id}/createForm', [\App\Http\Controllers\LessonController::class, 'createForm'])->name('lesson.createForm');
         Route::resource('lesson', \App\Http\Controllers\LessonController::class);
     });

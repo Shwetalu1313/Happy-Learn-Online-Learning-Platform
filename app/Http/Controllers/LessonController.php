@@ -73,6 +73,12 @@ class LessonController extends Controller
         //
     }
 
+    public function showAtAdmin(string $id){
+        $lesson = Lesson::find($id);
+        $titlePage = 'Review for ' . $lesson->title;
+        return view('lesson.lessonDetailManage', compact('lesson','titlePage'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -86,7 +92,21 @@ class LessonController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validateData = $request->validate([
+            'title' => 'required|string|max:255',
+            'requirements' => 'required|string',
+        ]);
+
+        $lesson = Lesson::findOrFail($id);
+        $lesson->title = $validateData['title'];
+        $lesson->body =  $validateData['requirements'];
+
+        if ($lesson->save()){
+            return redirect()->back()->with('success', 'You updated! '. $lesson->title);
+        }
+        else {
+            return redirect()->back()->with('error', 'It isn\'t able to update the data.');
+        }
     }
 
     /**

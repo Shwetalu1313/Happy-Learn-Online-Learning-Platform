@@ -99,6 +99,7 @@
 <script src="{{asset('./assets/vendor/simple-datatables/simple-datatables.js')}}"></script>
 <script src="{{asset('./assets/vendor/tinymce/tinymce.min.js')}}"></script>
 <script src="{{asset('./assets/vendor/php-email-form/validate.js')}}"></script>
+<script src="{{asset('./assets/js/ImageLargeSizeTracker.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -121,8 +122,8 @@
     } elseif (isset($course) && isset($course->description)) {
         $dataCourse = $course->description;
     }
-
     $data = isset($dataJob) ? $dataJob : (isset($dataCourse) ? $dataCourse : '');
+
 @endphp
 
 @if($storingCondition)

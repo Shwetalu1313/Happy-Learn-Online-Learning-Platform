@@ -67,7 +67,7 @@
                                                 No Lesson Found!
                                             @else
                                                 @foreach($course->lessons as $lesson)
-                                                    <a href="#" class="text-black mb-3">{{$loop->iteration}}. {{$lesson->title}}</a><br>
+                                                    <a href="{{url('lesson/'.$lesson->id.'/review')}}" class="text-black mb-3">{{$loop->iteration}}. {{$lesson->title}}</a><br>
                                                 @endforeach
                                             @endif
                                             <hr>
