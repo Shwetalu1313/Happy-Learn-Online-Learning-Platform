@@ -48,13 +48,16 @@ Route::get('/job/intro', [\App\Http\Controllers\PageController::class, 'jobformI
 Route::get('/job/listV2', [\App\Http\Controllers\JobPostController::class, 'joblist'])->name('job.listV2');
 Route::get('job/{JobPost}/detail', [\App\Http\Controllers\JobPostController::class, 'jobDetail'])->name('job.detail');
 
+//home
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
 //authenticator +++++++++++++
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
-    //home
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //dashboard
     Route::get('/dashboard', [\App\Http\Controllers\PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('user/dashboard', [\App\Http\Controllers\PageController::class, 'UserDashboard'])->name('user.dashboard');
 
 
     // Job

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRoleEnums;
 
 class PageController extends Controller
 {
@@ -31,6 +34,21 @@ class PageController extends Controller
         ];
 
         return view('dashboard', compact('titlePage', 'breadcrumbs'));
+    }
+
+    protected static function UserDashboard(){
+        $titlePage = __('nav.dashboard');
+        $breadcrumbs = [
+            ['link' => route('dashboard'), 'name' => 'Dashboard', 'active' => true]
+        ];
+        $user = \auth()->user();
+        $courses = Course::getCoursesForUser($user);
+        if (Auth::user()->role->value === UserRoleEnums::TEACHER->value){
+            return view('users.TeacherDashboard', compact('titlePage', 'breadcrumbs','courses'));
+        }
+        else{
+            return view('users.StudentDashboard', compact('titlePage', 'breadcrumbs'));
+        }
     }
 
     public static function welcome(){

@@ -61,4 +61,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Lesson::class,'creator_id');
     }
 
+    public static function students() {
+        return User::where('role', UserRoleEnums::STUDENT->value);
+    }
+
 }

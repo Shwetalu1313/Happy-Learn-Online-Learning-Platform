@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +51,41 @@ class Course extends Model
         } else {
             return self::all();
         }
+    }
+
+
+    /**
+     * @return mixed
+     * if there is completely no course that is created within 7 days, show the lasted 6 item.
+     * but if there is/are item/s within that day, just show.
+     * but item is less than 1 or equal, add the last item to 3.
+     * we don't show the course which has no lessons.
+     */
+    public static function getNewCourseLimitSix(){
+        $sevenDaysAgo = Carbon::now()->subDays(7);
+        $newCourses = Course::where('created_at', '>=', $sevenDaysAgo)
+                            ->has('lessons')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+        if ($newCourses->isNotEmpty()){
+            if ($newCourses->count() <= 1){
+                $remainingLimit = 6 - $newCourses->count();
+                $lastedCourses = Course::has('lessons')
+                                        ->orderBy('created_at','desc')
+                                        ->limit($remainingLimit)
+                                        ->get();
+                $newCourses = $newCourses->merge($lastedCourses);
+            }
+            return $newCourses;
+        }
+        else{
+            return Course::has('lessons')
+                            ->orderBy('id','desc')
+                            ->limit(6)
+                            ->get();
+        }
+
     }
 
     public function lessons(): HasMany

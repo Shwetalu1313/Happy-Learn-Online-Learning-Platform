@@ -1,0 +1,119 @@
+.new-courses {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+}
+
+.new-courses::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+.engagement-left {
+    margin-left: 5rem;
+}
+
+.new-courses .card {
+    flex: 0 0 250px; /* Fixed width for each card */
+    margin-right: 10px; /* Margin between cards */
+    scroll-snap-align: start; /* Snap each card to the start of the container */
+}
+
+.button-design-primary {
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -moz-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -ms-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -o-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: linear-gradient(to bottom, #3498db, #0b7cbd);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    text-shadow: 3px 3px 5px #0091ff;
+    -webkit-box-shadow: 1px 0px 18px #00bae8;
+    -moz-box-shadow: 1px 0px 18px #00bae8;
+    box-shadow: 1px 0px 18px #00bae8;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button-design-primary:hover {
+    background: #00ddff;
+    text-decoration: none;
+}
+
+.button-design-primary .bi-people {
+    margin-right: 5px;
+}
+
+.button-design-success {
+    background: #34d979;
+    background-image: -webkit-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -moz-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -ms-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -o-linear-gradient(top, #34d979, #0bbd23);
+    background-image: linear-gradient(to bottom, #34d979, #0bbd23);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    text-shadow: 3px 3px 5px #0ba102;
+    -webkit-box-shadow: 1px 0px 18px #49e600;
+    -moz-box-shadow: 1px 0px 18px #49e600;
+    box-shadow: 1px 0px 18px #49e600;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button-design-success:hover {
+    background: #3ffd41;
+    text-decoration: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .engagement-left {
+        margin-left: auto;
+    }
+    .engagement-left-title {
+        border-bottom: 2px solid ;
+    }
+    .owl-right {
+        width: 15rem;
+    }
+    .margin-small-top {
+        margin-top: 10px;
+    }
+}
+
+@media (min-width: 576px) {
+    .new-courses .card {
+        flex: 0 0 calc(50% - 10px); /* Two cards per row with margin */
+    }
+    .owl-center {
+        width: 10rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .new-courses .card {
+        flex: 0 0 calc(33.3333% - 10px); /* Three cards per row with margin */
+    }
+}
+
+@media (min-width: 992px) {
+    .new-courses .card {
+        flex: 0 0 calc(25% - 10px); /* Four cards per row with margin */
+    }
+}
+
+/*@media (min-width: 1200px) {
+    .new-courses .card {
+        flex: 0 0 calc(20% - 10px); !* Five cards per row with margin *!
+    }
+}*/

@@ -1,0 +1,51 @@
+.gradient-text {
+    background-image: linear-gradient(to right, #ff9a9e, #deb100, #fad0c4, #ff373f);
+    background-size: 200% auto;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: gradientAnimation 5s ease infinite;
+}
+
+.my-unselectable-element {
+    user-select: none;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.border-animate {
+    border: 2px solid #ccc;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: border-radius 0.5s ease;
+}
+
+.border-animate:hover {
+    color: #ff9a9e;
+}
+
+@keyframes changeBorderRadius {
+    0% {
+        border-radius: 0%;
+    }
+    100% {
+        border-radius: 50%; /* Adjust as needed */
+    }
+}
+
+@media (min-width: 768px) {
+    .hero-text {
+        text-align: center;
+    }
+}

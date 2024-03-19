@@ -21,6 +21,11 @@
 
     <link href="{{asset('./assets/vendor/quill/quill.snow.css')}}" rel="stylesheet">
     <link href="{{asset('./assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
+    <link href="{{asset('./assets/css/animationButton.css')}}" rel="stylesheet">
+    <link href="{{asset('./assets/css/other.css')}}" rel="stylesheet">
+    @if(\Illuminate\Support\Facades\Route::currentRouteName() === 'home')
+        <link href="{{asset('./assets/css/onlyHome.css')}}" rel="stylesheet">
+    @endif
 
     <!-- vite scss and js -->
     @vite([
@@ -36,7 +41,7 @@
 
 <body data-bs-theme="dark">
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg--second shadow-sm mb-5">
+        <nav class="navbar navbar-expand-md navbar-light bg--second shadow-sm">
             <div class="container ">
                 <a class="navbar-brand fs-3" style="color: aqua;" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -57,7 +62,8 @@
             </div>
         </nav>
 
-        <main class="py-4 mb-2">
+        <main class="mb-2 {{is_active_route_val(['home'],'primaryInfo-dark-gradient','')}}">
+
             @yield('content')
         </main>
 

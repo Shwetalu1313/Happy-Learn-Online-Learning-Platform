@@ -23,3 +23,27 @@
 .myshadow {
     box-shadow: 0px 3px 0px 0px rgba(235,235,235,0.3);
 }
+
+.success-dark-gradient {
+    background: linear-gradient(28deg, rgba(20,77,1,1) 0%, rgba(30,115,2,1) 34%, rgba(3,135,0,1) 73%, rgba(1,89,23,1) 100%);
+}
+
+.primaryInfo-dark-gradient {
+    background: linear-gradient(28deg, rgba(10,29,86,1) 0%, rgba(2,55,95,1) 56%, var(--second-color) 100%);
+}
+
+.strong-card-header-gradient {
+    background: linear-gradient(225deg, #6D0530, #081C4E);
+}
+
+.coolHover {
+    transition: background 0.3s ease-in-out;
+}
+
+.coolHover:hover {
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+}
+
+.myHover:hover {
+    color: var(--forth-color);
+}

@@ -26,4 +26,6 @@ return [
     'success_error_approve_alert_msg' => 'Course state update fail',
 
     'create_ls' => 'Create a lesson',
+
+    'label_new' => 'New Course'
 ];

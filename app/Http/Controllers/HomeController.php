@@ -26,9 +26,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role === UserRoleEnums::ADMIN->value){
-            view('dashboard');
-        }
+//        if (Auth::user()->role === UserRoleEnums::ADMIN->value){
+//            view('dashboard');
+//        }
         return view('home');
         //dd(Auth::user()->id);
     }

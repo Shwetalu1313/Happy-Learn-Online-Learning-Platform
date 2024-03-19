@@ -39,9 +39,9 @@
                         pts
                     </div>
                 </div>
-                <a class="dropdown-item text-center" href="{{route('user.profile', [Auth::user()->id])}}"><i class="bi-person fs-4 me-3"></i>{{__('users.profile')}}</a>
-
-                <a class="dropdown-item text-center" href="{{ route('logout') }}"
+                <a class="dropdown-item ps-3" href="{{route('user.profile', [Auth::user()->id])}}"><i class="bi-person fs-4 me-3"></i>{{__('users.profile')}}</a>
+                <a class="dropdown-item ps-3" href="{{ route('user.dashboard') }}"><i class="bi bi-window me-3"></i>{{__('nav.dashboard')}}</a>
+                <a class="dropdown-item ps-3" href="{{ route('logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="bi-door-open fs-4 me-3"></i>{{ __('Logout') }}
                 </a>
