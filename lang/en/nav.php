@@ -19,4 +19,6 @@ return [
     'no_abt' => 'No About Text',
     'crt_alt' => 'The data was successfully created',
     'wel_pg' => 'Welcome Page',
+    'tpu' => 'Leaderboards',
+    'teacher_lst' => 'Teacher List',
 ];

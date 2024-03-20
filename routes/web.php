@@ -44,9 +44,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 //guest +++++++++++++++
 
 //job
-Route::get('/job/intro', [\App\Http\Controllers\PageController::class, 'jobformIntro'])->name('job.intro');
+Route::get('/job/intro', [PageController::class, 'jobformIntro'])->name('job.intro');
 Route::get('/job/listV2', [\App\Http\Controllers\JobPostController::class, 'joblist'])->name('job.listV2');
 Route::get('job/{JobPost}/detail', [\App\Http\Controllers\JobPostController::class, 'jobDetail'])->name('job.detail');
+
+//users
+Route::get('users/top_pts', [PageController::class, 'TopPointsUserList'])->name('users.top_pts');
+Route::get('users/teachers', [PageController::class, 'teacherLists'])->name('users.teachers');
 
 //home
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

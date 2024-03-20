@@ -5,6 +5,9 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Enums\UserRoleEnums;
 use App\Models\Category;
+use App\Models\Course;
+use App\Models\CourseContributor;
+use App\Models\Lesson;
 use App\Models\SubCategory;
 use App\Models\User;
 
@@ -27,7 +30,7 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
            'name' => 'Authorize User',
-           'email' => 'testthemail2023@gmail.com',
+           'email' => 'admin@gmail.com',
            'phone' => '45454',
            'birthdate' => fake()->date,
             'points' => '987',
@@ -44,7 +47,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'student@example.com',
             'phone' => '09454545454',
             'birthdate' => fake()->date,
-            'points' => '4341',
+            'points' => '120',
             'avatar' => 'avatars/user.png',
             'role' => UserRoleEnums::STUDENT->value,
             'about' => 'I will learn from you 🤏🏻',
@@ -58,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'teacher@example.com',
             'phone' => '09454545454',
             'birthdate' => fake()->date,
-            'points' => '98745642',
+            'points' => '300',
             'avatar' => 'avatars/user.png',
             'role' => UserRoleEnums::TEACHER->value,
             'about' => 'I will teach for you 🤏🏻',
@@ -67,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
         ]);
 
-        User::factory(15)->create();
+        User::factory(70)->create();
         JobPost::factory(10)->create();
 
         Category::factory()->create(['name' => 'Technology & Computer Science', 'img_path' => 'cate/sample.jpg']);
@@ -183,5 +186,16 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 //        $this->call(JobPosition::class);
+        $i = 0;
+        while ($i < 50) {
+            Course::factory()->create(['title' => 'title ' . $i]);
+            $i++;
+        }
+
+        CourseContributor::factory(75)->create();
+        while ($i < 80) {
+            Lesson::factory(10)->create(['title' => 'title ' . $i]);
+            $i++;
+        }
     }
 }

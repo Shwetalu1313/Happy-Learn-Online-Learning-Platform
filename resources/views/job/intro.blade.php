@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="container mb-3 mb-sm-5">
+    <div class="container mb-3 mb-sm-5 pt-5">
 
 
         <section class="row mb-5 " style="height: 70svh">
@@ -9,8 +9,8 @@
                 <p class="mx-auto my-auto jobintromoti"><i class="bi bi-quote"></i>{{ __('jobapplication.motivation_text') }}
                 </p><br>
                 <p class="jobintroguide mb-3 text-third ">{{ __('jobapplication.guide') }}</p>
-                <button type="button" class="btn btn-primary jobtxtguide"
-                        style="max-width: 8rem; height: 3rem;" onclick="window.location.href='{{ route('job.listV2') }}'">{{ __('jobapplication.buttonApply') }}</button>
+                <button type="button" class="button-design-primary jobtxtguide text-center"
+                        style="max-width: 15rem; height: 3rem;" onclick="window.location.href='{{ route('job.listV2') }}'">{{ __('jobapplication.buttonApply') }}</button>
 
             </div>
             <div class="col-lg-5 col-12 jobimg-intro-column  overflow-hidden"

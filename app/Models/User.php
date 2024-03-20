@@ -62,7 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public static function students() {
-        return User::where('role', UserRoleEnums::STUDENT->value);
+        return User::where('role', UserRoleEnums::STUDENT)->orderBy('points', 'desc')->get();
     }
 
+    public static function teachers() {
+        return User::where('role', UserRoleEnums::TEACHER->value)->get();
+    }
 }

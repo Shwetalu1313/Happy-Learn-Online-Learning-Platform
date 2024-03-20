@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\UserRoleEnums;
@@ -57,5 +58,13 @@ class PageController extends Controller
         return view('welcome', compact('titlePage', 'categories'));
     }
 
+    public static function TopPointsUserList(){
+        $titlePage = __('nav.tpu');
+        return view('users.topPointsUserList', compact('titlePage'));
+    }
 
+    public static function teacherLists(){
+        $titlePage = __('nav.teacher_lst');
+        return view('users.teacherList', compact('titlePage'));
+    }
 }

@@ -313,3 +313,59 @@ main {
     cursor: pointer;
 }
 
+.button-design-primary {
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -moz-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -ms-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: -o-linear-gradient(top, #3498db, #0b7cbd);
+    background-image: linear-gradient(to bottom, #3498db, #0b7cbd);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    text-shadow: 3px 3px 5px #0091ff;
+    -webkit-box-shadow: 1px 0px 18px #00bae8;
+    -moz-box-shadow: 1px 0px 18px #00bae8;
+    box-shadow: 1px 0px 18px #00bae8;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button-design-primary:hover {
+    background: #00ddff;
+    text-decoration: none;
+}
+
+.button-design-primary .bi-people {
+    margin-right: 5px;
+}
+
+.button-design-success {
+    background: #34d979;
+    background-image: -webkit-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -moz-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -ms-linear-gradient(top, #34d979, #0bbd23);
+    background-image: -o-linear-gradient(top, #34d979, #0bbd23);
+    background-image: linear-gradient(to bottom, #34d979, #0bbd23);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    text-shadow: 3px 3px 5px #0ba102;
+    -webkit-box-shadow: 1px 0px 18px #49e600;
+    -moz-box-shadow: 1px 0px 18px #49e600;
+    box-shadow: 1px 0px 18px #49e600;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button-design-success:hover {
+    background: #3ffd41;
+    text-decoration: none;
+}
+

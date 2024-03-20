@@ -27,5 +27,6 @@ return [
 
     'create_ls' => 'Create a lesson',
 
-    'label_new' => 'New Course'
+    'label_new' => 'New Course',
+    'label_popular' => 'Popular Courses',
 ];

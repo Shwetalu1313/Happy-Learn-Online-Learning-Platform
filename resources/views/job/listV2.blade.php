@@ -1,21 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-capitalize text-center mb-5">{{ __('nav.j_post_l') }}</h1>
+    <div class="container-fluid pt-5">
+        <h1 class="text-capitalize text-center mb-5">{{ __('nav.j_post_l') }}</h1>
 
-    <div class="container">
-        {{-- Filter Search Bar --}}
-        <div class="form-group mb-5">
-            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+        <div class="container">
+            {{-- Filter Search Bar --}}
+            <div class="form-group mb-5">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+            </div>
+
+            <ul class="list-group">
+                @foreach($jobs as $index => $job)
+                    <a href="{{ url('job/'.$job->id.'/detail') }}" class="list-group-item list-group-item-action mb-3">
+                        <span class="badge badge-primary ms-2 fs-3">{{ $index + 1 }}</span>{{ $job->title }}
+                    </a>
+                @endforeach
+            </ul>
         </div>
-
-        <ul class="list-group">
-            @foreach($jobs as $index => $job)
-                <a href="{{ url('job/'.$job->id.'/detail') }}" class="list-group-item list-group-item-action mb-3">
-                    <span class="badge badge-primary ms-2 fs-3">{{ $index + 1 }}</span>{{ $job->title }}
-                </a>
-            @endforeach
-        </ul>
     </div>
 @endsection
 

@@ -11,6 +11,10 @@
     user-select: none;
 }
 
+.table-points {
+    padding-right: 15px;
+}
+
 @keyframes gradientAnimation {
     0% {
         background-position: 0% 50%;
@@ -47,5 +51,9 @@
 @media (min-width: 768px) {
     .hero-text {
         text-align: center;
+    }
+
+    .table-points {
+        padding-right: 3px;
     }
 }
