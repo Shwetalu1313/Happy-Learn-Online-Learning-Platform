@@ -13,4 +13,5 @@ return [
     'reset' => 'Reset',
     'sch' => 'Search',
     'share' => 'Share',
+    'enroll' => 'Enroll',
 ];

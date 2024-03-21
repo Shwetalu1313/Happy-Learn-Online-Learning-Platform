@@ -29,4 +29,5 @@ return [
 
     'label_new' => 'New Course',
     'label_popular' => 'Popular Courses',
+    'label_enroll_pg' => 'Course enroll Page',
 ];

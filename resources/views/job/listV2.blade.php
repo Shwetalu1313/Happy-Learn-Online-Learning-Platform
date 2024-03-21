@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+    $titlePage = 'Opportunity Search';
+ @endphp
     <div class="container-fluid pt-5">
         <h1 class="text-capitalize text-center mb-5">{{ __('nav.j_post_l') }}</h1>
 

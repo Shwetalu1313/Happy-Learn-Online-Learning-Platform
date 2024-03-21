@@ -52,6 +52,9 @@ Route::get('job/{JobPost}/detail', [\App\Http\Controllers\JobPostController::cla
 Route::get('users/top_pts', [PageController::class, 'TopPointsUserList'])->name('users.top_pts');
 Route::get('users/teachers', [PageController::class, 'teacherLists'])->name('users.teachers');
 
+//course
+Route::get('course/{course_id}/enroll', [PageController::class, 'CourseEnroll'])->name('course.enroll');
+
 //home
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

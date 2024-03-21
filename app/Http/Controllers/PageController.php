@@ -67,4 +67,10 @@ class PageController extends Controller
         $titlePage = __('nav.teacher_lst');
         return view('users.teacherList', compact('titlePage'));
     }
+
+    public static function CourseEnroll(string $id){
+        $titlePage = __('course.label_enroll_pg');
+        $course = Course::findOrFail($id);
+        return view('course.enroll.CourseEnrollPage', compact('titlePage', 'course'));
+    }
 }

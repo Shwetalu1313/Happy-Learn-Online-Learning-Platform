@@ -21,4 +21,9 @@ return [
     'wel_pg' => 'Welcome Page',
     'tpu' => 'Leaderboards',
     'teacher_lst' => 'Teacher List',
+    'payment' => 'Payment',
+    'currency_ex' => 'Currency Exchange',
+    'mmk' => 'MMK',
+    'us_dol' => 'US Dollar',
+    'pts' => 'point',
 ];

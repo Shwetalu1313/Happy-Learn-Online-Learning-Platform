@@ -9,6 +9,7 @@
 
     $newCourses = Course::getNewCourseLimitSix();
     $students = User::students();
+    $titlePage = 'home';
  @endphp
 
     <section class="container-fluid w-100 h-100 py-5 mb-3">
@@ -55,7 +56,7 @@
             @foreach($newCourses as $newCourse)
                 <div class="card">
                     <div class="card-header d-block strong-card-header-gradient">
-                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href">{{$newCourse->title}} @if($newCourse->state == CourseStateEnums::PENDING->value)
+                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href='{{ route('course.enroll',[$newCourse->id]) }}'">{{$newCourse->title}} @if($newCourse->state == CourseStateEnums::PENDING->value)
                                 <span class="badge text-warning border border-warning"> beta </span>
                             @endif</h5>
                         <div class="float-end">
@@ -90,7 +91,7 @@
             @foreach($newCourses as $newCourse)
                 <div class="card">
                     <div class="card-header d-block strong-card-header-gradient-success">
-                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href">{{$newCourse->title}} @if($newCourse->state == CourseStateEnums::PENDING->value)
+                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href='{{ route('course.enroll',[$newCourse->id]) }}'">{{$newCourse->title}} @if($newCourse->state == CourseStateEnums::PENDING->value)
                                 <span class="badge text-warning border border-warning"> beta </span>
                             @endif</h5>
                         <div class="float-end">

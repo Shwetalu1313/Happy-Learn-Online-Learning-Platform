@@ -15,6 +15,12 @@
     padding-right: 15px;
 }
 
+.enroll-section {
+    padding: 3rem;
+}
+
+
+
 @keyframes gradientAnimation {
     0% {
         background-position: 0% 50%;
@@ -55,5 +61,18 @@
 
     .table-points {
         padding-right: 3px;
+    }
+
+
+}
+
+@media only screen and (max-width: 768px) {
+    .enroll-course-title {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .enroll-section {
+        padding: 3px;
     }
 }

@@ -51,7 +51,30 @@
             </li>
         @endif
         <!-- End Important Data-->
+
         @if($authUser === UserRoleEnums::ADMIN->value)
+            <li class="nav-heading">{{__('nav.payment')}}</li>
+            <li class="nav-item">
+                <a class="nav-link {{is_active_route([''])}}" data-bs-target="#currency_exchange" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val([''], 'bi-currency-exchange active','bi-currency-exchange')}}"></i>
+                    <span>{{__('nav.currency_ex')}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="currency_exchange" class="nav-content collapse {{is_active_route_val([''], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#" class="{{is_active_route('')}}">
+                            <i class="bi bi-circle"></i><span>{{__('nav.us_dol')}} To {{__('nav.mmk')}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="{{ is_active_route('') }}">
+                            <i class="bi bi-circle"></i><span>{{__('nav.pts')}} To {{__('nav.mmk')}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Payment Data-->
+
+
             <li class="nav-heading">{{__('nav.basic_data')}}</li>
             <li class="nav-item">
                 <a class="nav-link {{is_active_route(['category.index','category.lst_V1','sub_category.create'])}}" data-bs-target="#category_page" data-bs-toggle="collapse" href="#">

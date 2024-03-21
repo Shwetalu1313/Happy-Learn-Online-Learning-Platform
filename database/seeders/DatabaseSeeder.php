@@ -188,13 +188,13 @@ class DatabaseSeeder extends Seeder
 //        $this->call(JobPosition::class);
         $i = 0;
         while ($i < 50) {
-            Course::factory()->create(['title' => 'title ' . $i]);
+            Course::factory()->create(['title' => 'Course ' . $i]);
             $i++;
         }
 
         CourseContributor::factory(75)->create();
         while ($i < 80) {
-            Lesson::factory(10)->create(['title' => 'title ' . $i]);
+            Lesson::factory()->create(['title' => 'Lesson ' . $i]);
             $i++;
         }
     }

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $titlePage = __('Email Sending');
+    @endphp
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
