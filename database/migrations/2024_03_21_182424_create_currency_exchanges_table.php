@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('currency_exchanges', function (Blueprint $table) {
-            $table->uuid();
-            $table->integer('us_ex');
-            $table->integer('pts_ex');
+            $table->uuid('id')->primary();
+            $table->integer('us_ex')->default(1);
+            $table->integer('pts_ex')->default(1);
             $table->timestamps();
         });
     }

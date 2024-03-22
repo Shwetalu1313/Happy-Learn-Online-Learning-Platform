@@ -7,6 +7,7 @@ use App\Enums\UserRoleEnums;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseContributor;
+use App\Models\CurrencyExchange;
 use App\Models\Lesson;
 use App\Models\SubCategory;
 use App\Models\User;
@@ -30,8 +31,8 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
            'name' => 'Authorize User',
-           'email' => 'admin@gmail.com',
-           'phone' => '45454',
+           'email' => 'admin@example.com',
+           'phone' => '49563029',
            'birthdate' => fake()->date,
             'points' => '987',
             'avatar' => 'avatars/user.png',
@@ -197,5 +198,7 @@ class DatabaseSeeder extends Seeder
             Lesson::factory()->create(['title' => 'Lesson ' . $i]);
             $i++;
         }
+
+        CurrencyExchange::factory(1)->create();
     }
 }

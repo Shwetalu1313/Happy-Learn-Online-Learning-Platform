@@ -159,9 +159,33 @@
                 $('#title_input').val(title);
             });
         });
+
+
     </script>
 @endif
 
+<script>
+    $(document).ready(function() {
+        // URL of your Laravel route
+        var apiUrl = "http://127.0.0.1:8000/fetch-data";
+
+        // Make AJAX request
+        $.ajax({
+            url: apiUrl,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                // Handle the response data
+                console.log(data); // You can replace this with your own handling logic
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error("Error fetching data:", error);
+            }
+        });
+    });
+
+</script>
 @yield('scripts')
 
 

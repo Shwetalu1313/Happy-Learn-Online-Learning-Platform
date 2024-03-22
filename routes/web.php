@@ -4,8 +4,16 @@
 use App\Enums\UserRoleEnums;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CurrencyExchangeController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\LessonController;
+use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\CourseContributorController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,8 +53,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 //job
 Route::get('/job/intro', [PageController::class, 'jobformIntro'])->name('job.intro');
-Route::get('/job/listV2', [\App\Http\Controllers\JobPostController::class, 'joblist'])->name('job.listV2');
-Route::get('job/{JobPost}/detail', [\App\Http\Controllers\JobPostController::class, 'jobDetail'])->name('job.detail');
+Route::get('/job/listV2', [JobPostController::class, 'joblist'])->name('job.listV2');
+Route::get('job/{JobPost}/detail', [JobPostController::class, 'jobDetail'])->name('job.detail');
 
 //users
 Route::get('users/top_pts', [PageController::class, 'TopPointsUserList'])->name('users.top_pts');
@@ -63,29 +71,29 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     //dashboard
-    Route::get('/dashboard', [\App\Http\Controllers\PageController::class, 'dashboard'])->name('dashboard');
-    Route::get('user/dashboard', [\App\Http\Controllers\PageController::class, 'UserDashboard'])->name('user.dashboard');
+    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('user/dashboard', [PageController::class, 'UserDashboard'])->name('user.dashboard');
 
 
     // Job
     Route::group(['prefix' => '/job'], function (){
-        Route::get('/list', [\App\Http\Controllers\JobPostController::class, 'list'])->name('job.list')->middleware('isAdmin');
+        Route::get('/list', [JobPostController::class, 'list'])->name('job.list')->middleware('isAdmin');
         Route::group(['middleware' => 'isAdmin'], function (){
-            Route::get('/post', [\App\Http\Controllers\JobPostController::class, 'index'])->name('job.post');
-            Route::post('/store', [\App\Http\Controllers\JobPostController::class, 'store'])->name('job.store');
-            Route::put('/{JobPost}/update', [\App\Http\Controllers\JobPostController::class, 'update'])->name('job.update');
-            Route::get('/{JobPost}', [\App\Http\Controllers\JobPostController::class, 'show'])->name('job.show');
-            Route::delete('/{JobPost}', [\App\Http\Controllers\JobPostController::class, 'destroy'])->name('job.destroy');
+            Route::get('/post', [JobPostController::class, 'index'])->name('job.post');
+            Route::post('/store', [JobPostController::class, 'store'])->name('job.store');
+            Route::put('/{JobPost}/update', [JobPostController::class, 'update'])->name('job.update');
+            Route::get('/{JobPost}', [JobPostController::class, 'show'])->name('job.show');
+            Route::delete('/{JobPost}', [JobPostController::class, 'destroy'])->name('job.destroy');
         });
     });
 
     //user
-    Route::get('profile/{id}', [\App\Http\Controllers\UserController::class, 'showProfile'])->name('user.profile');
-    Route::post('/profile/update/', [\App\Http\Controllers\UserController::class, 'updateUserProfile'])->name('user.profile.update');
-    Route::post('/profile/change/', [\App\Http\Controllers\UserController::class, 'changeUserPassword'])->name('user.password.change');
+    Route::get('profile/{id}', [UserController::class, 'showProfile'])->name('user.profile');
+    Route::post('/profile/update/', [UserController::class, 'updateUserProfile'])->name('user.profile.update');
+    Route::post('/profile/change/', [UserController::class, 'changeUserPassword'])->name('user.password.change');
     Route::group(['prefix' => '/user', 'middleware'=>'isAdmin'], function (){
 
-        Route::resource('/dtl', \App\Http\Controllers\UserController::class)->names([
+        Route::resource('/dtl', UserController::class)->names([
             'index' => 'user.dtl.index',
             'create' => 'user.dtl.create',
             'store' => 'user.dtl.store',
@@ -94,17 +102,17 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
             'update' => 'user.dtl.update',
             'destroy' => 'user.dtl.destroy',
         ]);
-        Route::post('/dtl/pf_update/', [\App\Http\Controllers\UserController::class, 'updateProfile'])->name('user.dtl.pf_update');
-        Route::post('/dtl/ch_pass/', [\App\Http\Controllers\UserController::class, 'changePassword'])->name('user.dtl.ch_pass');
-        Route::put('/role/{id}/update',[\App\Http\Controllers\UserController::class, 'roleUpdate'])->name('role.update');
+        Route::post('/dtl/pf_update/', [UserController::class, 'updateProfile'])->name('user.dtl.pf_update');
+        Route::post('/dtl/ch_pass/', [UserController::class, 'changePassword'])->name('user.dtl.ch_pass');
+        Route::put('/role/{id}/update',[UserController::class, 'roleUpdate'])->name('role.update');
         Route::post('/role/bulkInsert', [\App\Http\Controllers\UserRoleController::class, 'bulkInsert'])->name('user.role.bulkInsert');
     });
 
     //category
     //အကယ်၍ page 404 error ဖြစ်ပေါ်ပါက custom route များကို resource route များပေါ်တွင်ထားရမည်။
-    Route::get('/category/lst', [\App\Http\Controllers\CategoryController::class, 'listingV1'])->name('category.lst_V1')->middleware('isAdmin');
-    Route::get('category/mdf/{category}', [\App\Http\Controllers\CategoryController::class, 'showV2'])->name('category.modify')->middleware('isAdmin');
-    Route::resource('category', \App\Http\Controllers\CategoryController::class)->names([
+    Route::get('/category/lst', [CategoryController::class, 'listingV1'])->name('category.lst_V1')->middleware('isAdmin');
+    Route::get('category/mdf/{category}', [CategoryController::class, 'showV2'])->name('category.modify')->middleware('isAdmin');
+    Route::resource('category', CategoryController::class)->names([
         'index' => 'category.index',
         'store' => 'category.store',
         'show' => 'category.show',
@@ -113,7 +121,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         'destroy' => 'category.destroy',
     ])->middleware('isAdmin');
 
-    Route::resource('sub_category', \App\Http\Controllers\SubCategoryController::class)->names([
+    Route::resource('sub_category', SubCategoryController::class)->names([
         'index' => 'sub_category.index',
         'store' => 'sub_category.store',
         'show' => 'sub_category.show',
@@ -123,12 +131,18 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     ])->middleware('isAdmin');
 
     Route::group(['middleware' => 'notStudent'], function (){
-        Route::any('course/toApprove/{id}', [\App\Http\Controllers\CourseController::class, 'updateToApproveState'])->name('course.toApprove');
-        Route::resource('course', \App\Http\Controllers\CourseController::class);
-        Route::resource('contributor', \App\Http\Controllers\CourseContributorController::class);
-        Route::get('lesson/{lesson_id}/review', [\App\Http\Controllers\LessonController::class, 'showAtAdmin'])->name('lesson.review');
-        Route::any('lesson/{course_id}/createForm', [\App\Http\Controllers\LessonController::class, 'createForm'])->name('lesson.createForm');
-        Route::resource('lesson', \App\Http\Controllers\LessonController::class);
+        Route::any('course/toApprove/{id}', [CourseController::class, 'updateToApproveState'])->name('course.toApprove');
+        Route::resource('course', CourseController::class);
+        Route::resource('contributor', CourseContributorController::class);
+        Route::get('lesson/{lesson_id}/review', [LessonController::class, 'showAtAdmin'])->name('lesson.review');
+        Route::any('lesson/{course_id}/createForm', [LessonController::class, 'createForm'])->name('lesson.createForm');
+        Route::resource('lesson', LessonController::class);
+    });
+
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function() {
+        Route::get('edit', [CurrencyExchangeController::class, 'edit'])->name('exchange.edit');
+        Route::put('usUpdate', [CurrencyExchangeController::class, 'updateUSDollar'])->name('usUpdate');
+        Route::put('ptsUpdate', [CurrencyExchangeController::class, 'updatePts'])->name('ptsUpdate');
     });
 });
 
@@ -136,5 +150,25 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 //language switching
 Route::post('/language-switch', [LanguageController::class, 'languageSwitch'])->name('language.switch');
 
+Route::get('/fetch-data', function () {
+    try {
+        // Fetch XSRF token from external server
+        $response = Http::get('http://forex.cbm.gov.mm/api/latest/token');
+        $token = $response->json()['token'];
+
+        // Fetch data using the obtained token
+        $dataResponse = Http::withHeaders([
+            'X-XSRF-TOKEN' => $token,
+        ])->get('http://forex.cbm.gov.mm/api/latest');
+
+        return $dataResponse->json();
+    } catch (Exception $e) {
+        // Log the error
+        \Log::error('Error fetching data: ' . $e->getMessage());
+
+        // Return an error response
+        return response()->json(['error' => 'Error fetching data'], 500);
+    }
+});
 
 

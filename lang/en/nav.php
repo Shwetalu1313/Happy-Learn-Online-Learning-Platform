@@ -24,6 +24,6 @@ return [
     'payment' => 'Payment',
     'currency_ex' => 'Currency Exchange',
     'mmk' => 'MMK',
-    'us_dol' => 'US Dollar',
+    'us_dol' => 'USD',
     'pts' => 'point',
 ];

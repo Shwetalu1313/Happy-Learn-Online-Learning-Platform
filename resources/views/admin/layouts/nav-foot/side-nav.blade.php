@@ -59,15 +59,10 @@
                     <i class="bi {{is_active_route_val([''], 'bi-currency-exchange active','bi-currency-exchange')}}"></i>
                     <span>{{__('nav.currency_ex')}}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="currency_exchange" class="nav-content collapse {{is_active_route_val([''], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                <ul id="currency_exchange" class="nav-content collapse {{is_active_route_val(['exchange.edit'], 'show', '')}}" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#" class="{{is_active_route('')}}">
-                            <i class="bi bi-circle"></i><span>{{__('nav.us_dol')}} To {{__('nav.mmk')}}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="{{ is_active_route('') }}">
-                            <i class="bi bi-circle"></i><span>{{__('nav.pts')}} To {{__('nav.mmk')}}</span>
+                        <a href="{{route('exchange.edit')}}" class="{{is_active_route('exchange.edit')}}">
+                            <i class="bi bi-circle"></i><span>Exchange</span>
                         </a>
                     </li>
                 </ul>

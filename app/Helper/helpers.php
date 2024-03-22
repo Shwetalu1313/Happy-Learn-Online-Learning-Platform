@@ -72,3 +72,23 @@ if (!function_exists('is_active_route_val')){
     }
 }
 
+if (!function_exists('MoneyExchange'))
+{
+    /**
+     * @param $Value => the Value that will be converted
+     * @param $AvgMMKValue => Average Myanmar Kyat Value
+     * @return int The converted value in USD, rounded to the nearest integer if off by points.
+     */
+    function MoneyExchange($Value, $AvgMMKValue): int
+    {
+        $usdvalue = $Value / $AvgMMKValue;
+        if (abs($usdvalue - round($usdvalue)) > 0.5){
+            $usdvalue = round($usdvalue);
+        }
+        else {
+            $usdvalue = round($usdvalue,2);
+        }
+        return $usdvalue;
+    }
+}
+

@@ -14,4 +14,5 @@ return [
     'sch' => 'Search',
     'share' => 'Share',
     'enroll' => 'Enroll',
+    'confirm' => 'Confirm',
 ];
