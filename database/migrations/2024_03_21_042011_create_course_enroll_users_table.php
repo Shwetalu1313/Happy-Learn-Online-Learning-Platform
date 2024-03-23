@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('course_enroll_users', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id')->primary();
             $table->bigInteger('user_id');
             $table->bigInteger('course_id');
-            $table->bigInteger('card_number');
-            $table->string('expired_date');
-            $table->string('cardHolderName');
+            $table->integer('amount')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->bigInteger('card_number')->nullable();
+            $table->date('expired_date')->nullable();
+            $table->string('cardHolderName')->nullable();
             $table->timestamps();
         });
     }

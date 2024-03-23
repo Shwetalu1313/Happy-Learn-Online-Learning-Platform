@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\CourseEnrollUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,25 @@ class PageController extends Controller
     public static function CourseEnroll(string $id){
         $titlePage = __('course.label_enroll_pg');
         $course = Course::findOrFail($id);
+
+        // Check if the user is already enrolled in the course
+        $enrollment = CourseEnrollUser::where('user_id', auth()->id())
+                                        ->where('course_id', $id)
+                                        ->first();
+
+        if($enrollment) {
+            // User is already enrolled, redirect to another route
+            return redirect()->route('course.detail',$course->id);
+        }
+
+        // User is not enrolled, render the enrollment page
         return view('course.enroll.CourseEnrollPage', compact('titlePage', 'course'));
+    }
+
+
+    public static function courseDetail(string $id){
+        $titlePage = __('Detail');
+        $course = Course::findOrFail($id);
+        return view('course.enroll.courseDetail', compact('titlePage', 'course'));
     }
 }

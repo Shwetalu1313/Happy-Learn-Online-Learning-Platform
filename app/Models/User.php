@@ -68,4 +68,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public static function teachers() {
         return User::where('role', UserRoleEnums::TEACHER->value)->get();
     }
+
+    public function enrollCourses(): HasMany {
+        return $this->hasMany(CourseEnrollUser::class, 'user_id');
+    }
 }

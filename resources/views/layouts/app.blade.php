@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
+@php
+    use Illuminate\Support\Facades\Route;
+        $currentRoute = Route::currentRouteName();
+@endphp
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,9 +30,10 @@
     <link href="{{asset('./assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
     <link href="{{asset('./assets/css/animationButton.css')}}" rel="stylesheet">
     <link href="{{asset('./assets/css/other.css')}}" rel="stylesheet">
-    @if(\Illuminate\Support\Facades\Route::currentRouteName() === 'home')
+    @if($currentRoute === 'home')
         <link href="{{asset('./assets/css/onlyHome.css')}}" rel="stylesheet">
     @endif
+
 
     <!-- vite scss and js -->
     @vite([
@@ -81,7 +85,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{asset('./assets/vendor/quill/quill.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
         @if (Auth::check())
             <script>
             const userImageElement = document.getElementById("user_image");
@@ -106,18 +109,7 @@
 
         @yield('scripts')
 
-    <script>
-        $(document).ready(function() {
-            // Get the initial points value
-            const initialValue = parseInt($("#points-value").text());
 
-            // Set up the CountUp instance
-            const countUp = new CountUp('points-value', initialValue);
-
-            // Start the animation
-            countUp.start();
-        });
-    </script>
 </body>
 
 </html>

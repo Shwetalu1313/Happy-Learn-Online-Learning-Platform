@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseEnrollController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LessonController;
@@ -144,6 +145,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::put('usUpdate', [CurrencyExchangeController::class, 'updateUSDollar'])->name('usUpdate');
         Route::put('ptsUpdate', [CurrencyExchangeController::class, 'updatePts'])->name('ptsUpdate');
     });
+
+    //enroll course
+    Route::group(['prefix' => 'course'], function (){
+        Route::get('{course_id}/detail', [PageController::class, 'courseDetail'])->name('course.detail')->middleware('enrolled');
+        Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
+    });
+
 });
 
 

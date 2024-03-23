@@ -14,4 +14,14 @@ class CurrencyExchange extends Model
     protected $casts = [
         'us_ex' => 'integer','pts_ex' => 'integer'
     ];
+
+    public static function getUSD(){
+        $exchange =  CurrencyExchange::first();
+        return $exchange->us_ex;
+    }
+
+    public static function getPts(){
+        $exchange =  CurrencyExchange::first();
+        return $exchange->pts_ex;
+    }
 }
