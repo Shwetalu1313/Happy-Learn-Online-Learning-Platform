@@ -17,7 +17,7 @@ class CurrencyExchangeFactory extends Factory
     public function definition(): array
     {
         return [
-            'id'=> fake()->uuid(),'us_ex'=>100, 'pts_ex'=>100,
+            'id'=> fake()->uuid(),'us_ex'=>2500, 'pts_ex'=>255,
         ];
     }
 }

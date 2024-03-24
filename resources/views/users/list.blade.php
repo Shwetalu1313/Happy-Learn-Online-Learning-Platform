@@ -28,6 +28,7 @@
                         <tr>
                             <th><b>{{__('users.no.')}}</b></th>
                             <th><b>{{__('users.name')}}</b></th>
+                            <th><b>{{__('users.mail')}}</b></th>
                             <th><b>{{__('users.pts')}}</b></th>
                             <th><b>{{__('users.role')}}</b></th>
                             <th data-type="date" data-format="YYYY/DD/MM">{{__('users.dob')}}</th>
@@ -42,6 +43,7 @@
                                     <img src="{{asset('/storage/'.$user->avatar)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success me-3" alt="profile">
                                     {{ $user->name }}
                                 </td>
+                                <td class="">{{ $user->email }}</td>
                                 <td class="text-danger">{{ $user->points }}</td>
                                 <td>
                                     <form action="{{ url('user/role/'.$user->id.'/update') }}" method="post">
@@ -55,7 +57,6 @@
                                         </select>
                                     </form>
                                 </td>
-
                                 <td>{{ \Carbon\Carbon::parse($user->birthdate)->format('Y/m/d') }}</td>
                                 <td>
                                     <form action="{{url('user/dtl/'.$user->id)}}" method="post">

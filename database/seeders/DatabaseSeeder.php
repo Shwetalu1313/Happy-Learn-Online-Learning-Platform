@@ -7,6 +7,7 @@ use App\Enums\UserRoleEnums;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseContributor;
+use App\Models\CourseEnrollUser;
 use App\Models\CurrencyExchange;
 use App\Models\Lesson;
 use App\Models\SubCategory;
@@ -200,5 +201,6 @@ class DatabaseSeeder extends Seeder
         }
 
         CurrencyExchange::factory(1)->create();
+        CourseEnrollUser::factory(60)->create();
     }
 }

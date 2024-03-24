@@ -4,10 +4,16 @@
 
     @php
     use App\Models\Course;
+    use App\Models\CourseEnrollUser;
     use App\Models\User;
     use App\Enums\CourseStateEnums;
+    use App\Models\CurrencyExchange;
+    use App\Enums\CourseTypeEnums;
 
+    $us_ex = CurrencyExchange::getUSD();
+    $basicCourseEnum = CourseTypeEnums::BASIC->value;
     $newCourses = Course::getNewCourseLimitSix();
+    $popularCourses = CourseEnrollUser::PopularCourses();
     $students = User::students();
     $titlePage = 'home';
  @endphp
@@ -64,19 +70,39 @@
                                 <p class="">{{$newCourse->created_at->diffForHumans()}}</p>
                         </div>
                     </div>
-                    <div class="card-body d-flex justify-content-around" title="{{__('course.label_name').' = '. $newCourse->title}}">
-                        <p>{{$newCourse->lessons->count()}} - lessons</p>
-                        <details>
-                            <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
-                            <ol>
-                                @if($newCourse->creator->role->value != \App\Enums\UserRoleEnums::ADMIN->value)
-                                    <li><a href="#">{{$newCourse->creator->name}}</a></li>
-                                @endif
-                                @foreach($newCourse->contribute_courses as $course)
-                                    <li><a href="#"> {{$course->user->name}}</a></li>
-                                @endforeach
-                            </ol>
-                        </details>
+                    <div class="card-body" title="{{__('course.label_name').' = '. $newCourse->title}}">
+                        @if($newCourse->courseType === $basicCourseEnum)
+                            <p class="text-success-emphasis">This is free course.</p>
+                        @else
+                            <div class="d-flex justify-content-around mb-3">
+                                <p class="fw-bold text-secondary">Price $:</p>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="fs-5 text-secondary">{{$newCourse->fees}}</p>
+                                    <p class="fs-6 text-secondary-emphasis ms-2">{{__('nav.mmk')}}</p>
+                                </div>
+                                <i class="bi bi-arrow-left-right mx-3 text-secondary-emphasis"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="fs-5 text-secondary">{{MoneyExchange($newCourse->fees,$us_ex)}}</p>
+                                    <p class="fs-6 text-secondary-emphasis ms-2">{{__('nav.us_dol')}}</p>
+                                </div>
+                            </div>
+
+                        @endif
+                            <hr>
+                        <div class="d-flex justify-content-around">
+                            <p>{{$newCourse->lessons->count()}} - lessons</p>
+                            <details>
+                                <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
+                                <ol>
+                                    @if($newCourse->creator->role->value != \App\Enums\UserRoleEnums::ADMIN->value)
+                                        <li><a href="#">{{$newCourse->creator->name}}</a></li>
+                                    @endif
+                                    @foreach($newCourse->contribute_courses as $course)
+                                        <li><a href="#"> {{$course->user->name}}</a></li>
+                                    @endforeach
+                                </ol>
+                            </details>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -88,30 +114,52 @@
         <h2 class="text-center fw-bold text-forth mb-3">{{__('course.label_popular')}}</h2>
 
         <div class="slides new-courses my-unselectable-element">
-            @foreach($newCourses as $newCourse)
+            @foreach($popularCourses as $newCourse)
                 <div class="card">
                     <div class="card-header d-block strong-card-header-gradient-success">
-                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href='{{ route('course.enroll',[$newCourse->id]) }}'">{{$newCourse->title}} @if($newCourse->state == CourseStateEnums::PENDING->value)
+                        <h5 class="card-title fw-bolder myHover cursor-pointer text-center pt-3" onclick="window.location.href='{{ route('course.enroll',[$newCourse->course->id]) }}'">{{$newCourse->course->title}} @if($newCourse->course->state == CourseStateEnums::PENDING->value)
                                 <span class="badge text-warning border border-warning"> beta </span>
                             @endif</h5>
                         <div class="float-end">
 
-                            <p class="">{{$newCourse->created_at->diffForHumans()}}</p>
+                            <p class="">{{$newCourse->course->created_at->diffForHumans()}}</p>
                         </div>
                     </div>
-                    <div class="card-body d-flex justify-content-around" title="{{__('course.label_name').' = '. $newCourse->title}}">
-                        <p>{{$newCourse->lessons->count()}} - lessons</p>
-                        <details>
-                            <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
-                            <ol>
-                                @if($newCourse->creator->role->value != \App\Enums\UserRoleEnums::ADMIN->value)
-                                    <li><a href="#">{{$newCourse->creator->name}}</a></li>
-                                @endif
-                                @foreach($newCourse->contribute_courses as $course)
-                                    <li><a href="#"> {{$course->user->name}}</a></li>
-                                @endforeach
-                            </ol>
-                        </details>
+                    <div class="card-body" title="{{__('course.label_name').' = '. $newCourse->course->title}}">
+                        @if($newCourse->course->courseType === $basicCourseEnum)
+                            <p class="text-success-emphasis">This is free course.</p>
+                        @else
+                            <div class="d-flex justify-content-around mb-3">
+                                <p class="fw-bold text-secondary">Price $:</p>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="fs-5 text-secondary">{{$newCourse->course->fees}}</p>
+                                    <p class="fs-6 text-secondary-emphasis ms-2">{{__('nav.mmk')}}</p>
+                                </div>
+                                <i class="bi bi-arrow-left-right mx-3 text-secondary-emphasis"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="fs-5 text-secondary">{{MoneyExchange($newCourse->course->fees,$us_ex)}}</p>
+                                    <p class="fs-6 text-secondary-emphasis ms-2">{{__('nav.us_dol')}}</p>
+                                </div>
+                            </div>
+
+                        @endif
+
+                            <hr>
+                        <div class="d-flex justify-content-around">
+                            <p>{{$newCourse->course->lessons->count()}} - lessons</p>
+                            <details>
+                                <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
+                                <ol>
+                                    @if($newCourse->course->creator->role->value != \App\Enums\UserRoleEnums::ADMIN->value)
+                                        <li><a href="#">{{$newCourse->course->creator->name}}</a></li>
+                                    @endif
+                                    @foreach($newCourse->course->contribute_courses as $course)
+                                        <li><a href="#"> {{$course->user->name}}</a></li>
+                                    @endforeach
+                                </ol>
+                            </details>
+                        </div>
+
                     </div>
                 </div>
             @endforeach

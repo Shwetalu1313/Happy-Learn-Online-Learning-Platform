@@ -150,6 +150,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::group(['prefix' => 'course'], function (){
         Route::get('{course_id}/detail', [PageController::class, 'courseDetail'])->name('course.detail')->middleware('enrolled');
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
+        Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
     });
 
 });

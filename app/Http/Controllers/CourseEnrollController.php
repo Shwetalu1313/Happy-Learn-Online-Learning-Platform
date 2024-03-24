@@ -41,4 +41,32 @@ class CourseEnrollController extends Controller
         }
     }
 
+    public function cardPayment(Request $request){
+        $data = $request->validate([
+            'course_id' => 'required',
+            'amount' => 'required|integer',
+            'card_number' => 'required|numeric|digits:16',
+            'expired_date' => 'required',
+            'cvv' => 'required|numeric|digits:3',
+            'cardHolderName' => 'required',
+        ]);
+
+        $enroll = CourseEnrollUser::create([
+            'user_id' => auth()->id(),
+            'course_id' => $data['course_id'],
+            'amount' => $data['amount'],
+            'payment_type' => CoursePaymentTypeEnums::CARD->value,
+            'card_number' => $data['card_number'],
+            'expired_date' => $data['expired_date'],
+            'cvv' => $data['cvv'],
+            'cardHolderName' => $data['cardHolderName'],
+        ]);
+
+        if ($enroll) {
+            return redirect()->route('course.detail', $enroll->id)->with('success', 'You enrolled in a new course.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to enroll in the course.');
+        }
+    }
+
 }

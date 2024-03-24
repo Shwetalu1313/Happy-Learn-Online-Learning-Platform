@@ -102,24 +102,28 @@
                                 <p class="fs-4 fw-lighter">{{MoneyExchange($course->fees,$us_ex)}}</p>
                                 <p class="mx-3 text-secondary-emphasis">{{__('nav.us_dol')}}</p>
                             </div>
-                            <form>
+                            <form id="cardPay" action="{{route('course.cardPayment')}}" method="POST" onsubmit="return validateForm()">
+                                @csrf
+                                @method('POST')
+                                <input type="hidden" value="{{$course->id}}" name="course_id">
+                                <input type="hidden" value="{{$course->fees}}" name="amount">
                                 <div class="mb-3">
                                     <label for="cardNumber" class="form-label">Card Number</label>
-                                    <input type="text" class="form-control" id="cardNumber" placeholder="Enter card number">
+                                    <input type="text" class="form-control" id="cardNumber" name="card_number" placeholder="Enter card number" required pattern="[0-9]{16}" title="Please enter a valid 16-digit card number">
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="expiryDate" class="form-label">Expiry Date</label>
-                                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
+                                        <input type="text" class="form-control" id="expiryDate" name="expired_date" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/[0-9]{2}" title="Please enter a valid expiry date (MM/YY)">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="cvv" class="form-label">CVV</label>
-                                        <input type="text" class="form-control" id="cvv" placeholder="CVV">
+                                        <input type="text" class="form-control" id="cvv" name="cvv" placeholder="CVV" required pattern="[0-9]{3}" title="Please enter a valid 3-digit CVV">
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="cardHolderName" class="form-label">Cardholder Name</label>
-                                    <input type="text" class="form-control" id="cardHolderName" placeholder="Enter cardholder name">
+                                    <input type="text" class="form-control" id="cardHolderName" name="cardHolderName" placeholder="Enter cardholder name" required>
                                 </div>
                                 <div class="d-grid gap-2 col-6 mx-auto">
                                     <button type="submit" class="btn btn-primary">Pay Now</button>
@@ -148,6 +152,40 @@
                             cardTypeIcons.innerHTML = visaIcon +' '+ mastercardIcon;
                         }
                     });
+
+                    function validateForm() {
+                        const cardNumber = document.getElementById('cardNumber').value;
+                        const expiryDate = document.getElementById('expiryDate').value;
+                        const cvv = document.getElementById('cvv').value;
+                        const cardHolderName = document.getElementById('cardHolderName').value;
+
+                        // Check if card number is valid
+                        if (!cardNumber.match(/[0-9]{16}/)) {
+                            alert('Please enter a valid 16-digit card number');
+                            return false;
+                        }
+
+                        // Check if expiry date is valid
+                        if (!expiryDate.match(/(0[1-9]|1[0-2])\/[0-9]{2}/)) {
+                            alert('Please enter a valid expiry date (MM/YY)');
+                            return false;
+                        }
+
+                        // Check if CVV is valid
+                        if (!cvv.match(/[0-9]{3}/)) {
+                            alert('Please enter a valid 3-digit CVV');
+                            return false;
+                        }
+
+                        // Check if cardholder name is not empty
+                        if (cardHolderName.trim() === '') {
+                            alert('Please enter cardholder name');
+                            return false;
+                        }
+
+                        // Form is valid, submit the form
+                        return true;
+                    }
                 </script>
 
 

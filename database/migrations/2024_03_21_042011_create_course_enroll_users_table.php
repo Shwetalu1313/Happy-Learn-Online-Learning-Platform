@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('amount')->nullable();
             $table->string('payment_type')->nullable();
             $table->bigInteger('card_number')->nullable();
-            $table->date('expired_date')->nullable();
+            $table->string('expired_date')->nullable();
+            $table->integer('cvv')->nullable();
             $table->string('cardHolderName')->nullable();
             $table->timestamps();
         });
