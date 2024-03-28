@@ -70,7 +70,14 @@
                         @if($course->courseType === $basicCourseEnum)
                             <div class="d-flex flex-column align-items-center justify-content-center">
                                 <small class="text-primary-emphasis fs-5">This is basic course. So, you can get it free.</small> <br>
-                                <button type="submit" class="btn btn-success my-5">Enroll Free</button>
+                                <button type="submit" class="btn btn-success my-5" onclick="document.getElementById('freePay').submit();">Enroll Free</button>
+
+                                <form action="{{route('course.freePayment')}}" method="POST" class="d-none" id="freePay">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="hidden" value="{{$course->id}}" name="course_id">
+                                    <input type="hidden" value="{{$course->fees}}" name="amount">
+                                </form>
                             </div>
 
                         @else
@@ -91,7 +98,7 @@
                                 </form>
                             </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-warning mb-3" onclick="event.preventDefault(); document.getElementById('ptsPay').submit();">Pay Now</button>
+                            <button type="submit" class="btn btn-warning mb-3" onclick="document.getElementById('ptsPay').submit();">Pay Now</button>
                         </div>
                         <hr>
                             <h5 class="card-title text-secondary-emphasis mb-3">Payment Information</h5>

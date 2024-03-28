@@ -35,7 +35,7 @@ class CourseEnrollController extends Controller
         if ($enroll) {
             // Update user's points after successful enrollment
             Auth::user()->update(['points' => $finalPoint]);
-            return redirect()->route('course.detail', $enroll->id)->with('success', 'You enrolled in a new course.');
+            return redirect()->back();
         } else {
             return redirect()->back()->with('error', 'Failed to enroll in the course.');
         }
@@ -63,7 +63,28 @@ class CourseEnrollController extends Controller
         ]);
 
         if ($enroll) {
-            return redirect()->route('course.detail', $enroll->id)->with('success', 'You enrolled in a new course.');
+            return redirect()->back();
+        } else {
+            return redirect()->back()->with('error', 'Failed to enroll in the course.');
+        }
+    }
+
+    public function FreePayment(Request $request){
+        $data = $request->validate([
+            'course_id' => 'required',
+            'amount' => 'required|integer'
+        ]);
+
+        // Create the enrollment record
+        $enroll = CourseEnrollUser::create([
+            'user_id' => auth()->id(),
+            'course_id' => $data['course_id'],
+            'amount' => $data['amount'],
+            'payment_type' => CoursePaymentTypeEnums::FREE->value,
+        ]);
+
+        if ($enroll) {
+            return redirect()->back();
         } else {
             return redirect()->back()->with('error', 'Failed to enroll in the course.');
         }

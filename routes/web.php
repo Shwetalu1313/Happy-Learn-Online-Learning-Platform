@@ -19,6 +19,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ExerciseController;
 
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
@@ -138,6 +139,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('lesson/{lesson_id}/review', [LessonController::class, 'showAtAdmin'])->name('lesson.review');
         Route::any('lesson/{course_id}/createForm', [LessonController::class, 'createForm'])->name('lesson.createForm');
         Route::resource('lesson', LessonController::class);
+        Route::post('exercise/restore/{exercise_id}',[ExerciseController::class, 'restore'])->name('exercise.restore');
+        Route::delete('exercise/force_del/{exercise_id}',[ExerciseController::class, 'forceDelete'])->name('exercise.force_del');
+        Route::resource('exercise', ExerciseController::class);
     });
 
     Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function() {
@@ -151,11 +155,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('{course_id}/detail', [PageController::class, 'courseDetail'])->name('course.detail')->middleware('enrolled');
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
         Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
+        Route::post('freePayment', [CourseEnrollController::class, 'FreePayment'])->name('course.freePayment');
     });
 
 });
 
-
+Route::get('exercise/create',[PageController::class, 'createQuestion'])->name('create.exercise');
 //language switching
 Route::post('/language-switch', [LanguageController::class, 'languageSwitch'])->name('language.switch');
 

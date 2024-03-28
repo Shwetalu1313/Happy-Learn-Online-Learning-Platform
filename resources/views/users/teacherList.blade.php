@@ -12,7 +12,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-3">
             @foreach($teachers as $teacher)
                 <div class="col mb-3">
-                    <div class="card">
+                    <div class="card hover-border-success" onclick="window.location.href='{{ url('profile/'. $teacher->id) }}'" style="cursor: pointer;">
                         <div class="card-body text-center d-flex flex-column justify-content-center">
                             <img src="{{asset('storage/'.$teacher->avatar)}}" class="img-fluid mx-auto mb-3" style="max-height: 200px;">
                             <h4>{{$teacher->name}}</h4>

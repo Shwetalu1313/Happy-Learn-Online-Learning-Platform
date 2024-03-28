@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
-                <div class="card">
+                <div class="card" >
                     <div class="card-body success-dark-gradient " style=" border-radius: 10px; padding: 20px;">
                         <h3 class="text-center text-light"><strong>My Courses</strong></h3><br>
                         <div class="d-flex align-items-center justify-content-center coolHover" style="background-color: #e9ecef; border-radius: 8px; padding: 10px; cursor: pointer" onclick="window.location.href = '{{route('course.index')}}'">

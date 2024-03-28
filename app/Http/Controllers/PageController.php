@@ -93,4 +93,10 @@ class PageController extends Controller
         $course = Course::findOrFail($id);
         return view('course.enroll.courseDetail', compact('titlePage', 'course'));
     }
+
+    public static function createQuestion(){
+        $titlePage = __('exercise.pg_title');
+        return view('exercise.createQuestion', compact('titlePage'));
+    }
 }
+

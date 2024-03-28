@@ -50,7 +50,7 @@
                                 {{$index + 1}} {{-- Other ranks --}}
                             @endif
                         </td>
-                        <td>{{$student->name}}</td>
+                        <td onclick="window.location.href='{{ url('profile/'. $student->id) }}'">{{$student->name}}</td>
                         <td class="text-end text-warning pe-lg-5" >{{$student->points}}</td>
                     </tr>
                     @if ($index === 9)

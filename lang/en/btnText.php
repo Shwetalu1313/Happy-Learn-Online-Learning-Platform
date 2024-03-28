@@ -15,4 +15,6 @@ return [
     'share' => 'Share',
     'enroll' => 'Enroll',
     'confirm' => 'Confirm',
+    'create' => 'Create',
+    'close' => 'Close',
 ];

@@ -12,7 +12,7 @@
         </div>
     @endif
     <section class="section profile {{is_active_route_val('user.profile', 'container','')}}">
-        <div class="row">
+        <div class="row {{is_active_route_val('user.profile', 'p-5','')}}">
             <div class="col-xl-4">
 
                 <div class="card">
