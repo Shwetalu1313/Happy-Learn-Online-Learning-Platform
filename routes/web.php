@@ -4,6 +4,7 @@
 use App\Enums\UserRoleEnums;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseEnrollController;
@@ -142,6 +143,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('exercise/restore/{exercise_id}',[ExerciseController::class, 'restore'])->name('exercise.restore');
         Route::delete('exercise/force_del/{exercise_id}',[ExerciseController::class, 'forceDelete'])->name('exercise.force_del');
         Route::resource('exercise', ExerciseController::class);
+        Route::post('question/{exercise}', [QuestionController::class, 'storeQuestion'])->name('question.storeQuestion');
+        Route::resource('question', QuestionController::class);
     });
 
     Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function() {
@@ -160,7 +163,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
 });
 
-Route::get('exercise/create',[PageController::class, 'createQuestion'])->name('create.exercise');
+
 //language switching
 Route::post('/language-switch', [LanguageController::class, 'languageSwitch'])->name('language.switch');
 

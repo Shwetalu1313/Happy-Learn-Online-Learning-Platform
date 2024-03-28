@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -20,6 +21,11 @@ class Exercise extends Model
     public function Lessons(): BelongsTo
     {
         return $this->belongsTo(Lesson::class, 'lesson_id');
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class,'question_id');
     }
 
     public static function createExercise(string $content, $lesson_id)
@@ -68,6 +74,15 @@ class Exercise extends Model
 
             return true; // Indicate success
         });
+    }
+
+    public function updateExercise($id, $content)
+    {
+        $exercise = Exercise::findOrFail($id);
+        $exercise->content = $content;
+        $exercise->save();
+
+        return $exercise;
     }
 
     public function restoreExercise($id)

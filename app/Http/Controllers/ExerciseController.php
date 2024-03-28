@@ -39,20 +39,24 @@ class ExerciseController extends Controller
     {
         $data = $request->validate(['content' => 'required|string']);
 
-        $exercise = Exercise::createExercise($data['content'],$request->lesson_id);
+        $exercise_data = Exercise::createExercise($data['content'], $request->lesson_id);
 
-        if ($exercise){
-            dd($exercise->id . ' is created');
+        if ($exercise_data) {
+            return redirect()->route('exercise.show',[$exercise_data->id])->with(['success' => 'You created a new exercise']);
+        } else {
+            return redirect()->back()->with('error', 'Failed to create exercise');
         }
-        else dd('fail');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        $exercise = Exercise::findOrFail($id);
+        $titlePage = $exercise->title;
+        return view('exercise.createQuestion', compact('exercise', 'titlePage'));
     }
 
     /**
@@ -68,7 +72,12 @@ class ExerciseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $exercise = $this->exercise->updateExercise($id, $request->input('content'));
+            return redirect()->back()->with('success', 'Exercise updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update exercise: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -80,7 +89,7 @@ class ExerciseController extends Controller
             $this->exercise->destroyExercise($id);
             return redirect()->back()->with('success', 'Exercise deleted successfully and numbering updated.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete exercise: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete exercise: ');
         }
     }
 
@@ -90,7 +99,7 @@ class ExerciseController extends Controller
             $this->exercise->forceDeleteExercise($id);
             return redirect()->back()->with('success', 'Exercise was deleted permanently and numbering updated.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete exercise: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete exercise: ' );
         }
     }
 
@@ -100,7 +109,7 @@ class ExerciseController extends Controller
             $this->exercise->restoreExercise($id);
             return redirect()->back()->with('success', 'Exercise restored successfully and numbering updated.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete exercise: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to restore exercise: ' );
         }
     }
 }

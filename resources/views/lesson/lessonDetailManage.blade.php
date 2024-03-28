@@ -100,7 +100,7 @@
             @foreach($exercises as $i => $exercise)
                 <tr>
                     <td class="text-primary-emphasis text-center">{{$i+1}}</td>
-                    <td class="text-primary-emphasis text-center">{{$exercise->title}}</td>
+                    <td class="text-primary-emphasis text-center"><a href="{{route('exercise.show',[$exercise->id])}}">{{$exercise->title}}</a></td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('Y/m/d') }}</td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('H:i:s') }}</td>
                     <td class="text-center">
