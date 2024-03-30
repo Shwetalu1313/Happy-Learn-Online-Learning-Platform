@@ -25,7 +25,11 @@ class Exercise extends Model
 
     public function questions(): HasMany
     {
-        return $this->hasMany(Question::class,'question_id');
+        return $this->hasMany(Question::class,'exercise_id');
+    }
+
+    public function user_answers(): HasMany {
+        return $this->hasMany(UserAnswer::class,'exercise_id');
     }
 
     public static function createExercise(string $content, $lesson_id)

@@ -34,36 +34,6 @@
             {{--end alert--}}
 
 
-            <form action="{{ route('exercise.update', $exercise->id) }}" class="mb-3" method="post" id="exercise_form">
-                @csrf
-                @method('PUT')
-                <input class="form-control mb-3" type="text" name="content" id="exercise_content_input" value="{{ $exercise->content }}">
-                <button type="submit" id="update_button" class="btn btn-primary d-none mb-3">{{ __('btnText.update') }}</button>
-            </form>
-            <script>
-                const contentInput = document.getElementById('exercise_content_input');
-                const updateButton = document.getElementById('update_button');
-                const originalValue = contentInput.value;
-
-                contentInput.addEventListener('input', function (){
-                    // If input field value changes and it's different from the original value, show the submit button
-                    if (contentInput.value !== originalValue) {
-                        updateButton.classList.remove('d-none');
-                    } else {
-                        // If input field value is the same as the original value, hide the submit button
-                        updateButton.classList.add('d-none');
-                    }
-                })
-
-                document.getElementById('exercise_form').addEventListener('submit', function() {
-                    // Before form submission, hide the submit button
-                    updateButton.classList.add('d-none');
-                });
-            </script>
-
-            <hr>
-            {{--exercise update form--}}
-
             <form action="{{route('question.storeQuestion', $exercise)}}" method="post" id="question_store_form">
                 @csrf
                 @method('POST')

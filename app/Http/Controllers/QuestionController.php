@@ -89,7 +89,7 @@ class QuestionController extends Controller
         }
 
 
-        return redirect()->back()->with('success', 'Question created successfully!');
+        return redirect()->route('exercise.show',[$exercise->id])->with('success', 'Question created successfully!');
     }
 
     private function saveMultipleChoiceAnswers(Question $question, array $answers, array $correctAnswers)
@@ -108,13 +108,70 @@ class QuestionController extends Controller
         }
     }
 
+    public function updateQuestion(Request $request, Question $question, $exercise_id)
+    {
+        $validatedData = $request->validate([
+            'question_text' => 'required',
+            'question_type' => 'required',
+            'answers.*' => 'nullable|string', // Allow null for non-selected answers
+            'correct_answers.*' => 'nullable', // Allow null for non-selected correct answers
+            'correct_answer' => 'nullable'
+        ]);
+
+        $question->update([
+            'text' => $validatedData['question_text'],
+            'question_type' => $validatedData['question_type'],
+        ]);
+
+        // Handle answer data based on question type:
+        if ($question->question_type === QuestionTypeEnums::MULTIPLE_CHOICE) {
+            $answers = array_slice($validatedData['answers'], 1);
+            $correctAnswers = $validatedData['correct_answers'];
+
+            $question->answers()->delete(); // Delete existing answers before updating
+
+            foreach ($answers as $key => $answerText) {
+                // Check if the current answer index is in the array of correct answers indices
+                $isCorrect = in_array($key, $correctAnswers);
+                $question->answers()->create([
+                    'text' => $answerText,
+                    'is_correct' => (bool)$isCorrect, // Convert the result to boolean
+                ]);
+            }
+        } elseif ($question->question_type === QuestionTypeEnums::BLANK) {
+            $answer = $question->answers->first(); // Assuming there's only one answer for blank type
+            $answer->update([
+                'text' => $validatedData['answers'][0] ?? '' // Use first answer if provided, otherwise empty string
+            ]);
+        } elseif ($question->question_type === QuestionTypeEnums::TRUEorFALSE) {
+            // Update both True and False answer options for True/False questions
+            $trueAnswer = $question->answers->where('text', QuestionTypeEnums::TRUE->value)->first();
+            $falseAnswer = $question->answers->where('text', QuestionTypeEnums::FALSE->value)->first();
+            if ($validatedData['correct_answer'] === QuestionTypeEnums::TRUE->value) {
+                $trueAnswer->update(['is_correct' => true]);
+                $falseAnswer->update(['is_correct' => false]);
+            } else {
+                $trueAnswer->update(['is_correct' => false]);
+                $falseAnswer->update(['is_correct' => true]);
+            }
+        }
+
+        // Handle errors (if any) during question/answer update
+        if ($question->errors) {
+            return back()->withErrors($question->errors)->withInput();  // Redirect back with errors and form data
+        }
+
+        return redirect()->route('exercise.show', $exercise_id)->with('success', 'Question updated successfully!');
+    }
+
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -122,7 +179,9 @@ class QuestionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $question = Question::findOrFail($id);
+        $titlePage = $question->exercise->title.'| Question Update';
+        return view('exercise.updateQuestion', compact('titlePage', 'question'));
     }
 
     /**

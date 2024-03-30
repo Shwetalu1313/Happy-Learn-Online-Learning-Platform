@@ -142,7 +142,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::resource('lesson', LessonController::class);
         Route::post('exercise/restore/{exercise_id}',[ExerciseController::class, 'restore'])->name('exercise.restore');
         Route::delete('exercise/force_del/{exercise_id}',[ExerciseController::class, 'forceDelete'])->name('exercise.force_del');
+        Route::get('question/{exercise_id}/form', [ExerciseController::class, 'showQuestionCreateForm'])->name('question.show.form');
         Route::resource('exercise', ExerciseController::class);
+        Route::put('question/{question}/{exercise_id}', [QuestionController::class, 'updateQuestion'])->name('question.updateQuestion');
         Route::post('question/{exercise}', [QuestionController::class, 'storeQuestion'])->name('question.storeQuestion');
         Route::resource('question', QuestionController::class);
     });
@@ -159,6 +161,15 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
         Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
         Route::post('freePayment', [CourseEnrollController::class, 'FreePayment'])->name('course.freePayment');
+    });
+
+    //Exercises
+    Route::group(['prefix' => 'exercise'], function (){
+        Route::get('list/{id}', [ExerciseController::class, 'showExerciseList'])->name('exercise.list');
+        Route::get('{exercise}/questions_learner_form', [ExerciseController::class, 'showToLearners'])->name('exercise.questions_learner_form');
+        Route::post('{exercise}/submit_answer', [ExerciseController::class, 'submitAnswers'])->name('exercise.submit');
+        Route::get('/{exercise}/answer-form', [ExerciseController::class, 'answerForm'])->name('exercise.answer_form');
+        //Route::get('/exercise/{exercise}/result', [ExerciseController::class, 'answerForm'])->name('exercise.result');
     });
 
 });

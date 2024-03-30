@@ -22,6 +22,10 @@ class Question extends Model
 
     public function answers(): HasMany
     {
-        return $this->hasMany(Answer::class);
+        return $this->hasMany(Answer::class,'question_id');
+    }
+
+    public function user_answers(): HasMany {
+        return $this->hasMany(UserAnswer::class,'question_id');
     }
 }

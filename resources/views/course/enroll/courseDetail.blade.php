@@ -27,9 +27,12 @@
         @endif
         {{--end alert--}}
 
-        <button class="btn btn-outline-primary mb-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLesson" aria-controls="offcanvasLesson">
-            <i class="bi bi-file-earmark-image"></i> {{__('lesson.title')}}
-        </button>
+        <div class="d-flex flex-row align-items-baseline">
+            <button class="btn btn-outline-primary mb-5 me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLesson" aria-controls="offcanvasLesson">
+                <i class="bi bi-file-earmark-image"></i> {{__('lesson.title')}}
+            </button>
+        </div>
+
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasLesson" aria-labelledby="Lesson List">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title text-info-emphasis" id="offcanvasLessonlebel">{{__('lesson.title')}}</h5>
@@ -38,7 +41,7 @@
             <div class="offcanvas-body">
                 <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     @foreach($course->lessons as $lesson)
-                        <button class="nav-link @if($loop->first) active @endif" id="lesson-{{ $loop->index }}-tab" data-bs-toggle="pill" data-bs-target="#lesson-{{ $loop->index }}" type="button" role="tab" aria-controls="lesson-{{ $loop->index }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">{{ $lesson->title }}</button>
+                        <button class="nav-link @if($loop->first) active @endif" id="lesson-{{ $lesson->id }}-tab" data-bs-toggle="pill" data-bs-target="#lesson-{{ $lesson->id }}" type="button" role="tab" aria-controls="lesson-{{ $lesson->id }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">{{ $lesson->title }}</button>
                     @endforeach
                 </div>
             </div>
@@ -46,13 +49,20 @@
 
         {{-- Body --}}
         <h3 class="text-info-emphasis text-center">{{$course->title}}</h3>
+
+        {{-- Exercise List Button --}}
+{{--            <button class="btn btn-secondary mb-3 btn-redirect-exercise" data-lesson-id="{{ $lesson->id }}">{{__('exercise.pg_title')}}</button>--}}
+
         <div class="tab-content" id="v-pills-tabContent">
             @foreach($course->lessons as $lesson)
-                <div class="tab-pane fade @if($loop->first) show active @endif" id="lesson-{{ $loop->index }}" role="tabpanel" aria-labelledby="lesson-{{ $loop->index }}-tab" tabindex="0">
+                <div class="tab-pane fade @if($loop->first) show active @endif" id="lesson-{{ $lesson->id }}" role="tabpanel" aria-labelledby="lesson-{{ $lesson->id }}-tab" tabindex="0">
                     <div class="card">
+                        {{-- Exercise List Button --}}
+                            <button class="btn btn-secondary mb-3 w-25 m-3" onclick="window.location='{{url('exercise/list/'.$lesson->id)}}' ">{{__('exercise.pg_title')}}</button>
+
                         <div class="card-body">
                             <h5 class="card-title">{{ $lesson->title }}</h5>
-                            <div class="ql-editor lesson-body-{{ $loop->index }}"></div>
+                            <div class="ql-editor lesson-body-{{ $lesson->id }}"></div>
                         </div>
                     </div>
                 </div>
@@ -69,9 +79,12 @@
         }
 
         $(document).ready(function () {
+
+            // Populate lesson bodies
             @foreach($course->lessons as $lesson)
-            $('.lesson-body-{{ $loop->index }}').html(decodeHtml("{{ $lesson->body }}"));
+            $('.lesson-body-{{ $lesson->id }}').html(decodeHtml("{{ $lesson->body }}"));
             @endforeach
         });
+
     </script>
 @endsection

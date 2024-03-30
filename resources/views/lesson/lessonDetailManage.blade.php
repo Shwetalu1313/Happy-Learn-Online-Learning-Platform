@@ -5,7 +5,7 @@
         use App\Models\Lesson;
 
         $exercises = $lesson->exercises;
-        $delete_exercises = Exercise::onlyTrashed()->get();
+$delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->get();
     @endphp
     <div class="card">
         <div class="card-body p-3">
@@ -69,7 +69,7 @@
                 </div>
             @endif
             {{--end alert--}}
-            <div id="lesson-body"></div>
+            <div class="ql-editor" id="lesson-body"></div>
 
             <form method="POST" action="{{ route('lesson.update', $lesson->id) }}" id="lesson-form" style="display: none;">
                 @csrf
@@ -91,6 +91,7 @@
                 <tr>
                     <th class="text-center text-primary-emphasis"><strong>NO.</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Title</strong></th>
+                    <th class="text-center text-primary-emphasis"><strong>Total Exercises</strong></th>
                     <th class="text-center text-primary-emphasis" data-type="date" data-format="YYYY/DD/MM"><strong>Created Date</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Created Time</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Action</strong></th>
@@ -101,6 +102,7 @@
                 <tr>
                     <td class="text-primary-emphasis text-center">{{$i+1}}</td>
                     <td class="text-primary-emphasis text-center"><a href="{{route('exercise.show',[$exercise->id])}}">{{$exercise->title}}</a></td>
+                    <td class="text-primary-emphasis text-center">{{$exercise->questions->count()}}</td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('Y/m/d') }}</td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('H:i:s') }}</td>
                     <td class="text-center">
@@ -142,6 +144,7 @@
             <tr>
                 <th class="text-center text-primary-emphasis"><strong>NO.</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Title</strong></th>
+                <th class="text-center text-primary-emphasis"><strong>Total Exercises</strong></th>
                 <th class="text-center text-primary-emphasis" data-type="date" data-format="YYYY/DD/MM"><strong>Created Date</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Created Time</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Action</strong></th>
@@ -152,6 +155,7 @@
                 <tr>
                     <td class="text-primary-emphasis text-center">{{$i+1}}</td>
                     <td class="text-primary-emphasis text-center">{{$exercise->title}}</td>
+                    <td class="text-primary-emphasis text-center">{{$exercise->questions->count()}}</td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('Y/m/d') }}</td>
                     <td class="text-primary-emphasis text-center">{{ \Carbon\Carbon::parse($exercise->created_at)->format('H:i:s') }}</td>
                     <td class="text-center">
