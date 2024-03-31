@@ -15,6 +15,10 @@ class Category extends Model
     protected $table = 'categories';
     protected $hidden = ['id'];
 
+    public static function getModelName(): string
+    {
+        return 'Category';
+    }
 
     public function sub_categories(): HasMany{
         return $this->hasMany(SubCategory::class);

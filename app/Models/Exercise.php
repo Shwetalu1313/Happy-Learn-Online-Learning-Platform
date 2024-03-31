@@ -18,6 +18,11 @@ class Exercise extends Model
 
     protected $fillable = ['title', 'content', 'lesson_id'];
 
+    public static function getModelName(): string
+    {
+        return 'Exercise';
+    }
+
     public function Lessons(): BelongsTo
     {
         return $this->belongsTo(Lesson::class, 'lesson_id');

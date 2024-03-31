@@ -58,7 +58,11 @@
                 <div class="tab-pane fade @if($loop->first) show active @endif" id="lesson-{{ $lesson->id }}" role="tabpanel" aria-labelledby="lesson-{{ $lesson->id }}-tab" tabindex="0">
                     <div class="card">
                         {{-- Exercise List Button --}}
-                            <button class="btn btn-secondary mb-3 w-25 m-3" onclick="window.location='{{url('exercise/list/'.$lesson->id)}}' ">{{__('exercise.pg_title')}}</button>
+                        <div>
+                            <button class="btn btn-secondary mb-3 m-3 me-3" onclick="window.location='{{url('exercise/list/'.$lesson->id)}}' ">{{__('exercise.pg_title')}}</button>
+                            <button class="btn btn-secondary mb-3 m-3" onclick="window.location='{{route('forums',$lesson)}}' ">{{__('Discussion')}}</button>
+                        </div>
+
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $lesson->title }}</h5>

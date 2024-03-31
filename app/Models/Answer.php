@@ -13,6 +13,11 @@ class Answer extends Model
 
     protected $fillable = ['question_id','text','is_correct'];
 
+    public static function getModelName(): string
+    {
+        return 'Answer';
+    }
+
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class, 'question_id');

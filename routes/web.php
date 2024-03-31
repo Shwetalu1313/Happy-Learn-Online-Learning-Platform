@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\ForumController;
+use App\Http\Controllers\CommentController;
 
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
@@ -170,6 +172,16 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('{exercise}/submit_answer', [ExerciseController::class, 'submitAnswers'])->name('exercise.submit');
         Route::get('/{exercise}/answer-form', [ExerciseController::class, 'answerForm'])->name('exercise.answer_form');
         //Route::get('/exercise/{exercise}/result', [ExerciseController::class, 'answerForm'])->name('exercise.result');
+    });
+
+    //Forum
+    Route::group(['prefix' => 'forum'], function (){
+        Route::get('{lesson}', [ForumController::class, 'showForumList'])->name('forums');
+        Route::post('', [ForumController::class, 'store'])->name('forums.store');
+        Route::delete('{forum}', [ForumController::class, 'destroy'])->name('forums.destroy');
+
+        Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+        Route::delete('/{comment}/comments', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
 
 });

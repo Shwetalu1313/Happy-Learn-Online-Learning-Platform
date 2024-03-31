@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Question extends Model
 {
     use HasFactory;
+    public static function getModelName(): string
+    {
+        return 'Question';
+    }
 
     protected $fillable = ['exercise_id', 'text', 'question_type'];
 

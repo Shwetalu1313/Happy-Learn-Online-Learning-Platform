@@ -16,6 +16,11 @@ class SubCategory extends Model
     protected $table = 'sub_categories';
     protected $hidden = ['id'];
 
+    public static function getModelName(): string
+    {
+        return 'SubCategory';
+    }
+
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class,'category_id','id');

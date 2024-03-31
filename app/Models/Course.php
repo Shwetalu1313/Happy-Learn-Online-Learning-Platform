@@ -15,6 +15,11 @@ class Course extends Model
 
     protected $fillable = ['title', 'description', 'image', 'courseType', 'fees', 'state', 'createdUser_id', 'approvedUser_id', 'sub_category_id'];
 
+    public static function getModelName(): string
+    {
+        return 'Course';
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'createdUser_id', 'id');

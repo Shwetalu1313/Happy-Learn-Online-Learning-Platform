@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\UserRoleEnums;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +26,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = ['name','email','phone','birthdate','points','avatar','role','about','password'];
 
     protected $table = 'users';
+
+    public static function getModelName(): string
+    {
+        return 'User';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -83,5 +89,43 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function forum(): HasMany {
         return $this->hasMany(Comment::class,'user_id');
+    }
+
+    public function systemActivities(): HasMany
+    {
+        return $this->hasMany(SystemActivity::class,'user_id');
+    }
+
+    /**
+     * Get the registration count and rate for the last three months.
+     *
+     * @return array
+     */
+    public static function usersRegisterCount()
+    {
+        $currentMonth = Carbon::now()->startOfMonth();
+        $previousThreeMonths = Carbon::now()->subMonths(3)->startOfMonth();
+
+        // Count of registrations in the current month
+        $currentMonthCount = self::whereBetween('created_at', [$currentMonth, Carbon::now()->endOfMonth()])->count();
+
+        // Count of registrations in the last three months
+        $previousThreeMonthsCount = self::whereBetween('created_at', [$previousThreeMonths, $currentMonth])->count();
+
+        // Calculate percentage change
+        $percentageChange = 0;
+        if ($previousThreeMonthsCount != 0) {
+            $percentageChange = (($currentMonthCount - $previousThreeMonthsCount) / $previousThreeMonthsCount) * 100;
+        }
+
+        // Determine if the registration rate increased or decreased
+        $increased = $currentMonthCount > $previousThreeMonthsCount;
+
+        return [
+            'current_month_count' => $currentMonthCount,
+            'previous_three_months_count' => $previousThreeMonthsCount,
+            'percentage_change' => $percentageChange,
+            'increased' => $increased,
+        ];
     }
 }

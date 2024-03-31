@@ -8,6 +8,7 @@
         function isCreatorOfAdmin($course){
             return Auth::id() === $course->createdUser_id || Auth::user()->role->value === UserRoleEnums::ADMIN->value;
         }
+
     @endphp
     <div class="row">
         <div class="col-lg-12">
@@ -47,6 +48,7 @@
                             <th class="text-center"><b>{{__('course.label_name')}}</b></th>
                             <th class="text-center"><b>{{__('course.label_type')}}</b></th>
                             <th class="text-center"><b>{{__('course.label_state')}}</b></th>
+                            <th class="text-center"><b>{{__('total enrolls')}}</b></th>
                             <th class="text-center"><b>{{__('course.label_fee')}}</b></th>
                             <th class="text-center"><b>{{__('course.label_creator')}}</b></th>
                             <th class="text-center"><b>{{__('course.label_approver')}}</b></th>
@@ -78,6 +80,7 @@
                                         <span class="badge text-bg-success">{{__('course.label_state_app')}}</span>
                                     @endif
                                 </td>
+
 
                                 <td class="text-end"><strong>{{ $course->fees }} ks</strong></td>
 

@@ -11,5 +11,10 @@ class JobPost extends Model
 
     protected $fillable = ['title','requirements'];
 
+    public static function getModelName(): string
+    {
+        return 'JobPost';
+    }
+
     protected $guarded = [];
 }

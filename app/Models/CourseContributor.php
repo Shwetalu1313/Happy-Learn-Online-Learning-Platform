@@ -12,6 +12,11 @@ class CourseContributor extends Model
 
     protected $fillable = ['user_id','course_id'];
 
+    public static function getModelName(): string
+    {
+        return 'CourseContributor';
+    }
+
     public function course(): BelongsTo{
         return $this->belongsTo(Course::class,'course_id');
     }

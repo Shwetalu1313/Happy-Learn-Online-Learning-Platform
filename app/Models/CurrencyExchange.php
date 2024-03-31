@@ -11,6 +11,11 @@ class CurrencyExchange extends Model
 
     protected $fillable = ['us_ex','pts_ex'];
 
+    public static function getModelName(): string
+    {
+        return 'CurrencyExchange';
+    }
+
     protected $casts = [
         'us_ex' => 'integer','pts_ex' => 'integer'
     ];

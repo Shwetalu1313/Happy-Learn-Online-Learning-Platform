@@ -12,6 +12,11 @@ class Comment extends Model
 
     protected $fillable = ['text','forum_id','user_id'];
 
+    public static function getModelName(): string
+    {
+        return 'Comment';
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id');
