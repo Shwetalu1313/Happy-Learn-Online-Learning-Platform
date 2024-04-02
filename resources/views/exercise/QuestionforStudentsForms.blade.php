@@ -44,7 +44,7 @@
                             @foreach($exercise->questions as $question)
                                 <div class="card mb-3">
                                     <div class="card-body">
-                                        <h4 class="text-secondary">{{$question->text}}</h4>
+                                        <h4 class="">{{$question->text}}</h4>
                                         @if($question->question_type === App\Enums\QuestionTypeEnums::BLANK)
                                             <input type="text" name="answers[{{$question->id}}]" class="form-control mb-3">
                                         @else

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
+use App\Models\SystemActivity;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route as CurRoute;
@@ -84,8 +86,22 @@ class UserController extends Controller
         ]);
 
         $user = User::findOrFail($id);
-        $user->update($request->only(['role']));
-        return redirect()->back()->with('success', __('jobapplication.job_update_alert'));
+        if ($user->update($request->only(['role']))){
+            $systemActivity = [
+                'table_name' => User::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => $user->mail .' role was updated to '. $request->role .'.' ,
+                'about' => $user->mail .' role was updated to '. $request->role .' by '. \auth()->mail ,
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', __('jobapplication.job_update_alert'));
+        }
+        else return redirect()->back()->with('success','Fail to update role of User ('.$user->mail.')');
     }
     public function updateProfile(Request $request)
     {
@@ -135,6 +151,18 @@ class UserController extends Controller
         }
         $user->update($validatedData);
 
+        $systemActivity = [
+            'table_name' => User::getModelName(),
+            'ip_address' => $request->getClientIp(),
+            'user_agent' => $request->userAgent(),
+            'user_id' => auth()->id(),
+            'short' => 'Profile was updated.',
+            'about' => 'Updated these data ',
+            'target' => null,
+            'route_name' => $request->route()->getName(),
+        ];
+        SystemActivity::createActivity($systemActivity);
+
         return redirect()->back()->with('success', __('jobapplication.job_update_alert'));
     }
 
@@ -154,6 +182,18 @@ class UserController extends Controller
         }
 
         $user->update(['password' => Hash::make($request->newPassword)]);
+
+            $systemActivity = [
+                'table_name' => User::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'Password Changed.',
+                'about' => 'Password was changed by '.$user->name,
+                'target' => null,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
 
         return redirect()->back()->with('success', 'Password changed successfully');
     }

@@ -38,8 +38,8 @@ class CourseFactory extends Factory
                 $excludedIds = [$attributes['createdUser_id']];
                 return $this->faker->randomElement(array_diff($teacherAdminIds, $excludedIds));
             },
-            'sub_category_id' => rand(1,75),
-            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'sub_category_id' => rand(1,15),
+            'created_at' => $this->faker->dateTimeBetween('-5 month', 'now'),
         ];
     }
 }

@@ -7,19 +7,20 @@
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
-
+        @if($authUser === UserRoleEnums::ADMIN->value)
         <li class="nav-item" >
             <a class="nav-link collapsed {{is_active_route('dashboard')}}" href="{{route('dashboard')}}">
                 <i class="bi bi-grid" ></i>
                 <span >{{__('nav.dashboard')}}</span>
             </a>
         </li><!-- End Dashboard Nav -->
+        @endif
 
         @if($authUser === UserRoleEnums::ADMIN->value || $authUser === UserRoleEnums::TEACHER->value)
             <li class="nav-heading">{{__('nav.import_data')}}</li>
             <li class="nav-item">
-                <a class="nav-link {{is_active_route(['course.create','course.index','course.show'])}}" data-bs-target="#course" data-bs-toggle="collapse" href="#">
-                    <i class="bi {{is_active_route_val(['course.create','course.index','course.show'], 'bi-journal-bookmark-fill active','bi-journal-bookmark')}}"></i>
+                <a class="nav-link {{is_active_route(['course.create','course.index','course.show', 'enroll.list'])}}" data-bs-target="#course" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val(['course.create','course.index','course.show', 'enroll.list'], 'bi-journal-bookmark-fill active','bi-journal-bookmark')}}"></i>
                     <span>{{__('course.title')}}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="course" class="nav-content collapse {{is_active_route_val(['course.create'], 'show', '')}}" data-bs-parent="#sidebar-nav">
@@ -29,6 +30,9 @@
                         </a>
                         <a href="{{route('course.index')}}" class="{{is_active_route('course.index')}}">
                             <i class="bi bi-circle"></i><span>{{__('course.list_title')}}</span>
+                        </a>
+                        <a href="{{route('enroll.list')}}" class="{{is_active_route('enroll.list')}}">
+                            <i class="bi bi-circle"></i><span>{{__('Course Enroll Users')}}</span>
                         </a>
                     </li>
 
@@ -143,6 +147,17 @@
                 </li>
             </ul>
         </li><!-- End Job Page Nav -->
+        @endif
+
+        @if($authUser === UserRoleEnums::ADMIN->value)
+            <li class="nav-heading">{{__('Log')}}</li>
+
+                    <li class="nav-item" >
+                        <a class="nav-link collapsed {{is_active_route('activities')}}" href="{{route('activities')}}">
+                            <i class="bi bi-gear-wide-connected"></i>
+                            <span >{{__('Activities Logs')}}</span>
+                        </a>
+                    </li><!-- End Dashboard Nav -->
         @endif
     </ul>
 

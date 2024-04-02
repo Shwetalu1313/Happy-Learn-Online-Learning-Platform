@@ -39,6 +39,7 @@ class LoginController extends Controller
         // Retrieve the authenticated user
         $user = auth()->user();
 
+
         // Check if the user is an admin
         if ($user && $user->role === UserRoleEnums::ADMIN) {
             return route('dashboard'); // Redirect admin to admin dashboard

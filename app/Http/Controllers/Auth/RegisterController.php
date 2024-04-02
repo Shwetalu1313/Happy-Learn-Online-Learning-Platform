@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRoleEnums;
 use App\Http\Controllers\Controller;
+use App\Models\SystemActivity;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Image;
 
@@ -68,7 +71,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(array $data, Request $request)
     {
         $validatedData = $this->validator($data)->validate();
 
@@ -83,6 +86,20 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'about' => '',
         ]);
+
+        if ($user){
+            $systemActivity = [
+                'table_name' => User::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'New User Created.' ,
+                'about' => $user->mail . ' is just created.' ,
+                'target' => null,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+        }
 
         event(new Registered($user));
         // $this->sendEmailVerificationNotification($user);

@@ -38,7 +38,7 @@ class CourseContributorFactory extends Factory
                     return $this->faker->randomElement($teacherAdminIds);
                 }
             },
-            'course_id' => $this->faker->numberBetween(1, 50),
+            'course_id' => $this->faker->numberBetween(1, 20),
         ];
     }
 }

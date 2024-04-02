@@ -34,7 +34,7 @@ class LessonFactory extends Factory
 
                 return $creatorId;
             },
-            'course_id' => fake()->numberBetween(1,50), // You can adjust this according to your database schema
+            'course_id' => fake()->numberBetween(1,20), // You can adjust this according to your database schema
         ];
     }
 }

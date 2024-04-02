@@ -67,6 +67,7 @@ Route::get('users/teachers', [PageController::class, 'teacherLists'])->name('use
 
 //course
 Route::get('course/{course_id}/enroll', [PageController::class, 'CourseEnroll'])->name('course.enroll');
+Route::get('/list/learner', [PageController::class, 'showCourses'])->name('course.list.learners');
 
 //home
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -149,6 +150,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::put('question/{question}/{exercise_id}', [QuestionController::class, 'updateQuestion'])->name('question.updateQuestion');
         Route::post('question/{exercise}', [QuestionController::class, 'storeQuestion'])->name('question.storeQuestion');
         Route::resource('question', QuestionController::class);
+        Route::get('enroll/list', [CourseEnrollController::class, 'ListPage'])->name('enroll.list');
     });
 
     Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function() {
@@ -163,6 +165,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
         Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
         Route::post('freePayment', [CourseEnrollController::class, 'FreePayment'])->name('course.freePayment');
+        Route::delete('enroll/delete', [CourseEnrollController::class, 'deleteEnroll'])->name('enroll.delete');
     });
 
     //Exercises
@@ -171,7 +174,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('{exercise}/questions_learner_form', [ExerciseController::class, 'showToLearners'])->name('exercise.questions_learner_form');
         Route::post('{exercise}/submit_answer', [ExerciseController::class, 'submitAnswers'])->name('exercise.submit');
         Route::get('/{exercise}/answer-form', [ExerciseController::class, 'answerForm'])->name('exercise.answer_form');
-        //Route::get('/exercise/{exercise}/result', [ExerciseController::class, 'answerForm'])->name('exercise.result');
     });
 
     //Forum
@@ -183,6 +185,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
         Route::delete('/{comment}/comments', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
+
+    //Activities
+    Route::get('activities/log', [PageController::class, 'showAllActivities'])->name('activities')->middleware('isAdmin');
 
 });
 

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
 use App\Models\Jobpost;
+use App\Models\SystemActivity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Validator;
@@ -58,6 +60,19 @@ class JobPostController extends Controller
 
 
         if ($job) {
+
+            $systemActivity = [
+                'table_name' => Jobpost::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new job was created. position - ' . $job->title,
+                'about' => 'A new job was created. position - ' . $job->title .'by '. auth()->user()->name,
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
             return redirect()->route('job.show', $job->id)->with('success', 'Job created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create job.');
@@ -92,6 +107,19 @@ class JobPostController extends Controller
 
         $job = JobPost::findOrFail($id);
         $job->update($request->only(['title', 'requirements']));
+
+        $systemActivity = [
+            'table_name' => Jobpost::getModelName(),
+            'ip_address' => $request->getClientIp(),
+            'user_agent' => $request->userAgent(),
+            'user_id' => auth()->id(),
+            'short' => $job->title . ' position was updated.',
+            'about' => $job->title . ' position was updated.',
+            'target' => UserRoleEnums::ADMIN,
+            'route_name' => $request->route()->getName(),
+        ];
+        SystemActivity::createActivity($systemActivity);
+
         return redirect()->back()->with('success', __('jobapplication.job_update_alert'));
     }
 
@@ -100,11 +128,22 @@ class JobPostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         // Delete the job post
         $jobpost = JobPost::findOrFail($id);
         $jobpost->delete();
+        $systemActivity = [
+            'table_name' => Jobpost::getModelName(),
+            'ip_address' => $request->getClientIp(),
+            'user_agent' => $request->userAgent(),
+            'user_id' => auth()->id(),
+            'short' => $jobpost->title . 'position was deleted.',
+            'about' => $jobpost->title . 'position was deleted.',
+            'target' => UserRoleEnums::ADMIN,
+            'route_name' => $request->route()->getName(),
+        ];
+        SystemActivity::createActivity($systemActivity);
         return redirect()->back()->with('success', 'Deleted successfully.');
     }
 

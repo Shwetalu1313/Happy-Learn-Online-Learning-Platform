@@ -30,10 +30,6 @@ class Course extends Model
         return $this->belongsTo(User::class, 'approvedUser_id', 'id');
     }
 
-    public function sub_category(): BelongsTo
-    {
-        return $this->belongsTo(SubCategory::class, 'sub_category_id');
-    }
 
     public function contribute_courses(): HasMany
     {
@@ -56,6 +52,15 @@ class Course extends Model
         } else {
             return self::all();
         }
+    }
+
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class);
+    }
+
+    public function enrollCourses(): HasMany {
+        return $this->hasMany(CourseEnrollUser::class, 'course_id');
     }
 
 
@@ -93,12 +98,8 @@ class Course extends Model
 
     }
 
-    public function lessons(): HasMany
+    public function sub_category(): BelongsTo
     {
-        return $this->hasMany(Lesson::class);
-    }
-
-    public function enrollCourses(): HasMany {
-        return $this->hasMany(CourseEnrollUser::class, 'course_id');
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
 }

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('forums', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->default('');
             $table->text('text');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('lesson_id');
             $table->timestamps();
         });
     }

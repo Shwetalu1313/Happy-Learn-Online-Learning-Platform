@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class CourseEnrollController extends Controller
 {
+    public function ListPage(){
+        $titlePage = 'Course Enroll User Lists';
+        return view('course.enroll.enroll_list',compact('titlePage'));
+    }
+
     public function PtsPayment(Request $request){
         $data = $request->validate([
             'pts' => 'required|integer',
@@ -88,6 +93,11 @@ class CourseEnrollController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to enroll in the course.');
         }
+    }
+
+    public function deleteEnroll(CourseEnrollUser $courseEnrollUser){
+        $courseEnrollUser->delete();
+        return redirect()->back()->with('success', 'Enroll Record was successfully removed.');
     }
 
 }

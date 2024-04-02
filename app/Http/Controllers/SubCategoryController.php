@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\SystemActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubCategoryController extends Controller
 {
@@ -50,13 +53,33 @@ class SubCategoryController extends Controller
             $img_path = null;
         }
 
-        SubCategory::create([
+        $subcategory = SubCategory::create([
             'name' => $data['name'],
-            'img_path' => $img_path,
+            'img_path' => $img_path ?? 'cate/sample.jpg',
             'category_id' => $data['select'],
         ]);
 
-        return redirect()->back()->with('success', __('nav.crt_alt'));
+
+        if ($subcategory){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new sub-category ('.$subcategory->name.') is created.',
+                'about' => 'A new sub-category ('.$subcategory->name.') is created for ('.$subcategory->name.') by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', __('nav.crt_alt'));
+        }else
+        {
+            return redirect()->back()->with('error', 'Data input process failed.');
+        }
+
+
     }
 
     /**
@@ -70,9 +93,12 @@ class SubCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SubCategory $subCategory)
+    public function edit(SubCategory $sub_category)
     {
-        //
+        $titlePage = $sub_category->name . ' Modify';
+        $categories = Category::all();
+
+        return view('category.sub_category.modify', compact('titlePage','sub_category','categories'));
     }
 
     /**
@@ -80,14 +106,61 @@ class SubCategoryController extends Controller
      */
     public function update(Request $request, SubCategory $subCategory)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|integer',
+        ]);
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarPath = $avatar->store('cate', 'public');
+            $validatedData['img_path'] = $avatarPath;
+        }
+        $updated = $subCategory->update($validatedData);
+
+        if ($updated){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new category ('.$subCategory->name.') is updated.',
+                'about' => 'A new category ('.$subCategory->name.') is updated by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->route('category.sub_category.index')->with('success', __('jobapplication.job_update_alert'));
+
+        }else {
+            return redirect()->back()->with('error', 'Data input process failed.');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SubCategory $subCategory)
+    public function destroy(SubCategory $subCategory, Request $request)
     {
-        //
+        if ($subCategory->delete()){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp() ,
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new category ('.$subCategory->name.') was deleted.',
+                'about' => 'A new category ('.$subCategory->name.') id = ('.$subCategory->id.') was deleted by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', 'Deleted successfully.');
+        }
+        else {
+            return redirect()->back()->with('error', 'Deleted deletion fail.');
+        }
+
     }
 }

@@ -10,6 +10,10 @@
     $registerReport = User::usersRegisterCount();
     $latestActivities = SystemActivity::getData(false,true);
 
+    $enrollJson = CourseEnrollUser::getEnrollmentsChartData()->toJson();
+    $incomeJson = CourseEnrollUser::getIncomeChartData()->toJson();
+    $registerJson = User::getRegisterUserChartData()->toJson();
+
     $textColorArray = ['text-info','text-warning','text-danger','text-primary','text-secondary', 'text-info-emphasis']
  @endphp
     <section class="section dashboard">
@@ -82,6 +86,88 @@
 
                         </div>
                     </div><!-- End Register Card -->
+
+
+                    <div class="col-12">
+                        <div class="card">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+                            <div class="bb" id="bb"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">Reports <span>/ Income Timeline</span></h5>
+
+                                <!-- Area Chart -->
+                                <div id="areaChart"></div>
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", () => {
+                                        const incomeData = {!! $incomeJson !!};
+
+                                        // Log the income data to check its structure
+                                        console.log('Income data:', incomeData);
+
+                                        const incomeValues = incomeData.map(entry => entry.income);
+                                        const incomeDates = incomeData.map(entry => {
+                                            const dateObj = new Date(entry.date);
+                                            return `${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getDate()}`;
+                                        });
+
+
+                                        new ApexCharts(document.querySelector("#areaChart"), {
+                                            series: [{
+                                                name: "Income",
+                                                data: incomeValues,
+                                            }],
+                                            chart: {
+                                                type: 'area',
+                                                height: 350,
+                                                zoom: {
+                                                    enabled: false
+                                                }
+                                            },
+                                            dataLabels: {
+                                                enabled: false
+                                            },
+                                            stroke: {
+                                                curve: 'straight'
+                                            },
+                                            subtitle: {
+                                                text: 'Prize Movements',
+                                                align: 'left'
+                                            },
+                                            labels: incomeDates,
+                                            xaxis: {
+                                                type: 'datetime',
+                                            },
+                                            yaxis: {
+                                                opposite: true
+                                            },
+                                            legend: {
+                                                horizontalAlign: 'left'
+                                            }
+                                        }).render();
+                                    });
+                                </script>
+                                <!-- End Area Chart -->
+
+
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Chart Reports -->
+
                 </div>
             </div>
 
@@ -106,24 +192,32 @@
                     <div class="card-body">
                         <h5 class="card-title">Recent Activity </h5>
 
-                        <div class="activity mb-2">
-                            @foreach($latestActivities as $i => $activity)
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">{{ $activity->created_at->diffForHumans() }}</div>
-                                    @php
-                                        $textColorIndex = $i % count($textColorArray);
-                                        $textColor = $textColorArray[$textColorIndex];
-                                    @endphp
-                                    <i class='bi bi-circle-fill activity-badge {{ $textColor }} align-self-start'></i>
+                        @if($latestActivities->count() === 0)
 
-                                    <div class="activity-content">
-                                        {{ $activity->short }}
-                                    </div>
-                                </div><!-- End activity item-->
-                            @endforeach
-                        </div>
+                            <div class="text-center">
+                                <img src="{{asset('./storage/webstyle/svg/file_error_not_found.svg')}}" class="w-50 h-50 my-3 text-center text-secondary" >
 
+                                <div class="text-centert fs-5 text-secondary-emphasis">No Activity Found</div>
+                            </div>
 
+                        @else
+                            <div class="activity mb-2">
+                                @foreach($latestActivities as $i => $activity)
+                                    <div class="activity-item d-flex">
+                                        <div class="activite-label">{{ $activity->created_at->diffForHumans() }}</div>
+                                        @php
+                                            $textColorIndex = $i % count($textColorArray);
+                                            $textColor = $textColorArray[$textColorIndex];
+                                        @endphp
+                                        <i class='bi bi-circle-fill activity-badge {{ $textColor }} align-self-start'></i>
+
+                                        <div class="activity-content">
+                                            {{ $activity->short }}
+                                        </div>
+                                    </div><!-- End activity item-->
+                                @endforeach
+                            </div>
+                        @endif
 
                     </div>
 

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
 use App\Models\Category;
+use App\Models\SystemActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -34,12 +37,31 @@ class CategoryController extends Controller
             $img_path = $request->file('avatar')->store('cate','public');
         }
 
-        Category::create([
+        $category = Category::create([
             'name' => $data['name'],
-            'img_path' => $img_path,
+            'img_path' => $img_path ?? 'cate/sample.jpg',
         ]);
 
-        return redirect()->back()->with('success', __('nav.crt_alt'));
+        if ($category){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new category ('.$category->name.') is created.',
+                'about' => 'A new category ('.$category->name.') is created by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+        ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', __('nav.crt_alt'));
+        }else
+        {
+            return redirect()->back()->with('error', 'Data input process failed.');
+        }
+
+
     }
     /**
      * Displaying Category list in Admin Side
@@ -90,17 +112,53 @@ class CategoryController extends Controller
             $avatarPath = $avatar->store('cate', 'public');
             $validatedData['img_path'] = $avatarPath;
         }
-        $category->update($validatedData);
+        $updated = $category->update($validatedData);
 
-        return redirect()->route('category.lst_V1')->with('success', __('jobapplication.job_update_alert'));
+        if ($updated){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A new category ('.$category->name.') is updated.',
+                'about' => 'A new category ('.$category->name.') is updated by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->route('category.lst_V1')->with('success', __('jobapplication.job_update_alert'));
+
+        }else {
+            return redirect()->back()->with('error', 'Data input process failed.');
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category, Request $request)
     {
-        $category->delete();
-        return redirect()->back()->with('success', 'Deleted successfully.');
+        if ($category->delete()){
+            $systemActivity = [
+                'table_name' => Category::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A category ('.$category->name.') was deleted.',
+                'about' => 'A category ('.$category->name.') id = ('.$category->id.') was deleted by '. Auth::user()->name . '('.auth()->id().').',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', 'Deleted successfully.');
+        }
+        else {
+            return redirect()->back()->with('error', 'Deleted deletion fail.');
+        }
+
+
     }
 }

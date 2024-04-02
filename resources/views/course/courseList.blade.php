@@ -5,9 +5,12 @@
         use App\Enums\CourseStateEnums;
         use App\Enums\CourseTypeEnums;
 
-        function isCreatorOfAdmin($course){
-            return Auth::id() === $course->createdUser_id || Auth::user()->role->value === UserRoleEnums::ADMIN->value;
+        if (!function_exists('isCreatorOfAdmin')) {
+            function isCreatorOfAdmin($course){
+                return auth()->id() === $course->createdUser_id || auth()->user()->role->value === UserRoleEnums::ADMIN->value;
+            }
         }
+
 
     @endphp
     <div class="row">
@@ -81,6 +84,7 @@
                                     @endif
                                 </td>
 
+                                <td class="text-center"><strong>{{ $course->enrollCourses->count() }}</strong></td>
 
                                 <td class="text-end"><strong>{{ $course->fees }} ks</strong></td>
 
@@ -89,6 +93,8 @@
                                 <td>
                                     @if($course->approver != null)
                                         {{ $course->approver->name}}
+                                    @else
+                                        -
                                     @endif
                                 </td>
 

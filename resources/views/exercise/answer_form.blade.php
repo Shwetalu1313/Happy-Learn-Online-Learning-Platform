@@ -55,7 +55,7 @@
                         <div class="d-flex flex-row">
                             @foreach($question->answers as $j => $answer)
                                 <div class="me-2"> <!-- Add margin to separate buttons -->
-                                    <button class="btn btn-outline-secondary ">
+                                    <button class="btn btn-outline-dark ">
                                         @if($answer->is_correct)
                                             <i class="bi bi-check-circle-fill text-success"></i>
                                         @endif

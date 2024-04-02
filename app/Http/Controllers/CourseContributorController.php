@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\UserRoleEnums;
 use App\Models\Course;
 use App\Models\CourseContributor;
+use App\Models\SystemActivity;
 use App\Models\User;
 use App\Notifications\ContributorEmailNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 class CourseContributorController extends Controller
@@ -91,6 +93,18 @@ class CourseContributorController extends Controller
                 'actionUrl' => route('course.index'),
             ];
 
+            $systemActivity = [
+                'table_name' => CourseContributor::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => 'A course('.$courseName.') is shared with '. $user->name . '.',
+                'about' => Auth::user()->name . '('.auth()->id().') is shared a course('.$courseName.') to '. $user->name .'>>'. $user->mail .'.',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
             // Send email notification
             Notification::send($user, new ContributorEmailNotification($data));
             //Mail::to($mail)->send(new ContributorEmailNotification($data));
@@ -130,13 +144,25 @@ class CourseContributorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $contributor = CourseContributor::findOrFail($id);
         $contributor_name = $contributor->user->name;
         $contributor_email = $contributor->user->mail;
         $course_name = $contributor->course->title;
         $contributor->delete();
+
+        $systemActivity = [
+            'table_name' => CourseContributor::getModelName(),
+            'ip_address' => $request->getClientIp(),
+            'user_agent' => $request->userAgent(),
+            'user_id' => auth()->id(),
+            'short' => $course_name . ' contributor permission was revoked from ' .$contributor_name . '.',
+            'about' => Auth::user()->name . '('.auth()->id().') revoke a course('.$course_name.') contributor to '. $contributor_name.'>>'.$contributor_email .'.',
+            'target' => UserRoleEnums::ADMIN,
+            'route_name' => $request->route()->getName(),
+        ];
+        SystemActivity::createActivity($systemActivity);
 
         $data = [
             'greeting' => 'Hello, '. $contributor_name,

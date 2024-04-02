@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Enums\CoursePaymentTypeEnums;
+use App\Enums\UserRoleEnums;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Models\CurrencyExchange;
 
@@ -45,6 +47,35 @@ class CourseEnrollUser extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
+    public static function getEnrollmentsForUser($user)
+    {
+        if ($user->role->value != UserRoleEnums::ADMIN->value) {
+            // Retrieve direct enrollments for the user
+            $directEnrollments = self::whereHas('course.creator', function ($query) use ($user) {
+                $query->where('createdUser_id', $user->id);
+            })->get();
+
+            // Retrieve indirect enrollments for the user
+            $indirectEnrollments = $user->contributor->flatMap(function ($contributor) {
+                return $contributor->course->enrollCourses;
+            })->all();
+
+            // Merge the two collections
+            $mergedEnrollments = new Collection(array_merge($directEnrollments->toArray(), $indirectEnrollments));
+
+            // Limit access based on roles or other conditions as needed
+
+            // Arrange enrollments from newest to oldest
+            $sortedEnrollments = $mergedEnrollments->sortByDesc('created_at');
+
+            return $sortedEnrollments;
+        } else {
+            // If user is an admin, return all enrollments
+            return self::orderByDesc('created_at')->get();
+        }
+    }
+
+
     public static function PopularCourses(){
         $startDate = Carbon::now()->subMonth(3)->startOfMonth();
         $endDate = Carbon::now()->endOfMonth();
@@ -59,31 +90,44 @@ class CourseEnrollUser extends Model
         return $topCourses;
     }
 
+    private static function format_percentage($value): string
+    {
+        if (abs($value - 100) < 1e-6) {  // Check for close to 100%
+            return "100%";
+        } else {
+            return number_format($value , 2); // Multiply by 100 for percentage, format with 2 decimals
+        }
+    }
+
     public static function generateReport()
     {
-        // Get the current month and the previous month
-        $currentMonth = Carbon::now()->startOfMonth();
-        $previousMonth = Carbon::now()->subMonth()->startOfMonth();
 
-        // Get enrollments for the current month
-        $currentMonthEnrollments = CourseEnrollUser::whereBetween('created_at', [$currentMonth, Carbon::now()->endOfMonth()])->count();
+        $now = Carbon::now();
+        $currentMonthEnrollments = CourseEnrollUser::whereMonth('created_at', $now->month)
+                                    ->whereYear('created_at', $now->year)
+                                    ->count();
 
         // Get enrollments for the previous month
-        $previousMonthEnrollments = CourseEnrollUser::whereBetween('created_at', [$previousMonth, $previousMonth->endOfMonth()])->count();
+        $lastMonthEnrollments = CourseEnrollUser::whereMonth('created_at',$now->subMonth()->month)
+                                    ->whereYear('created_at', $now->year)->count();
 
         // Calculate percentage change
-        $percentageChange = 0;
-        if ($previousMonthEnrollments != 0) {
-            $percentageChange = (($currentMonthEnrollments - $previousMonthEnrollments) / $previousMonthEnrollments) * 100;
+        $percentage = 0;
+        if ($lastMonthEnrollments != 0) {
+            $percentage = (($currentMonthEnrollments - $lastMonthEnrollments) / $lastMonthEnrollments) * 100;
         }
 
+        // Format the percentage to two decimal places
+        //$percentageChange = number_format($percentage, 2);
+        $percentageChange = self::format_percentage($percentage);
+
         // Determine if the enrollment has improved
-        $improved = $currentMonthEnrollments > $previousMonthEnrollments;
+        $improved = $currentMonthEnrollments > $lastMonthEnrollments;
 
         // Create the report
         $report = [
             'current_month_enrollments' => $currentMonthEnrollments,
-            'previous_month_enrollments' => $previousMonthEnrollments,
+            'previous_month_enrollments' => $lastMonthEnrollments,
             'percentage_change' => $percentageChange,
             'improved' => $improved,
         ];
@@ -94,7 +138,7 @@ class CourseEnrollUser extends Model
     public static function incomeReport()
     {
         // Get the current month and the previous month
-        $currentMonth = Carbon::now()->startOfMonth();
+        /*$currentMonth = Carbon::now()->startOfMonth();
         $previousMonth = Carbon::now()->subMonth()->startOfMonth();
 
         // Get total income for the current month
@@ -103,7 +147,16 @@ class CourseEnrollUser extends Model
 
         // Get total income for the previous month
         $previousMonthIncome = CourseEnrollUser::whereBetween('created_at', [$previousMonth, $previousMonth->endOfMonth()])
+            ->sum('amount');*/
+
+        $now = Carbon::now();
+        $currentMonthIncome = CourseEnrollUser::whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
             ->sum('amount');
+
+        // Get enrollments for the previous month
+        $previousMonthIncome = CourseEnrollUser::whereMonth('created_at',$now->subMonth()->month)
+            ->whereYear('created_at', $now->year)->sum('amount');
 
         // Convert to UsDollar
         $us_avg = CurrencyExchange::getUSD();
@@ -126,9 +179,42 @@ class CourseEnrollUser extends Model
         return [
             'current_month_income' => $currentMonthIncomeFormatted,
             'previous_month_income' => $previousMonthIncomeFormatted,
-            'percentage_change' => $percentageChange,
+            'percentage_change' => self::format_percentage($percentageChange),
             'increased' => $increased,
         ];
     }
 
+    public static function getEnrollmentsChartData()
+    {
+        $startDate = Carbon::now()->subDays(30)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $enrollmentsData = self::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as enrollments')
+        )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return $enrollmentsData;
+    }
+
+    public static function getIncomeChartData()
+    {
+        $startDate = Carbon::now()->subDays(30)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $incomeData = self::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('SUM(amount) as income')
+        )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return $incomeData;
+    }
 }

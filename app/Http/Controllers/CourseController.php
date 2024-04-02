@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\CourseStateEnums;
 use App\Enums\UserRoleEnums;
 use App\Models\Course;
+use App\Models\SystemActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,7 +51,7 @@ class CourseController extends Controller
             // Store the uploaded image and get its path
             $img_path = $request->file('avatar')->store('course','public');
         }
-        Course::create([
+        $course = Course::create([
            'title' => $data['name'],
             'description' => $data['requirements'],
             'image' => $img_path,
@@ -59,7 +60,24 @@ class CourseController extends Controller
             'createdUser_id' => Auth::id(),
             'sub_category_id' => $data['sub_cate_select'],
         ]);
-        return redirect()->back()->with('success', __('course.success_create_alert_msg'));
+
+        if ($course){
+            $systemActivity = [
+                'table_name' => Course::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => $course->name . ' was created.',
+                'about' => $course->name . ' was created by.'. Auth::user()->name.'.',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', __('course.success_create_alert_msg'));
+        }
+        else return redirect()->back()->with('success', __('Fail Course Creation.'));
+
     }
 
     /**
@@ -108,28 +126,72 @@ class CourseController extends Controller
             $course->image = $img_path;
         }
 
-        $course->save();
+        if ($course->save()) {
 
-        return redirect()->back()->with('success', __('course.success_update_alert_msg'));
+            $systemActivity = [
+                'table_name' => Course::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => $course->name . ' was updated.',
+                'about' => $course->name . ' was updated by.' . Auth::user()->name . '.',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', __('course.success_create_alert_msg'));
+
+        }
+        else return redirect()->back()->with('success', __('Fail Course Update.'));
+
+
     }
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $course = Course::findOrFail($id);
-        $course->delete();
-        return redirect()->back()->with('success', $course->title.' is completely deleted.');
+        if($course->delete()){
+
+            $systemActivity = [
+                'table_name' => Course::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => $course->name . ' was deleted.',
+                'about' => $course->name . ' was deleted by.' . Auth::user()->name . '.',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
+            return redirect()->back()->with('success', $course->title.' is completely deleted.');
+        }
+
     }
 
-    public function updateToApproveState(string $id) {
+    public function updateToApproveState(string $id, Request $request) {
         $course = Course::findOrFail($id);
         $course->state = CourseStateEnums::APPROVED->value;
         $course->approvedUser_id = Auth::id();
 
         if ($course->save()) {
+            $systemActivity = [
+                'table_name' => Course::getModelName(),
+                'ip_address' => $request->getClientIp(),
+                'user_agent' => $request->userAgent(),
+                'user_id' => auth()->id(),
+                'short' => $course->name . ' was confirmed.',
+                'about' => $course->name . ' was confirmed by.' . Auth::user()->name . '.',
+                'target' => UserRoleEnums::ADMIN,
+                'route_name' => $request->route()->getName(),
+            ];
+            SystemActivity::createActivity($systemActivity);
+
             return response()->json(['success' => true, 'message' => __('course.success_update_approve_alert_msg')]);
         } else {
             return response()->json(['success' => false, 'message' => __('course.success_error_approve_alert_msg')], 500);

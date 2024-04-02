@@ -29,7 +29,7 @@ class Lesson extends Model
 
     public function exercises(): HasMany
     {
-        return $this->hasMany(Exercise::class);
+        return $this->hasMany(Exercise::class, 'lesson_id');
     }
     public function forums(): HasMany
     {

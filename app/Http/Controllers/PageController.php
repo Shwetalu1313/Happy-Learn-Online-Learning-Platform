@@ -98,5 +98,15 @@ class PageController extends Controller
         $titlePage = __('exercise.pg_title');
         return view('exercise.createQuestion', compact('titlePage'));
     }
+
+    public static function showAllActivities(){
+        $titlePage = 'Activities Logs';
+        return view('ActivityLog', compact('titlePage'));
+    }
+
+    public static function showCourses(){
+        $titlePage = 'Courses';
+        return view('course.ListforLearners', compact('titlePage'));
+    }
 }
 

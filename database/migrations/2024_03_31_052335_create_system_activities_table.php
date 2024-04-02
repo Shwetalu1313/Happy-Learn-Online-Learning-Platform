@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('short');
             $table->string('about');
-            $table->string('target');
+            $table->string('target')->nullable();
             $table->string('route_name')->default('#');
             $table->timestamps();
         });

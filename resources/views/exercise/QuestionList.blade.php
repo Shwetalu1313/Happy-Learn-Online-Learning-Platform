@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 @section('content')
     @php use App\Enums\QuestionTypeEnums; @endphp
+    <div class="my-3">
+        <button class="btn btn-secondary" onclick="window.location = '{{url('lesson/'.$exercise->lesson_id.'/review')}}' "><i class="bi bi-arrow-bar-left me-3"></i>Back</button>
+    </div>
     <div class="card p-5">
         <form action="{{ route('exercise.update', $exercise->id) }}" class="mb-3" method="post" id="exercise_form">
             @csrf
@@ -48,7 +51,11 @@
                 <div class="card">
                     <div class="card-header d-flex flex-row-reverse">
                         <button class="btn btn-secondary mx-3" onclick="window.location='{{route('question.edit', $question->id)}}'"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-danger" onclick="document.getElementById('delete-question-form').submit()"><i class="bi bi-trash"></i></button>
+                        <form action="{{route('question.destroy', $question->id)}}" id="delete-question-form" method="post" class="d-none">
+                            @csrf
+                            @method('DELETE')
+                        </form>
                     </div>
                     <div class="card-body">
                         <h5>{{$question->text}}</h5>

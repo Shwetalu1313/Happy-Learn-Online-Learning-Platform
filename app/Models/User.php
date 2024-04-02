@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -127,5 +128,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'percentage_change' => $percentageChange,
             'increased' => $increased,
         ];
+    }
+
+    public static function getRegisterUserChartData()
+    {
+        $startDate = Carbon::now()->subDays(30)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $userRegistrationData = User::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as registrations')
+        )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return $userRegistrationData;
     }
 }

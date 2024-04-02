@@ -110,4 +110,203 @@
             </div>
         </div>
     </div>
+
+    <div class="card">
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-VK21DW5DTL');
+        </script>
+        <script>
+            // Fetch data from API endpoints
+            var startDate = moment("2024-02-07"); // Example start date
+            var endDate = moment(new Date()).subtract(1, "days"); // Example end date
+
+            // Function to find all weekdays within the date range
+            function findWeekdaysInRange(startDate, endDate) {
+                const weekdays = [];
+                let currentDate = moment(startDate);
+
+                // Loop through each date in the range
+                while (currentDate.isSameOrBefore(endDate)) {
+                    // Check if the current date is a weekday (Monday to Friday)
+                    if (currentDate.isoWeekday() >= 1 && currentDate.isoWeekday() <= 5) {
+                        // If it's a weekday, add it to the weekdays array
+                        weekdays.push(currentDate.format("YYYY/MM/DD"));
+                    }
+                    // Move to the next day
+                    currentDate.add(1, "days");
+                }
+                return weekdays;
+            }
+
+            // Draw Chart Method
+
+            function DrawChart(labels = [], datasets = [], canvasSelector, scales) {
+                const chartData = {
+                    labels,
+
+                    datasets,
+                };
+
+                let ctx = document.querySelector(canvasSelector).getContext("2d");
+
+                let chart = new Chart(ctx, {
+                    type: "line",
+                    data: chartData,
+
+                    options: {
+                        scales: scales,
+                    },
+                });
+            }
+
+            // Call the function and log the result
+            var weekdaysInRange = findWeekdaysInRange(startDate, endDate);
+            var fetchEndpoints = weekdaysInRange
+                .slice(-30)
+                .map((i) =>
+                    fetch(`https://myanmar-currency-api.github.io/api/${i}/latest.json`)
+                );
+            Promise.all(fetchEndpoints)
+                .then((responses) =>
+                    Promise.all(responses.map((response) => response.json()))
+                )
+                .then((data) => {
+                    // Merge data into a single dataset
+
+                    const mergedData = [];
+                    data.forEach((dayData) => {
+                        dayData.data.forEach((currency) => {
+                            const existingCurrency = mergedData.find(
+                                (item) => item.currency === currency.currency
+                            );
+                            if (existingCurrency) {
+                                existingCurrency.data.push({
+                                    timestamp: dayData.timestamp,
+                                    buy: parseFloat(currency.buy),
+                                    sell: parseFloat(currency.sell),
+                                });
+                            } else {
+                                mergedData.push({
+                                    currency: currency.currency,
+                                    data: [
+                                        {
+                                            timestamp: dayData.timestamp,
+                                            buy: parseFloat(currency.buy),
+                                            sell: parseFloat(currency.sell),
+                                        },
+                                    ],
+                                });
+                            }
+                        });
+                    });
+
+                    // Extract weekdays' data only
+                    const weekdaysData = mergedData.map((currency) => ({
+                        currency: currency.currency,
+                        data: currency.data.filter((item) => {
+                            const timestamp = new Date(item.timestamp);
+                            const dayOfWeek = timestamp.getDay();
+                            return dayOfWeek !== 0 && dayOfWeek !== 6; // Filter out weekends
+                        }),
+                    }));
+                    const labels = weekdaysData.map((currency) =>
+                        currency.data.map((item) => {
+                            return new Date(item.timestamp);
+                        })
+                    )[0];
+
+                    // Prepare datasets for Chart.js
+                    const buyDataSets = weekdaysData.map((currency) => ({
+                        label: currency.currency,
+                        borderColor: getRandomColor(),
+                        data: currency.data.map((item) => item.buy),
+                        hidden: !(currency.currency === "USD"),
+                    }));
+
+                    const sellDataSets = weekdaysData.map((currency) => ({
+                        label: currency.currency,
+                        borderColor: getRandomColor(),
+                        data: currency.data.map((item) => item.sell),
+                        hidden: !(currency.currency === "USD"),
+                    }));
+
+                    const averageDataSets = weekdaysData.map((currency) => ({
+                        label: currency.currency,
+                        borderColor: getRandomColor(),
+                        data: currency.data.map((item) => (item.sell + item.buy) / 2),
+                        hidden: !(currency.currency === "USD"),
+                    }));
+
+                    DrawChart(labels, buyDataSets, "#buyExchangeRateChart", {
+                        x: {
+                            type: "time",
+                            time: {
+                                unit: "day",
+                            },
+                            ticks: {
+                                source: "auto",
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Exchange Rate Buy",
+                            },
+                        },
+                    });
+
+                    DrawChart(labels, sellDataSets, "#sellExchangeRateChart", {
+                        x: {
+                            type: "time",
+                            time: {
+                                unit: "day",
+                            },
+                            ticks: {
+                                source: "auto",
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Exchange Rate Sell",
+                            },
+                        },
+                    });
+
+                    DrawChart(labels, averageDataSets, "#averageExchangeRateChart", {
+                        x: {
+                            type: "time",
+                            time: {
+                                unit: "day",
+                            },
+                            ticks: {
+                                source: "auto",
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Exchange Average Buy & Sell",
+                            },
+                        },
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+            // Create Chart.js instance
+
+            // Function to generate random color
+            function getRandomColor() {
+                const letters = "0123456789ABCDEF";
+                let color = "#";
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        </script>
+    </div>
 @endsection

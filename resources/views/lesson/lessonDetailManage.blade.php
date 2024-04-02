@@ -69,7 +69,7 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                 </div>
             @endif
             {{--end alert--}}
-            <div class="ql-editor" id="lesson-body"></div>
+            <div class="" id="lesson-body"></div>
 
             <form method="POST" action="{{ route('lesson.update', $lesson->id) }}" id="lesson-form" style="display: none;">
                 @csrf
@@ -91,7 +91,7 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                 <tr>
                     <th class="text-center text-primary-emphasis"><strong>NO.</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Title</strong></th>
-                    <th class="text-center text-primary-emphasis"><strong>Total Exercises</strong></th>
+                    <th class="text-center text-primary-emphasis"><strong>Total Questions</strong></th>
                     <th class="text-center text-primary-emphasis" data-type="date" data-format="YYYY/DD/MM"><strong>Created Date</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Created Time</strong></th>
                     <th class="text-center text-primary-emphasis"><strong>Action</strong></th>
@@ -144,7 +144,7 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
             <tr>
                 <th class="text-center text-primary-emphasis"><strong>NO.</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Title</strong></th>
-                <th class="text-center text-primary-emphasis"><strong>Total Exercises</strong></th>
+                <th class="text-center text-primary-emphasis"><strong>Total Questions</strong></th>
                 <th class="text-center text-primary-emphasis" data-type="date" data-format="YYYY/DD/MM"><strong>Created Date</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Created Time</strong></th>
                 <th class="text-center text-primary-emphasis"><strong>Action</strong></th>

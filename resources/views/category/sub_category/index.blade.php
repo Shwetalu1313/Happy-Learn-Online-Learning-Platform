@@ -72,14 +72,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body container">
-                                <form action="{{ route('category.destroy', $sub_category->id) }}" method="POST" class="row text-center">
+                                <form action="{{ route('sub_category.destroy', $sub_category) }}" method="POST" class="row text-center">
                                     @method('DELETE')
                                     @csrf
                                     <div class="col">
-                                        <button type="button" class="btn btn-primary mt-3"><i class="bi bi-binoculars"></i> {{__('btnText.over_v')}}</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" class="btn btn-warning mt-3" onclick="window.location='{{ url('category/mdf/'.$sub_category->id) }}'"><i class="bi bi-pencil-square"></i> {{__('btnText.modify')}}</button>
+                                        <button type="button" class="btn btn-warning mt-3" onclick="window.location='{{ route('sub_category.edit', $sub_category) }}'"><i class="bi bi-pencil-square"></i> {{__('btnText.modify')}}</button>
                                     </div>
                                     <div class="col">
                                         <button type="submit" class="btn btn-danger mt-3"><i class="bi bi-trash3-fill"></i> {{__('btnText.delete')}}</button>
@@ -113,13 +110,14 @@
                             <td>{{ $sub_category->category->name }}</td>
                             <td><img src="{{asset('storage/'.$sub_category->img_path)}}" style="width: 100px; height: 100px;" alt="{{ $sub_category->name . 'picture' }}" class="rounded-2"></td>
                             <td>
-                                <form action="{{ route('category.destroy', $sub_category->id) }}" method="POST">
+                                <form action="{{ route('sub_category.destroy', $sub_category) }}" method="POST">
                                     @method('DELETE')
                                     @csrf
-                                    <button type="button" class="btn btn-outline-success edit-category" onclick="window.location='{{ url('category/mdf/'.$sub_category->id) }}'">
+                                    <button type="button" class="btn btn-outline-success edit-category" onclick="window.location='{{ route('sub_category.edit', $sub_category) }}'">
                                         <i class="bi bi-pen"></i> {{ __('btnText.edt') }}
                                     </button>
                                     <button type="submit" class="btn btn-danger" onclick="return confirm('Are You Sure 🤨')">
+
                                         <i class="bi bi-trash3-fill"></i> {{ __('btnText.delete') }}
                                     </button>
                                 </form>
