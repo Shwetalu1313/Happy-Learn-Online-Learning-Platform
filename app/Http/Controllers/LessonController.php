@@ -57,7 +57,7 @@ class LessonController extends Controller
         ]);
 
         if ($done){
-            return redirect(route('lesson.index'))->with('success', 'You created a new lesson');
+            return redirect(route('lesson.index'))->with('success', 'You created a new lesson for' . $done->course->title);
         }
         else {
             return redirect()->back()->with('error', 'Fail to create a new lesson');
@@ -114,6 +114,8 @@ class LessonController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $lesson = Lesson::findOrFail($id);
+        $lesson->delete();
+        return redirect()->back()->with('success', 'You deleted! '. $lesson->title . ' from '. $lesson->course->title);
     }
 }

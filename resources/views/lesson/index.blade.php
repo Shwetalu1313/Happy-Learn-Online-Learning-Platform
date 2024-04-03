@@ -68,6 +68,11 @@
                                             @else
                                                 @foreach($course->lessons as $lesson)
                                                     <a href="{{url('lesson/'.$lesson->id.'/review')}}" class="text-black mb-3">{{$loop->iteration}}. {{$lesson->title}}</a><br>
+                                                    <button class="btn btn-danger btn-sm mb-3" onclick="document.getElementById('lesson{{$lesson->id}}-destroy').submit()"><i class="bi bi-trash"></i></button><br>
+                                                    <form action="{{route('lesson.destroy', $lesson->id)}}" class="d-none" method="post" id="lesson{{$lesson->id}}-destroy">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
                                                 @endforeach
                                             @endif
                                             <hr>

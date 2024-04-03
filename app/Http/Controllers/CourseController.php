@@ -67,8 +67,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->name . ' was created.',
-                'about' => $course->name . ' was created by.'. Auth::user()->name.'.',
+                'short' => $course->title . ' was created.',
+                'about' => $course->title . ' was created by.'. Auth::user()->name.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -133,8 +133,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->name . ' was updated.',
-                'about' => $course->name . ' was updated by.' . Auth::user()->name . '.',
+                'short' => $course->title . ' was updated.',
+                'about' => $course->title . ' was updated by.' . Auth::user()->name . '.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -162,8 +162,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->name . ' was deleted.',
-                'about' => $course->name . ' was deleted by.' . Auth::user()->name . '.',
+                'short' => $course->title . ' was deleted.',
+                'about' => $course->title . ' was deleted by.' . Auth::user()->name . '.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -185,8 +185,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->name . ' was confirmed.',
-                'about' => $course->name . ' was confirmed by.' . Auth::user()->name . '.',
+                'short' => $course->title . ' was confirmed.',
+                'about' => $course->title . ' was confirmed by.' . Auth::user()->name . '.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];

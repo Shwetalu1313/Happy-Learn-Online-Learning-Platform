@@ -47,12 +47,17 @@ class Course extends Model
             // Merge the two collections
             $mergedCourses = $directCourses->merge($indirectCourses);
 
+            // Sort the merged courses by created_at attribute in descending order
+            $sortedCourses = $mergedCourses->sortByDesc('created_at');
+
             // Unique courses based on course ID
-            return $mergedCourses->unique('id');
+            return $sortedCourses->unique('id');
         } else {
-            return self::all();
+            // If user is an admin, return all courses ordered by created_at in descending order
+            return self::orderBy('created_at', 'desc')->get();
         }
     }
+
 
     public function lessons(): HasMany
     {
