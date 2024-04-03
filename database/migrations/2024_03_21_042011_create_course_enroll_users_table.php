@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('user_id');
             $table->bigInteger('course_id');
             $table->integer('amount')->nullable();
+            $table->integer('receive_amount')->default(0);
             $table->string('payment_type')->nullable();
             $table->bigInteger('card_number')->nullable();
             $table->string('expired_date')->nullable();

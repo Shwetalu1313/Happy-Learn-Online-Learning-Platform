@@ -34,6 +34,7 @@ class CourseEnrollController extends Controller
             'user_id' => auth()->id(),
             'course_id' => $data['course_id'],
             'amount' => $data['amount'], // Use the provided amount instead of final points
+            'receive_amount' => 0,
             'payment_type' => CoursePaymentTypeEnums::POINT->value,
         ]);
 
@@ -60,6 +61,7 @@ class CourseEnrollController extends Controller
             'user_id' => auth()->id(),
             'course_id' => $data['course_id'],
             'amount' => $data['amount'],
+            'receive_amount' => $data['amount'],
             'payment_type' => CoursePaymentTypeEnums::CARD->value,
             'card_number' => $data['card_number'],
             'expired_date' => $data['expired_date'],
@@ -85,6 +87,7 @@ class CourseEnrollController extends Controller
             'user_id' => auth()->id(),
             'course_id' => $data['course_id'],
             'amount' => $data['amount'],
+            'receive_amount' => 0,
             'payment_type' => CoursePaymentTypeEnums::FREE->value,
         ]);
 

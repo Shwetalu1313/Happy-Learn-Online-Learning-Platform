@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lessons', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->mediumText('body');
+            $table->text('body');
             $table->unsignedMediumInteger('creator_id');
             $table->unsignedMediumInteger('course_id');
             $table->timestamps();

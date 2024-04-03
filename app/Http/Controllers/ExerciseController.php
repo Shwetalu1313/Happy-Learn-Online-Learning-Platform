@@ -159,8 +159,7 @@ class ExerciseController extends Controller
         if (!$isAnswer){
             $user->points += $Calculate_points;
             $user->save();
-            $Calculate_points = 'Thank You';
-        }
+        }else $Calculate_points = 'Thank You';
 
         $request->session()->put('exercise', $exercise);
         $request->session()->put('percentage', $percentage);
