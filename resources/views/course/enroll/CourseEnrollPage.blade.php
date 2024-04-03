@@ -58,8 +58,23 @@
 
                 <div class="">
                     <h5 class="text-secondary-emphasis">Description:</h5>
-                    <p class="">{{ $course->description }}</p>
+                    {{--<p class="">{{ $course->description }}</p>--}}
+                    <div class="" id="req"></div>
                 </div>
+                @section('scripts')
+                    <script>
+                        // Function to decode HTML entities
+                        function decodeHtml(html) {
+                            let txt = document.createElement("textarea");
+                            txt.innerHTML = html;
+                            return txt.value;
+                        }
+
+                        $(document).ready(function () {
+                            $('#req').html(decodeHtml("{{ $course->description }}"));
+                        })
+                    </script>
+                @endsection
 
             </div>
             {{--end left side--}}
