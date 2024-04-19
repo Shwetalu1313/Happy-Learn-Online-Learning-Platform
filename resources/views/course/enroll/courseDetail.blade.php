@@ -60,7 +60,8 @@
                         {{-- Exercise List Button --}}
                         <div>
                             <button class="btn btn-secondary mb-3 m-3 me-3" onclick="window.location='{{url('exercise/list/'.$lesson->id)}}' ">{{__('exercise.pg_title')}}</button>
-                            <button class="btn btn-secondary mb-3 m-3" onclick="window.location='{{route('forums',$lesson)}}' ">{{__('Discussion')}}</button>
+                            {{--<button class="btn btn-secondary mb-3 m-3" onclick="window.location='{{route('forums',$lesson)}}' ">{{__('Discussion')}}</button>--}}
+                            <a href="{{route('forums',$lesson)}}" class="btn btn-secondary mb-3 m-3" target="_blank">{{__('Discussion')}}</a>
                         </div>
 
 

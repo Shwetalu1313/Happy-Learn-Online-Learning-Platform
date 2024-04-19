@@ -6,6 +6,7 @@ use App\Models\CourseEnrollUser;
 use Illuminate\Http\Request;
 use App\Enums\CoursePaymentTypeEnums;
 use Illuminate\Support\Facades\Auth;
+use function Laravel\Prompts\error;
 
 class CourseEnrollController extends Controller
 {
@@ -98,9 +99,15 @@ class CourseEnrollController extends Controller
         }
     }
 
-    public function deleteEnroll(CourseEnrollUser $courseEnrollUser){
-        $courseEnrollUser->delete();
-        return redirect()->back()->with('success', 'Enroll Record was successfully removed.');
+    public function deleteEnroll(CourseEnrollUser $enrollCourse) {
+        try {
+            if ($enrollCourse->delete()) {
+                return redirect()->back()->with('success', 'Enroll Record was successfully removed.');
+            } else {
+                throw new \Exception('Unable to delete enroll record.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('success', $e->getMessage());
     }
 
 }

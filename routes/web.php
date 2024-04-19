@@ -165,7 +165,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
         Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
         Route::post('freePayment', [CourseEnrollController::class, 'FreePayment'])->name('course.freePayment');
-        Route::delete('enroll/delete', [CourseEnrollController::class, 'deleteEnroll'])->name('enroll.delete');
+        Route::delete('enroll/{enrollCourse}/delete', [CourseEnrollController::class, 'deleteEnroll'])->name('enroll.delete');
     });
 
     //Exercises

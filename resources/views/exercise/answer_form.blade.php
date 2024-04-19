@@ -15,6 +15,9 @@
 
     @endphp
     <div class="container mt-5">
+        <button class="btn btn-secondary mb-3" onclick="window.location='{{route('exercise.questions_learner_form',$exercise)}}'">
+            Back
+        </button>
         <div class="card shadow mb-5">
             <div class="card-header text-center">
                 <h1>{{$exercise->title}} Result</h1>
