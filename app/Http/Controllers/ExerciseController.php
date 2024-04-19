@@ -66,7 +66,7 @@ class ExerciseController extends Controller
         $message = 'Good Job';
         $isAnswer = UserAnswer::where('user_id', $user->id)->where('exercise_id', $exercise->id)->exists();
         if ($isAnswer) {
-            $message = 'You are already answered this question';
+            $message = 'You\'ve already answered this question';
         }
 
         $totalCorrect = 0;

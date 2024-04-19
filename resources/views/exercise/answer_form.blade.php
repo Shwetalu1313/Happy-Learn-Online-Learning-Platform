@@ -15,7 +15,7 @@
 
     @endphp
     <div class="container mt-5">
-        <div class="card shadow mb-3">
+        <div class="card shadow mb-5">
             <div class="card-header text-center">
                 <h1>{{$exercise->title}} Result</h1>
             </div>
@@ -28,9 +28,10 @@
 
                 <p><b>Exercise:</b> {{ $exercise->title }}</p>
                 <p><b>Total Questions:</b> {{ $exercise->questions->count() }}</p>
-                <p><b>Your Score:</b> {{ $percentage }}% ({{ $totalCorrect }} correct)</p>
-                <p><b>Points Award:</b> {{ $Calculate_points }}</p>
+                <p><b>Your Score:</b> <span class="text-success-emphasis fs-5">{{ $percentage }}% ({{ $totalCorrect }} correct)</span> </p>
+                <p><b>Points Award:</b> <span class="text-warning fs-5">{{ $Calculate_points }}</span> points</p>
                 <hr>
+                    <small class="text-danger-emphasis">Incorrect Answers</small>
                 @foreach ($userFalseAnswers as $i => $userFalseAnswer)
                     <div class="mb-3">
                         You answered <button class="btn btn-danger bg-opacity-50">{{' '. $userFalseAnswer.' '}}</button> in question Number {{' '.$i. '.'}}
@@ -40,11 +41,14 @@
             </div>
         </div>
 
-        Official Correct Answers
+        <h3 class="text-info mt-3">Answers</h3>
         @foreach($exercise->questions as $i => $question)
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5>{{$question->text}}</h5>
+                    <div>
+                        <h5><span class="text-warning-emphasis">{{$i+1}}</span>  {{$question->text}}</h5>
+                    </div>
+
                     @if($question->question_type === QuestionTypeEnums::BLANK)
                         @foreach($question->answers as $j => $answer)
                             <div>
