@@ -54,7 +54,7 @@ class CourseController extends Controller
         $course = Course::create([
            'title' => $data['name'],
             'description' => $data['requirements'],
-            'image' => $img_path,
+            'image' => $img_path ?? 'course/sample.jpg',
             'courseType' => $data['courseType'],
             'fees' => $data['fee'],
             'createdUser_id' => Auth::id(),
@@ -123,7 +123,7 @@ class CourseController extends Controller
         if ($request->hasFile('avatar')) {
             // Store the uploaded image and get its path
             $img_path = $request->file('avatar')->store('course','public');
-            $course->image = $img_path;
+            $course->image = $img_path ?? 'course/sample.jpg';
         }
 
         if ($course->save()) {
