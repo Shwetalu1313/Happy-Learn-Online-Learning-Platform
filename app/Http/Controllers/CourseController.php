@@ -45,7 +45,7 @@ class CourseController extends Controller
             'fee' => 'required|integer',
             'sub_cate_select' => 'required|integer',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'requirements' => 'required',
+            'requirements' => 'required|string',
         ]);
         if ($request->hasFile('avatar')) {
             // Store the uploaded image and get its path
