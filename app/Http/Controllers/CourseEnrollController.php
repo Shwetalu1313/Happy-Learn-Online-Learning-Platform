@@ -99,7 +99,8 @@ class CourseEnrollController extends Controller
         }
     }
 
-    public function deleteEnroll(CourseEnrollUser $enrollCourse) {
+    public function deleteEnroll(CourseEnrollUser $enrollCourse)
+    {
         try {
             if ($enrollCourse->delete()) {
                 return redirect()->back()->with('success', 'Enroll Record was successfully removed.');
@@ -108,6 +109,6 @@ class CourseEnrollController extends Controller
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('success', $e->getMessage());
+        }
     }
-
 }

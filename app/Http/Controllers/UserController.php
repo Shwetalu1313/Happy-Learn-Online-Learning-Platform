@@ -92,8 +92,8 @@ class UserController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $user->mail .' role was updated to '. $request->role .'.' ,
-                'about' => $user->mail .' role was updated to '. $request->role .' by '. \auth()->mail ,
+                'short' => $user->email .' role was updated to '. $request->role .'.' ,
+                'about' => $user->email .' role was updated to '. $request->role .' by '. Auth::user()->email ,
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
