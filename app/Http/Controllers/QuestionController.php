@@ -37,13 +37,12 @@ class QuestionController extends Controller
 
     public function storeQuestion(Request $request, Exercise $exercise)
     {
-
         $validatedData = $request->validate([
             'question_text' => 'required',
             'question_type' => 'required',
             'answers.*' => 'nullable|string', // Allow null for non-selected answers
             'correct_answers.*' => 'nullable', // Allow null for non-selected correct answers
-            'correct_answer' => 'nullable'
+            'correct_answer' => $request->question_type === QuestionTypeEnums::MULTIPLE_CHOICE->value ? 'nullable' : 'required',
         ]);
         $question = Question::create([
             'exercise_id' => $exercise->id,
