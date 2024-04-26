@@ -43,6 +43,12 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if requirements field is empty or contains only HTML tags
+        $requirements = $request->input('requirements');
+        if (empty($requirements) || strip_tags($requirements) === '') {
+            $request->merge(['requirements' => null]);
+        }
+
         $validateData = $request->validate([
             'title' => 'required|string|max:255',
             'requirements' => 'required|string',
