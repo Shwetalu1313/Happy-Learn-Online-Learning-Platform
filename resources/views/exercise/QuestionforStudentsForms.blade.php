@@ -46,7 +46,7 @@
                                     <div class="card-body">
                                         <h4 class="">{{$question->text}}</h4>
                                         @if($question->question_type === App\Enums\QuestionTypeEnums::BLANK)
-                                            <input type="text" name="answers[{{$question->id}}]" class="form-control mb-3">
+                                            <input type="text" name="answers[{{$question->id}}]" class="form-control mb-3" required>
                                         @else
                                             <div class="row">
                                                 @foreach($question->answers as $answer)

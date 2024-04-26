@@ -77,14 +77,15 @@
                 <div class="card">
                     <div class="card-header d-flex flex-row-reverse">
                         <button class="btn btn-secondary mx-3" onclick="window.location='{{route('question.edit', $question->id)}}'"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-danger" onclick="document.getElementById('delete-question-form').submit()"><i class="bi bi-trash"></i></button>
-                        <form action="{{route('question.destroy', $question->id)}}" id="delete-question-form" method="post" class="d-none">
+                        <button class="btn btn-danger" onclick="document.getElementById('delete-question-form-{{$question->id}}').submit()"><i class="bi bi-trash"></i></button>
+                        <form action="{{route('question.destroy', $question->id)}}" id="delete-question-form-{{$question->id}}" method="post" class="d-none">
                             @csrf
                             @method('DELETE')
                         </form>
                     </div>
                     <div class="card-body">
-                        <h5>{{$question->text}}</h5>
+                        <h5></h5>
+                        <textarea name="" id="" class="form-control disabled mb-3">{{$question->text}}</textarea>
                         @if($question->question_type === QuestionTypeEnums::BLANK)
                             @foreach($question->answers as $j => $answer)
                                 <div>

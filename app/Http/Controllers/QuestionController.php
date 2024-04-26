@@ -42,7 +42,7 @@ class QuestionController extends Controller
             'question_type' => 'required',
             'answers.*' => 'nullable|string', // Allow null for non-selected answers
             'correct_answers.*' => 'nullable', // Allow null for non-selected correct answers
-            'correct_answer' => $request->question_type === QuestionTypeEnums::MULTIPLE_CHOICE->value ? 'nullable' : 'required',
+            'correct_answer' => 'nullable',
         ]);
         $question = Question::create([
             'exercise_id' => $exercise->id,
@@ -114,7 +114,7 @@ class QuestionController extends Controller
             'question_type' => 'required',
             'answers.*' => 'nullable|string', // Allow null for non-selected answers
             'correct_answers.*' => 'nullable', // Allow null for non-selected correct answers
-            'correct_answer' => 'nullable'
+            'correct_answer' => $request->question_type === QuestionTypeEnums::MULTIPLE_CHOICE->value ? 'nullable' : 'required',
         ]);
 
         $question->update([
