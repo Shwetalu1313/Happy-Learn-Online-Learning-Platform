@@ -22,7 +22,7 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Question Title</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Exercise Title</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
