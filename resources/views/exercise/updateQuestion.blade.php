@@ -54,7 +54,7 @@
 
 
                 <div class="form-group my-3" id="blank" style="display: {{$question->question_type === QuestionTypeEnums::BLANK ? 'block' : 'none'}};">
-                    <label for="blank">Correct Answer</label>
+                    <label for="blank" class="mb-3">Correct Answer</label> <br>
                     <input type="text" id="blank" name="answers[]" class="form-control" value="{{$question->answers->first()->text}}" required>
                 </div>
 
@@ -64,7 +64,7 @@
                         <input type="text" id="answer_{{$index+1}}" name="answers[]" class="form-control" value="{{$answer->text}}" required>
 
                         <input type="checkbox" id="correct_answer_{{$index+1}}" name="correct_answers[]" value="{{$index}}" {{$answer->is_correct ? 'checked' : ''}}>
-                        <label for="correct_answer_{{$index+1}}">Correct Answer</label>
+                        <label for="correct_answer_{{$index+1}}" class="mb-3">Correct Answer</label> <br>
                     @endforeach
 
                     <div id="dynamic_answer_options"></div>  {{-- Container for dynamic options --}}

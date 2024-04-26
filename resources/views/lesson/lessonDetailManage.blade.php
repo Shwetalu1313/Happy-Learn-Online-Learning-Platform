@@ -29,7 +29,7 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                             <form action="{{route('exercise.store')}}" method="post" id="create_exercise_form">
                                 @csrf
                                 @method('POST')
-                                <input type="text" name="content" id="question_content" class="form-control">
+                                <input type="text" name="content" id="question_content" class="form-control" required placeholder="Answer these questions">
                                 <input type="hidden" value="{{$lesson->id}}" name="lesson_id">
                             </form>
                         </div>

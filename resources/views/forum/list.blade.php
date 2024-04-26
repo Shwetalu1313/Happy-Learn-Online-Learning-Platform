@@ -45,10 +45,11 @@
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ Str::limit($forum->text, $limit = 50, $end = '...') }}</h5>
+                            <h5 class="card-title" id="shortText_{{$forum->id}}">{{ Str::limit($forum->text, $limit = 50, $end = '...') }}</h5>
                             @if(strlen($forum->text) > 50)
-                                <a href="#" onclick="showFullText('{{ $forum->id }}')">See more</a>
-                                <span id="fullText_{{ $forum->id }}" style="display: none;">{{ $forum->text }}</span>
+                                <a href="#" onclick="showFullText('{{ $forum->id }}')" id="see_more_{{$forum->id}}">See more ...</a> <br>
+                                <h5 id="fullText_{{ $forum->id }}" style="display: none;" class="my-3">{{ $forum->text }}</h5>
+                                <br>
                             @endif
                             @if($forum->user_id == auth()->id())
                                 <form action="{{ route('forums.destroy', $forum) }}" method="POST" style="display: inline;">
@@ -68,22 +69,24 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="showCommentModalLabel{{ $forum->id }}">Comments for "{{ $forum->text }}"</h5>
+                                            <h5 class="modal-title" id="showCommentModalLabel{{ $forum->id }}">"{{ $forum->text }}"</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             @foreach($forum->comments as $comment)
-                                                <p>{{ $comment->text }}</p>
+                                                <a class="text-secondary-emphasis d-block" href="{{ url('profile/'. $comment->user->id) }}">{{$comment->user->name}} @if($comment->user->id === $forum->user->id)(author) @endif</a>
+                                                <p class="fs-5">{{$comment->text}}</p>
                                                 @if($comment->user_id == auth()->id())
                                                     <form action="{{ route('comments.destroy', $comment) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit">Delete</button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
                                                     </form>
                                                 @endif
+                                                <hr>
                                             @endforeach
                                         </div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer d-flex justify-content-between">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -118,7 +121,11 @@
                             </div>
 
                         </div>
-                        <div class="card-footer text-end">
+                        <div class="card-footer text-end d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="{{asset('/storage/'.$forum->user->avatar)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success me-1" alt="profile">
+                                <a class="text-secondary-emphasis" href="{{ url('profile/'. $forum->user->id) }}">{{$forum->user->name}}</a>
+                            </div>
                             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#showCommentModal{{ $forum->id }}">
                                 {{$forum->comments->count()}} comments <i class="bi bi-chat-dots mx-1"></i>
                             </button>
@@ -131,11 +138,17 @@
 
     <script>
         function showFullText(forumId) {
-            var fullTextElement = document.getElementById('fullText_' + forumId);
+            const fullTextElement = document.getElementById('fullText_' + forumId);
+            const shortText = document.getElementById('shortText_'+forumId);
+            const seeMoreText = document.getElementById('see_more_'+forumId);
             if (fullTextElement.style.display === "none") {
-                fullTextElement.style.display = "inline";
+                fullTextElement.style.display = "block";
+                shortText.classList.add('d-none');
+                seeMoreText.innerText = "see less ...";
             } else {
                 fullTextElement.style.display = "none";
+                shortText.classList.remove('d-none');
+                seeMoreText.innerText = "see more ..."
             }
         }
     </script>
