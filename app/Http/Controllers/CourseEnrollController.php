@@ -62,7 +62,7 @@ class CourseEnrollController extends Controller
             'user_id' => auth()->id(),
             'course_id' => $data['course_id'],
             'amount' => $data['amount'],
-            'receive_amount' => $data['amount'],
+            'receive_amount' => $request->amount,
             'payment_type' => CoursePaymentTypeEnums::CARD->value,
             'card_number' => $data['card_number'],
             'expired_date' => $data['expired_date'],

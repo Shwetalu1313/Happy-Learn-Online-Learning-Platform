@@ -51,6 +51,7 @@
                                     <p class="fs-5 text-secondary-emphasis border-bottom" title="sub-category name">{{$j+1}}. {{$sub_category->name}}</p>
 
                                     @foreach($sub_category->courses as $index => $course)
+                                        @if($course->lessons->count() > 0)
                                         <div class="col-md-4" style="display: block;">
                                             <div class="card">
                                                 <div class="card-header d-block strong-card-header-gradient">
@@ -97,6 +98,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @endif
                                     @endforeach
 
                                 </div>
