@@ -38,7 +38,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-
+{{--            <div class="d-flex align-items-center alert alert-info ">--}}
+{{--                <div class="spinner-border text-info" role="status">--}}
+{{--                    <span class="visually-hidden">Loading...</span>--}}
+{{--                </div>--}}
+{{--                <span class="ms-3">Mail is sending....</span>--}}
+{{--            </div>--}}
             <div class="card">
                 <div class="card-body table-responsive">
                     <h5 class="card-title">{{__('nav.data_tbl')}}</h5>

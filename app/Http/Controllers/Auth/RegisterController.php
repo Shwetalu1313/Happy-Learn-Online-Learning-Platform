@@ -13,6 +13,7 @@ use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Image;
 
 class RegisterController extends Controller
@@ -68,10 +69,11 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\Models\User
+     * @throws ValidationException
      */
-    protected function create(array $data, Request $request)
+    protected function create(array $data)
     {
         $validatedData = $this->validator($data)->validate();
 
@@ -87,19 +89,19 @@ class RegisterController extends Controller
             'about' => '',
         ]);
 
-        if ($user){
-            $systemActivity = [
-                'table_name' => User::getModelName(),
-                'ip_address' => $request->getClientIp(),
-                'user_agent' => $request->userAgent(),
-                'user_id' => auth()->id(),
-                'short' => 'New User Created.' ,
-                'about' => $user->mail . ' is just created.' ,
-                'target' => null,
-                'route_name' => $request->route()->getName(),
-            ];
-            SystemActivity::createActivity($systemActivity);
-        }
+//        if ($user){
+//            $systemActivity = [
+//                'table_name' => User::getModelName(),
+//                'ip_address' => request()->getClientIp(),
+//                'user_agent' => request()->userAgent(),
+//                'user_id' => auth()->id() ?? 0,
+//                'short' => 'New User Created.' ,
+//                'about' => $user->email . ' is just created.' ,
+//                'target' => null,
+//                'route_name' => request()->route()->getName(),
+//            ];
+//            SystemActivity::createActivity($systemActivity);
+//        }
 
         event(new Registered($user));
         // $this->sendEmailVerificationNotification($user);
@@ -116,7 +118,9 @@ class RegisterController extends Controller
 
      protected function registered(HttpRequest $request, $user)
      {
-         return redirect('/home');
+         return redirect('email/verify');
+         //return redirect('/home');
+         //return redirect('emails/notification');
      }
 
 }
