@@ -32,7 +32,7 @@
         @foreach($lesson->exercises as $exercise)
             @if($exercise->questions->count() > 0)
                 <div class="card mb-3">
-                    <div class="card-body">
+                    <div class="card-body bg-success bg-opacity-25">
                         <h4 class="text-secondary">{{$exercise->title}}</h4>
                         <p class="">{{$exercise->content}}</p>
                         <div class="text-end">
@@ -41,7 +41,7 @@
 
                     </div>
                     <div class="card-footer text-center">
-                        <button class="btn btn-primary" onclick="window.location='{{route('exercise.questions_learner_form',$exercise)}}'">Start</button>
+                        <button class="btn btn-warning" onclick="window.location='{{route('exercise.questions_learner_form',$exercise)}}'">Start</button>
                         {{--//This is route to question form--}}
                     </div>
                 </div>
