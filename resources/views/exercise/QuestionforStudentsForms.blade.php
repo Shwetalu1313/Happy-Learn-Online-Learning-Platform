@@ -36,14 +36,14 @@
                 <div class="card">
                     <div class="card-header">{{ $exercise->title }}</div>
 
-                    <div class="card-body">
+                    <div class="card-body bg-secondary-subtle">
                         <form id="exercise_answer_form" method="post" action="{{ route('exercise.submit', $exercise) }}">
                             @csrf
                             @method('POST')
                             <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
                             @foreach($exercise->questions as $question)
                                 <div class="card mb-3">
-                                    <div class="card-body">
+                                    <div class="card-body bg-success bg-opacity-10">
                                         <h4 class="">{{$question->text}}</h4>
                                         @if($question->question_type === App\Enums\QuestionTypeEnums::BLANK)
                                             <input type="text" name="answers[{{$question->id}}]" class="form-control mb-3" required>

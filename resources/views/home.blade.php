@@ -27,7 +27,7 @@
             <img src="{{ asset('./storage/webstyle/owl_learn.webp') }}" class="img-fluid mt-4 owl-center" style="width: 20rem;" alt="Owl Learning Image">
             <div class="container text-center">
                 <p class="mb-5 fs-4 border-animate">Unlock your potential with curated learning experiences. Start today!</p><br>
-                <a href="#" class="button button--hoo d-inline-block">
+                <a href="{{route('register')}}" class="button button--hoo d-inline-block">
                     <div class="button__wrapper">
                         <span class="button__text">START</span>
                     </div>

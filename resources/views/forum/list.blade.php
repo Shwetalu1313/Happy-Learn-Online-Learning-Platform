@@ -71,7 +71,7 @@
             @foreach($lesson->forums as $forum)
                 <div class="col-md-6 mb-4">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body bg--first">
                             <h5 class="card-title" id="shortText_{{$forum->id}}">{{ Str::limit($forum->text, $limit = 50, $end = '...') }}</h5>
                             @if(strlen($forum->text) > 50)
                                 <a href="#" onclick="showFullText('{{ $forum->id }}')" id="see_more_{{$forum->id}}">See more ...</a> <br>
