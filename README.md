@@ -1,5 +1,5 @@
 
-# Online Learning and Job Opportunities Platform
+# Happy Learn: Online Learning
 
 <img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/admin-dashboard.png" alt="Admin Dashboard" width="600"/>
 
