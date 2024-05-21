@@ -2,7 +2,7 @@
 
 @endsection
 
-<footer class="bg--second ary pt-5 pb-1 mt-5">
+<footer class="bg--second ary pt-5 mt-5">
     <div class="container pb-2">
         <div class="row">
 
@@ -58,11 +58,9 @@
         </div>
 
     </div>
-    <div class="row bg--third d-block" style="margin: auto auto; max-height: 2rem;">
+    <div class="row bg-primary-subtle bg-opacity-25 h-100" style="margin: auto auto; max-height: 3rem;">
         <div class="col text-center">
-            <p class="text-second">&copy; {{ Date('Y') }} <strong><span class="text-forth">Khant Nyein
-                                Naing</span></strong>. All rights
-                reserved.</p>
+            <p class="text-secondary-emphasis">&copy; {{ Date('Y') }} <strong><span class="text-forth">Khant Nyein Naing</span></strong>. All rights reserved.</p>
         </div>
     </div>
 

@@ -178,7 +178,7 @@
 
                     <div class="text-md-center">
                         <button class="button-design-primary" onclick="window.location.href='{{ route('users.top_pts') }}'"><i class="bi bi-people"></i> Total Students - {{$students->count()}}</button>
-                        <button class="button-design-success ms-3 margin-small-top"><i class="bi bi-person-fill-add"></i> Join Here</button>
+                        <button class="button-design-success ms-3 margin-small-top" onclick="window.location.href='{{ route('register') }}'"><i class="bi bi-person-fill-add"></i> Join Here</button>
                     </div>
                 </div>
             </div>

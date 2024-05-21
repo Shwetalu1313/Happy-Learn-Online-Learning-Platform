@@ -1,66 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Online Learning and Job Opportunities Platform
 
-## About Laravel
+![System Architecture](https://1drv.ms/i/c/c0a2a77198fbdcb5/EafOE4YDtJ1Mp5-eNTMJFcsBO1giARW0jmDha-BcKvM4YA?e=TXT9Y0)
+![User Interface](https://1drv.ms/i/c/c0a2a77198fbdcb5/Eb_kudyH3pNFtlZbjXefBDgBiEbD-dY4HJbRdylSw9Ye-w?e=H0XlAu)
+![Job Opportunities Module](https://1drv.ms/i/c/c0a2a77198fbdcb5/EWhEFAXUdBpMmhZ2hH1Gco8BDGFQoXV4dz3kV3-kp_Q56A?e=s1wxBO)
+![Language Services Module](https://1drv.ms/i/c/c0a2a77198fbdcb5/EXR7vDLTcYlEhNNrapERN-sB1JKMAaOXWjf9c77bJq0I3g?e=Yd7Gzz)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Introduction
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Welcome to the Online Learning and Job Opportunities Platform! This project is developed as a final year graduate project using the DSDM Agile methodology. It provides an online platform for learning, job opportunities, and language services. The system is developed solo, adhering to the ethics and laws of the BCS (British Computer Society).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## System Scope
 
-## Learning Laravel
+| ID   | Functional Requirement                                                 |
+|------|------------------------------------------------------------------------|
+| FR1  | User registration and authentication                                   |
+| FR2  | Course creation and management                                         |
+| FR3  | Enrollment in courses                                                  |
+| FR4  | Job listings and applications                                          |
+| FR5  | Language translation services                                          |
+| FR6  | User profile management                                                |
+| FR7  | Course and Question and Answers progress tracking                      |
+| FR8  | Messaging system between users and instructors                         |
+| FR9  | Review and rating system for courses and jobs                          |
+| FR10 | Administrative dashboard for managing users, courses, and job listings |
+| FR11 | Course Contributor Access Sharing |                                     |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation Instructions
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+To set up the project locally, follow these steps:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/your-repository.git
+   cd your-repository
 
-## Laravel Sponsors
+2. **Install composer dependencies**
+   ```bash
+   composer install
+   
+3. **Copy the example environment file and configure it**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   
+4. **Configure the `.env` file**
+   ```bash
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=your_database
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   
+5. **Run Database Migrations**
+   ```bash
+   php artisan migrate
+   
+6. **Seed the database (optional)**
+   ```bash
+   php artisan serve
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Ethics and Laws
+This project is developed in adherence to the ethical standards and laws of the British Computer Society (BCS). The platform ensures user privacy, data security, and fair use policies.
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Conclusion
+Thank you for checking out the Online Learning and Job Opportunities Platform. For any issues or contributions, feel free to open an issue or submit a pull request on the GitHub repository.
