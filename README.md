@@ -3,10 +3,10 @@
 
 <img src="https://1drv.ms/i/c/c0a2a77198fbdcb5/EafOE4YDtJ1Mp5-eNTMJFcsBO1giARW0jmDha-BcKvM4YA?e=TXT9Y0">
 
-![System Architecture](https://1drv.ms/i/c/c0a2a77198fbdcb5/EafOE4YDtJ1Mp5-eNTMJFcsBO1giARW0jmDha-BcKvM4YA?e=TXT9Y0)
-![User Interface](https://1drv.ms/i/c/c0a2a77198fbdcb5/Eb_kudyH3pNFtlZbjXefBDgBiEbD-dY4HJbRdylSw9Ye-w?e=H0XlAu)
-![Job Opportunities Module](https://1drv.ms/i/c/c0a2a77198fbdcb5/EWhEFAXUdBpMmhZ2hH1Gco8BDGFQoXV4dz3kV3-kp_Q56A?e=s1wxBO)
-![Language Services Module](https://1drv.ms/i/c/c0a2a77198fbdcb5/EXR7vDLTcYlEhNNrapERN-sB1JKMAaOXWjf9c77bJq0I3g?e=Yd7Gzz)
+![Admin Dashboard](https://1drv.ms/i/c/c0a2a77198fbdcb5/EafOE4YDtJ1Mp5-eNTMJFcsBO1giARW0jmDha-BcKvM4YA?e=TXT9Y0)
+![User Home Page](https://1drv.ms/i/c/c0a2a77198fbdcb5/Eb_kudyH3pNFtlZbjXefBDgBiEbD-dY4HJbRdylSw9Ye-w?e=H0XlAu)
+![User Profile (Galaxy Fold)](https://1drv.ms/i/c/c0a2a77198fbdcb5/EWhEFAXUdBpMmhZ2hH1Gco8BDGFQoXV4dz3kV3-kp_Q56A?e=s1wxBO)
+![User Home Page (iPhone 13 Pro)](https://1drv.ms/i/c/c0a2a77198fbdcb5/EXR7vDLTcYlEhNNrapERN-sB1JKMAaOXWjf9c77bJq0I3g?e=Yd7Gzz)
 
 ## Introduction
 
