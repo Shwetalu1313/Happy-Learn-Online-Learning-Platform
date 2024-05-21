@@ -1,10 +1,13 @@
 
 # Online Learning and Job Opportunities Platform
 
-![Admin Dashboard](https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/admin-dashboard.png)
-![User Home Page](https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/final-year-home.png)
-![User Profile (Galaxy Fold)](https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/Galaxy-Fold-user-profile.png)
-![User Home Page (iPhone 13 Pro)](https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/iPhone-13-PRO-MAX-home.png)
+<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/admin-dashboard.png" alt="Admin Dashboard" width="600"/>
+
+<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/final-year-home.png" alt="User Home Page" width="600"/>
+
+<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/Galaxy-Fold-user-profile.png" alt="User Profile (Galaxy Fold)" width="600"/>
+
+<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/iPhone-13-PRO-MAX-home.png" alt="User Home Page (iPhone 13 Pro)" width="600"/>
 
 ## Introduction
 
