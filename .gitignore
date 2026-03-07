@@ -17,3 +17,10 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Local AI/agent tooling artifacts
+/.agents
+/.ai
+/.codex
+/AGENTS.md
+/boost.json
