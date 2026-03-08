@@ -1,67 +1,42 @@
-@section('styles')
-
-@endsection
-
-<footer class="bg--second ary pt-5 mt-5">
-    <div class="container pb-2">
-        <div class="row">
-
-            {{-- social media icon --}}
-            <div class="text-center" style="height: 100%">
-                <div class="glitch-wrapper mb-3">
-                    <div class="glitch" data-text="Follow Us">Follow Us</div>
-                </div>
-
-                <div class="d-flex justify-content-center">
-                    <div class="row gx-5 socialmedia">
-                        <i class="bi bi-facebook fs-2 col cur-poi" title="Facebook"></i>
-                        <i class="bi bi-twitter-x fs-2 col cur-poi" title="Twitter-X"></i>
-                        <i class="bi bi-telegram fs-2 col cur-poi" title="Telegram"></i>
-                        <i class="bi bi-github fs-2 col cur-poi" title="Github"></i>
-                        <i class="bi bi-google fs-2 col cur-poi" title="Google"></i>
-                    </div>
+<footer class="hl-footer pt-5">
+    <div class="container">
+        <div class="row g-4 pb-4">
+            <div class="col-lg-4">
+                <h5 class="hl-footer-title mb-3">{{ config('app.name', 'Happy Learn') }}</h5>
+                <p class="hl-footer-text mb-3">{{ __('footer.about_us_content') }}</p>
+                <div class="d-flex gap-2">
+                    <a href="#" class="hl-social" title="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="hl-social" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="hl-social" title="Telegram"><i class="bi bi-telegram"></i></a>
+                    <a href="#" class="hl-social" title="Github"><i class="bi bi-github"></i></a>
                 </div>
             </div>
-            {{-- end social media icon --}}
-        </div>
-        <hr class="custom-hr">
-        <div class="row gx-3">
-            <div class="px-4 col-lg-4 col-12 mb-lg-1 mb-3 border-end border-primary">
-                <h2 class="text-third fs-bold mb-3">{{ __('footer.about_us') }}</h2>
-                <p class="text-start fs-5">{{ __('footer.about_us_content') }}</p>
 
-            </div>
-
-            <div class="px-4 col-lg-4 col-12 mb-lg-1 mb-3 border-end border-primary">
-                <h2 class="text-third fs-bold mb-3">{{ __('footer.quick_links') }}</h2>
-                <ul class="list-unstyled border-primary">
-                    <li><a href="{{route('job.intro')}}" class="fs-5">Home</a></li>
-                    <li><a href="" class="fs-5">Courses</a></li>
-                    <li><a href="" class="fs-5 {{is_active_route(['job.intro','job.listV2','job.detail'])}}">{{ __('nav.opportunities') }}</a></li>
+            <div class="col-sm-6 col-lg-4">
+                <h6 class="hl-footer-title mb-3">{{ __('footer.quick_links') }}</h6>
+                <ul class="list-unstyled d-grid gap-2 mb-0">
+                    <li><a href="{{ route('home') }}" class="hl-footer-link">{{ __('nav.home') }}</a></li>
+                    <li><a href="{{ route('course.list.learners') }}" class="hl-footer-link">{{ __('course.title') }}</a></li>
+                    <li><a href="{{ route('job.intro') }}" class="hl-footer-link">{{ __('nav.opportunities') }}</a></li>
+                    <li><a href="{{ route('users.teachers') }}" class="hl-footer-link">{{ __('nav.teacher_lst') }}</a></li>
                 </ul>
             </div>
 
-            <div class="px-4 col-lg-4 col-12 mb-lg-1 mb-3">
-                <h2 class="fw-normal text-third fs-light mb-3">{{ __('footer.contact_us') }}</h2>
-                <ul class="list-unstyled border-primary">
-                    <li class="mb-2"><span class="me-3"><strong class="me-2"><i
-                                    class="bi bi-building-gear fs-4"></i></strong></span>{{ __('footer.Address') }}
-                    </li>
-                    <li class="mb-2"><span class="me-3"><strong class="me-2"><i
-                                    class="bi bi-envelope-at-fill fs-4"></i></strong></span>{{ __('footer.mail') }}
-                    </li>
-                    <li class="mb-2"><span class="me-3"><strong class="me-2"><i
-                                    class="bi bi-telephone-fill fs-4"></i></strong></span>{{ __('footer.phone') }}
-                    </li>
+            <div class="col-sm-6 col-lg-4">
+                <h6 class="hl-footer-title mb-3">{{ __('footer.contact_us') }}</h6>
+                <ul class="list-unstyled d-grid gap-2 mb-0">
+                    <li class="hl-footer-text"><i class="bi bi-geo-alt me-2"></i>{{ __('footer.Address') }}</li>
+                    <li class="hl-footer-text"><i class="bi bi-envelope-at me-2"></i>{{ __('footer.mail') }}</li>
+                    <li class="hl-footer-text"><i class="bi bi-telephone me-2"></i>{{ __('footer.phone') }}</li>
                 </ul>
             </div>
         </div>
-
     </div>
-    <div class="row bg-primary-subtle bg-opacity-25 h-100" style="margin: auto auto; max-height: 3rem;">
-        <div class="col text-center">
-            <p class="text-secondary-emphasis">&copy; {{ Date('Y') }} <strong><span class="text-forth">Khant Nyein Naing</span></strong>. All rights reserved.</p>
+
+    <div class="hl-footer-bottom py-3">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div>&copy; {{ Date('Y') }} {{ config('app.name', 'Happy Learn') }}. All rights reserved.</div>
+            <div class="small">Built for modern learning experience.</div>
         </div>
     </div>
-
 </footer>

@@ -39,6 +39,205 @@
     ])
 
     <style>
+        :root {
+            --hl-bg: #060b16;
+            --hl-surface: rgba(12, 18, 33, 0.88);
+            --hl-surface-strong: #0f1a2f;
+            --hl-text: #e8efff;
+            --hl-muted: #9aa8c9;
+            --hl-accent: #47d7ac;
+            --hl-accent-2: #5aa6ff;
+            --hl-border: rgba(116, 147, 209, 0.28);
+            --hl-shadow: 0 16px 42px rgba(1, 8, 24, 0.36);
+        }
+
+        body {
+            background:
+                radial-gradient(1200px 600px at 10% -15%, rgba(44, 87, 255, 0.2), transparent 60%),
+                radial-gradient(1000px 500px at 100% 0%, rgba(63, 189, 145, 0.17), transparent 55%),
+                var(--hl-bg);
+            color: var(--hl-text);
+        }
+
+        .hl-navbar {
+            background: var(--hl-surface);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--hl-border);
+            box-shadow: var(--hl-shadow);
+            padding: 0.55rem 0;
+            z-index: 1030;
+        }
+
+        .hl-brand {
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            text-decoration: none;
+        }
+
+        .hl-brand:hover {
+            color: #ffffff;
+        }
+
+        .hl-brand-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--hl-accent), var(--hl-accent-2));
+            box-shadow: 0 0 0 6px rgba(71, 215, 172, 0.16);
+        }
+
+        .hl-nav-link {
+            color: #cbd8f7;
+            font-weight: 600;
+            font-size: 0.96rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .hl-nav-link:hover,
+        .hl-nav-link.active {
+            color: #ffffff;
+            background: rgba(90, 166, 255, 0.18);
+        }
+
+        .hl-nav-toggler {
+            border-color: rgba(167, 193, 244, 0.4);
+        }
+
+        .hl-nav-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(90, 166, 255, 0.25);
+        }
+
+        .hl-search {
+            background: rgba(7, 12, 24, 0.72);
+            border: 1px solid var(--hl-border);
+            border-radius: 12px;
+            padding: 0.28rem;
+            min-width: 260px;
+        }
+
+        .hl-search-wrap {
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .hl-search-wrap {
+                width: auto;
+            }
+        }
+
+        .hl-search .form-control {
+            background: transparent;
+            border: 0;
+            color: #e5edff;
+            min-width: 0;
+        }
+
+        .hl-search .form-control:focus {
+            box-shadow: none;
+        }
+
+        .hl-search .form-control::placeholder {
+            color: #8ea0c7;
+        }
+
+        .hl-search .btn {
+            border-radius: 9px;
+            border-color: rgba(143, 171, 230, 0.42);
+            color: #d9e6ff;
+        }
+
+        .hl-icon-btn {
+            color: #dbe7ff;
+            border-radius: 11px;
+            padding: 0.38rem 0.56rem;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .hl-icon-btn:hover {
+            color: #ffffff;
+            border-color: rgba(155, 185, 244, 0.38);
+            background: rgba(83, 128, 214, 0.18);
+        }
+
+        .hl-dropdown {
+            background: #0f1b31;
+            border: 1px solid var(--hl-border);
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            padding: 0.4rem;
+        }
+
+        .hl-dropdown .dropdown-item {
+            color: #d5e3ff;
+            border-radius: 10px;
+            font-size: 0.94rem;
+        }
+
+        .hl-dropdown .dropdown-item:hover {
+            background: rgba(90, 166, 255, 0.18);
+            color: #ffffff;
+        }
+
+        .hl-footer {
+            margin-top: 3.5rem;
+            background:
+                radial-gradient(800px 320px at 0% -20%, rgba(69, 132, 255, 0.22), transparent 62%),
+                radial-gradient(600px 260px at 100% 0%, rgba(59, 203, 162, 0.18), transparent 55%),
+                #070d1b;
+            border-top: 1px solid rgba(128, 159, 222, 0.2);
+            color: #d3def8;
+        }
+
+        .hl-footer-title {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.02rem;
+            letter-spacing: 0.01em;
+        }
+
+        .hl-footer-text,
+        .hl-footer-link {
+            color: #9fb0d7;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .hl-footer-link:hover {
+            color: #ffffff;
+        }
+
+        .hl-social {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #cfe0ff;
+            border: 1px solid rgba(154, 181, 239, 0.34);
+            transition: all 0.2s ease;
+        }
+
+        .hl-social:hover {
+            color: #ffffff;
+            border-color: rgba(111, 171, 255, 0.8);
+            background: rgba(87, 153, 245, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hl-footer-bottom {
+            border-top: 1px solid rgba(123, 152, 206, 0.2);
+            color: #90a5d0;
+            font-size: 0.88rem;
+        }
+
         .initials-avatar {
             --ia-size: 40px;
             width: var(--ia-size);
@@ -88,12 +287,13 @@
 
 <body data-bs-theme="dark">
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg--second shadow-sm">
-            <div class="container ">
-                <a class="navbar-brand fs-3" style="color: aqua;" href="{{ url('/') }}">
+        <nav class="navbar navbar-expand-lg hl-navbar sticky-top">
+            <div class="container-xl">
+                <a class="navbar-brand hl-brand fs-4" href="{{ url('/') }}">
+                    <span class="hl-brand-dot"></span>
                     {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                <button class="navbar-toggler hl-nav-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
