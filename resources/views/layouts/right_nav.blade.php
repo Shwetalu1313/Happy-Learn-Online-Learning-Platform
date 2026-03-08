@@ -99,11 +99,13 @@
         <li class="nav-item dropdown">
             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                @if (Auth::user()->avatar)
-                    <img id="user_image" class="image rounded-circle"
-                         src="{{ asset('storage/' . ltrim(Auth::user()->avatar, '/')) }}" alt="profile_image"
-                         style="width: 60px;height: 60px; padding: 10px; margin: 0px; ">
-                @endif
+                <x-initials-avatar
+                    :src="Auth::user()->avatar ? asset('storage/' . ltrim(Auth::user()->avatar, '/')) : null"
+                    :name="Auth::user()->name"
+                    size="44"
+                    class="border border-2 border-secondary-subtle"
+                    img-class="rounded-circle"
+                />
             </a>
 
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">

@@ -38,10 +38,16 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
                 <div class="card-title">Course Update Form</div>
                 <button type="button" class="btn border-0 btn-outline-secondary" id="creator" data-toggle="tooltip" data-placement="left" title="{{__('course.label_creator')}}">
-                    <img src="{{asset('/storage/'.$course->creator->avatar)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success " alt="profile">
+                    <x-initials-avatar
+                        :src="$course->creator->avatar ? asset('storage/' . ltrim($course->creator->avatar, '/')) : null"
+                        :name="$course->creator->name"
+                        size="25"
+                        class="border border-success"
+                        img-class="rounded-circle"
+                    />
                     {{$course->creator->name}}
                 </button>
             </div>
@@ -269,4 +275,3 @@
         });
     </script>
 @endsection
-

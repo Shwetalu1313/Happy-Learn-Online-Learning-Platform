@@ -18,7 +18,13 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                        <img src="{{asset('storage/'.$user->avatar)}}" alt="Profile" class="rounded-circle {{is_active_route_val('user.profile','img-fluid','')}}">
+                        <x-initials-avatar
+                            :src="$user->avatar ? asset('storage/' . ltrim($user->avatar, '/')) : null"
+                            :name="$user->name"
+                            size="140"
+                            class="{{ is_active_route_val('user.profile','img-fluid','') }}"
+                            img-class="rounded-circle"
+                        />
                         <h2>{{$user->name}}</h2>
                         <h3>{{$user->role}}</h3>
                         <div class="social-links mt-2">
@@ -224,4 +230,3 @@
 @section('scripts')
     <script src="{{asset('./assets/js/imagePreviewForm.js')}}"></script>
 @endsection
-

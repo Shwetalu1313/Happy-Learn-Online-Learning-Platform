@@ -38,6 +38,50 @@
     'resources/css/quill_val.css',
     ])
 
+    <style>
+        .initials-avatar {
+            --ia-size: 40px;
+            width: var(--ia-size);
+            height: var(--ia-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #1d3557, #274c77);
+            color: #e7f1ff;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        .initials-avatar__img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .initials-avatar__fallback {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(var(--ia-size) * 0.38);
+            line-height: 1;
+        }
+
+        .initials-avatar.show-fallback .initials-avatar__fallback {
+            display: flex;
+        }
+
+        .initials-avatar.show-fallback .initials-avatar__img {
+            display: none;
+        }
+    </style>
 
     @yield('styles')
 </head>

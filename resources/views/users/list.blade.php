@@ -40,7 +40,13 @@
                             <tr>
                                 <td>{{$i+1}}</td>
                                 <td class="hover-name" data-toggle="tooltip" title="{{__('nav.click_to_see_dtl')}}" onclick="window.location='{{ route('user.dtl.show', $user) }}';">
-                                    <img src="{{asset('/storage/'.$user->avatar)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success me-3" alt="profile">
+                                    <x-initials-avatar
+                                        :src="$user->avatar ? asset('storage/' . ltrim($user->avatar, '/')) : null"
+                                        :name="$user->name"
+                                        size="25"
+                                        class="border border-success me-3 align-middle"
+                                        img-class="rounded-circle"
+                                    />
                                     {{ $user->name }}
                                 </td>
                                 <td class="">{{ $user->email }}</td>

@@ -138,13 +138,18 @@
             min-width: 0;
         }
 
-        .forum-avatar {
+        .forum-avatar-shell {
             width: 34px;
             height: 34px;
-            border-radius: 999px;
-            object-fit: cover;
             border: 1px solid #3a4f72;
             background: #152338;
+            flex: 0 0 auto;
+        }
+
+        .forum-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .forum-author h6 {
@@ -378,7 +383,13 @@
                                 <div class="forum-feed-body">
                                     <div class="forum-head">
                                         <div class="forum-author">
-                                            <img src="{{ asset('storage/'.ltrim($forum->user->avatar, '/')) }}" class="forum-avatar" alt="profile">
+                                            <x-initials-avatar
+                                                :src="$forum->user->avatar ? asset('storage/' . ltrim($forum->user->avatar, '/')) : null"
+                                                :name="$forum->user->name"
+                                                size="34"
+                                                class="forum-avatar-shell"
+                                                img-class="forum-avatar"
+                                            />
                                             <div>
                                                 <h6>
                                                     <a class="text-decoration-none" href="{{ url('profile/'. $forum->user->id) }}">{{ $forum->user->name }}</a>
