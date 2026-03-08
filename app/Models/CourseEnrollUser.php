@@ -5,17 +5,17 @@ namespace App\Models;
 use App\Enums\CoursePaymentTypeEnums;
 use App\Enums\UserRoleEnums;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use App\Models\CurrencyExchange;
 
 class CourseEnrollUser extends Model
 {
-    use HasFactory; use HasUuids;
+    use HasFactory;
+    use HasUuids;
 
     protected $fillable = [
         'user_id',
@@ -31,7 +31,7 @@ class CourseEnrollUser extends Model
     protected $casts = [
         'payment_type' => CoursePaymentTypeEnums::class,
         'amount' => 'integer',
-        'cvv' => 'integer'
+        'cvv' => 'integer',
     ];
 
     public static function getModelName(): string
@@ -39,11 +39,13 @@ class CourseEnrollUser extends Model
         return 'CourseEnrollUser';
     }
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function course(): BelongsTo {
+    public function course(): BelongsTo
+    {
         return $this->belongsTo(Course::class, 'course_id');
     }
 
@@ -75,27 +77,33 @@ class CourseEnrollUser extends Model
         }
     }
 
-
-    public static function PopularCourses(){
-        $startDate = Carbon::now()->subMonth(3)->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
-
-        $topCourses = CourseEnrollUser::select('course_id', DB::raw('count(*) as enrollments'))
+    public static function PopularCourses()
+    {
+        return CourseEnrollUser::select('course_id', DB::raw('count(*) as enrollments'))
             ->where('created_at', '>=', now()->subMonths(3))
             ->groupBy('course_id')
+            ->with([
+                'course' => fn ($query) => $query
+                    ->select(['id', 'title', 'courseType', 'fees', 'state', 'createdUser_id', 'created_at'])
+                    ->with([
+                        'creator:id,name,role',
+                        'contribute_courses' => fn ($contributorQuery) => $contributorQuery
+                            ->select(['id', 'course_id', 'user_id'])
+                            ->with(['user:id,name,role']),
+                    ])
+                    ->withCount('lessons'),
+            ])
             ->orderByDesc('enrollments')
             ->limit(6)
             ->get();
-
-        return $topCourses;
     }
 
     private static function format_percentage($value): string
     {
         if (abs($value - 100) < 1e-6) {  // Check for close to 100%
-            return "100%";
+            return '100%';
         } else {
-            return number_format($value , 2); // Multiply by 100 for percentage, format with 2 decimals
+            return number_format($value, 2); // Multiply by 100 for percentage, format with 2 decimals
         }
     }
 
@@ -104,12 +112,12 @@ class CourseEnrollUser extends Model
 
         $now = Carbon::now();
         $currentMonthEnrollments = CourseEnrollUser::whereMonth('created_at', $now->month)
-                                    ->whereYear('created_at', $now->year)
-                                    ->count();
+            ->whereYear('created_at', $now->year)
+            ->count();
 
         // Get enrollments for the previous month
-        $lastMonthEnrollments = CourseEnrollUser::whereMonth('created_at',$now->subMonth()->month)
-                                    ->whereYear('created_at', $now->year)->count();
+        $lastMonthEnrollments = CourseEnrollUser::whereMonth('created_at', $now->subMonth()->month)
+            ->whereYear('created_at', $now->year)->count();
 
         // Calculate percentage change
         $percentage = 0;
@@ -118,7 +126,7 @@ class CourseEnrollUser extends Model
         }
 
         // Format the percentage to two decimal places
-        //$percentageChange = number_format($percentage, 2);
+        // $percentageChange = number_format($percentage, 2);
         $percentageChange = self::format_percentage($percentage);
 
         // Determine if the enrollment has improved
@@ -155,7 +163,7 @@ class CourseEnrollUser extends Model
             ->sum('amount');
 
         // Get enrollments for the previous month
-        $previousMonthIncome = CourseEnrollUser::whereMonth('created_at',$now->subMonth()->month)
+        $previousMonthIncome = CourseEnrollUser::whereMonth('created_at', $now->subMonth()->month)
             ->whereYear('created_at', $now->year)->sum('amount');
 
         // Convert to UsDollar
@@ -164,8 +172,8 @@ class CourseEnrollUser extends Model
         $previousMonthUsDollar = MoneyExchange($previousMonthIncome, $us_avg);
 
         // Convert income amounts to K format if greater than or equal to 1000
-        $currentMonthIncomeFormatted = $currentMonthUsDollar >= 1000 ? number_format($currentMonthUsDollar / 1000, 1) . 'K' : $currentMonthUsDollar;
-        $previousMonthIncomeFormatted = $previousMonthUsDollar >= 1000 ? number_format($previousMonthUsDollar / 1000, 1) . 'K' : $previousMonthUsDollar;
+        $currentMonthIncomeFormatted = $currentMonthUsDollar >= 1000 ? number_format($currentMonthUsDollar / 1000, 1).'K' : $currentMonthUsDollar;
+        $previousMonthIncomeFormatted = $previousMonthUsDollar >= 1000 ? number_format($previousMonthUsDollar / 1000, 1).'K' : $previousMonthUsDollar;
 
         // Calculate percentage change
         $percentageChange = 0;

@@ -1,4 +1,22 @@
 <ul class="navbar-nav ms-auto">
+    @auth
+        <li class="nav-item my-auto me-2 d-none d-lg-block">
+            <form action="{{ route('global.search') }}" method="GET" class="d-flex">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    class="form-control form-control-sm"
+                    placeholder="Search..."
+                    minlength="2"
+                    style="max-width: 220px;"
+                >
+                <button type="submit" class="btn btn-sm btn-outline-secondary ms-1">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </li>
+    @endauth
     <li class="nav-item my-auto">
         @include('language-switch')
     </li>
@@ -21,7 +39,7 @@
                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                 @if (Auth::user()->avatar)
                     <img id="user_image" class="image rounded-circle"
-                         src="{{ '/storage/avatars/' . Auth::user()->image }}" alt="profile_image"
+                         src="{{ asset('storage/' . ltrim(Auth::user()->avatar, '/')) }}" alt="profile_image"
                          style="width: 60px;height: 60px; padding: 10px; margin: 0px; ">
                 @endif
 

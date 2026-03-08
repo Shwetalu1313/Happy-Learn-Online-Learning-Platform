@@ -48,7 +48,7 @@
                                 <option value="{{ $category->id }}" @if($category->name === $sub_category->category->name) selected @endif>{{ $loop->iteration }}. {{ $category->name }}</option>
                             @endforeach
                         </select>
-                        @error('select')
+                        @error('category_id')
                         <span class="invalid-feedback" role="alert">
                            <strong>{{ $message }}</strong>
                         </span>

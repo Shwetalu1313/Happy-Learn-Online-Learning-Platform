@@ -21,6 +21,15 @@ class SubCategory extends Model
         return 'SubCategory';
     }
 
+    public function getImgPathAttribute($value): string
+    {
+        if (! is_string($value) || trim($value) === '' || trim($value) === '0') {
+            return 'cate/sub_cate/sample.jpg';
+        }
+
+        return str_replace('\\', '/', trim($value));
+    }
+
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class,'category_id','id');

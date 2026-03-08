@@ -40,29 +40,27 @@ class SubCategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'select' => 'required'
+            'select' => 'required',
         ]);
-        //dd($data);
 
-        // Check if an image has been uploaded
+        $img_path = null;
         if ($request->hasFile('avatar')) {
-            // Store the uploaded image and get its path
             $img_path = $request->file('avatar')->store('cate/sub_cate','public');
-        } else {
-            // If no image is uploaded, set the path to null
-            $img_path = null;
+            if (!is_string($img_path) || trim($img_path) === '') {
+                return redirect()->back()->withInput()->with('error', 'Image upload failed. Please check storage permissions.');
+            }
         }
 
         $subcategory = SubCategory::create([
             'name' => $data['name'],
-            'img_path' => $img_path ?? 'cate/sample.jpg',
+            'img_path' => $img_path ?? 'cate/sub_cate/sample.jpg',
             'category_id' => $data['select'],
         ]);
 
 
         if ($subcategory){
             $systemActivity = [
-                'table_name' => Category::getModelName(),
+                'table_name' => SubCategory::getModelName(),
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
@@ -113,25 +111,28 @@ class SubCategoryController extends Controller
         ]);
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $avatarPath = $avatar->store('cate', 'public');
+            $avatarPath = $avatar->store('cate/sub_cate', 'public');
+            if (!is_string($avatarPath) || trim($avatarPath) === '') {
+                return redirect()->back()->withInput()->with('error', 'Image upload failed. Please check storage permissions.');
+            }
             $validatedData['img_path'] = $avatarPath;
         }
         $updated = $subCategory->update($validatedData);
 
         if ($updated){
             $systemActivity = [
-                'table_name' => Category::getModelName(),
+                'table_name' => SubCategory::getModelName(),
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => 'A new category ('.$subCategory->name.') is updated.',
-                'about' => 'A new category ('.$subCategory->name.') is updated by '. Auth::user()->name . '('.auth()->id().').',
+                'short' => 'A sub-category ('.$subCategory->name.') is updated.',
+                'about' => 'A sub-category ('.$subCategory->name.') is updated by '. Auth::user()->name . '('.auth()->id().').',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
             SystemActivity::createActivity($systemActivity);
 
-            return redirect()->route('category.sub_category.index')->with('success', __('jobapplication.job_update_alert'));
+            return redirect()->route('sub_category.index')->with('success', __('jobapplication.job_update_alert'));
 
         }else {
             return redirect()->back()->with('error', 'Data input process failed.');
@@ -145,12 +146,12 @@ class SubCategoryController extends Controller
     {
         if ($subCategory->delete()){
             $systemActivity = [
-                'table_name' => Category::getModelName(),
+                'table_name' => SubCategory::getModelName(),
                 'ip_address' => $request->getClientIp() ,
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => 'A new category ('.$subCategory->name.') was deleted.',
-                'about' => 'A new category ('.$subCategory->name.') id = ('.$subCategory->id.') was deleted by '. Auth::user()->name . '('.auth()->id().').',
+                'short' => 'A sub-category ('.$subCategory->name.') was deleted.',
+                'about' => 'A sub-category ('.$subCategory->name.') id = ('.$subCategory->id.') was deleted by '. Auth::user()->name . '('.auth()->id().').',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];

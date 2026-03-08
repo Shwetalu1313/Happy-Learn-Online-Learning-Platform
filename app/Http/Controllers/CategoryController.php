@@ -31,10 +31,12 @@ class CategoryController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Check if an image has been uploaded
+        $img_path = null;
         if ($request->hasFile('avatar')) {
-            // Store the uploaded image and get its path
             $img_path = $request->file('avatar')->store('cate','public');
+            if (!is_string($img_path) || trim($img_path) === '') {
+                return redirect()->back()->withInput()->with('error', 'Image upload failed. Please check storage permissions.');
+            }
         }
 
         $category = Category::create([
@@ -110,6 +112,9 @@ class CategoryController extends Controller
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             $avatarPath = $avatar->store('cate', 'public');
+            if (!is_string($avatarPath) || trim($avatarPath) === '') {
+                return redirect()->back()->withInput()->with('error', 'Image upload failed. Please check storage permissions.');
+            }
             $validatedData['img_path'] = $avatarPath;
         }
         $updated = $category->update($validatedData);

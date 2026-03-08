@@ -1,20 +1,7 @@
 @extends('layouts.app')
 @section('content')
     @php
-        use App\Models\Category;
         use App\Enums\CourseStateEnums;
-        use App\Models\Course;
-        use App\Models\CourseEnrollUser;
-        use App\Models\User;
-        use App\Models\CurrencyExchange;
-        use App\Enums\CourseTypeEnums;
-
-        $us_ex = CurrencyExchange::getUSD();
-        $basicCourseEnum = CourseTypeEnums::BASIC->value;
-        $newCourses = Course::getNewCourseLimitSix();
-        $popularCourses = CourseEnrollUser::PopularCourses();
-        $students = User::students();
-        $categories = Category::all();
     @endphp
 
     <div class="container py-5">
@@ -41,17 +28,17 @@
 
         <div class="container p-5 border rounded border-primary-subtle">
             @foreach($categories as $category)
-                @if($category->sub_categories->count() != 0)
+                @if($category->sub_categories->isNotEmpty())
                     <div class="row">
                         <p class="fs-4 text-info" title="category name">{{$category->name}}</p>
 
                         @foreach($category->sub_categories as $j => $sub_category)
-                            @if($sub_category->courses->count() != 0)
+                            @if($sub_category->courses->isNotEmpty())
                                 <div class="row mb-4">
                                     <p class="fs-5 text-secondary-emphasis border-bottom" title="sub-category name">{{$j+1}}. {{$sub_category->name}}</p>
 
                                     @foreach($sub_category->courses as $index => $course)
-                                        @if($course->lessons->count() > 0)
+                                        @if($course->lessons_count > 0)
                                         <div class="col-md-4" style="display: block;">
                                             <div class="card">
                                                 <div class="card-header d-block strong-card-header-gradient">
@@ -82,7 +69,7 @@
                                                     <hr>
                                                     <div class="d-flex justify-content-around">
                                                         <p class="course-index text-secondary">No. {{$index + 1}}</p> <!-- Display course index -->
-                                                        <p>{{$course->lessons->count()}} - lessons</p>
+                                                        <p>{{$course->lessons_count}} - lessons</p>
                                                         <details>
                                                             <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
                                                             <ol>

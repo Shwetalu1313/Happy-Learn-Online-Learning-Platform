@@ -100,7 +100,6 @@
 <script src="{{asset('./assets/vendor/tinymce/tinymce.min.js')}}"></script>
 <script src="{{asset('./assets/vendor/php-email-form/validate.js')}}"></script>
 <script src="{{asset('./assets/js/ImageLargeSizeTracker.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
@@ -167,28 +166,6 @@
     </script>
 @endif
 
-<script>
-    $(document).ready(function() {
-        // URL of your Laravel route
-        var apiUrl = "http://127.0.0.1:8000/fetch-data";
-
-        // Make AJAX request
-        $.ajax({
-            url: apiUrl,
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                // Handle the response data
-                console.log(data); // You can replace this with your own handling logic
-            },
-            error: function(xhr, status, error) {
-                // Handle errors
-                console.error("Error fetching data:", error);
-            }
-        });
-    });
-
-</script>
 @yield('scripts')
 
 

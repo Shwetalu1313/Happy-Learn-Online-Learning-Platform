@@ -21,9 +21,9 @@
                                     @elseif($category->sub_categories->count() > 0)
                                         <ul class="list-group" style="cursor: pointer">
                                             @foreach($category->sub_categories as $j => $subcategory)
-                                                @if($subcategory->courses->count() > 0)
+                                                @if($subcategory->courses_count > 0)
                                                     <li class="list-group-item list-group-item-info">{{++$counter}}. {{$subcategory->name}}
-                                                        <span class="badge text-bg-primary">{{$subcategory->courses->count()}}</span>
+                                                        <span class="badge text-bg-primary">{{$subcategory->courses_count}}</span>
                                                     </li>
                                                 @else
                                                     <li class="list-group-item list-group-item-info">{{++$counter}}. {{$subcategory->name}}

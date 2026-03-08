@@ -20,6 +20,15 @@ class Category extends Model
         return 'Category';
     }
 
+    public function getImgPathAttribute($value): string
+    {
+        if (! is_string($value) || trim($value) === '' || trim($value) === '0') {
+            return 'cate/sample.jpg';
+        }
+
+        return str_replace('\\', '/', trim($value));
+    }
+
     public function sub_categories(): HasMany{
         return $this->hasMany(SubCategory::class);
 

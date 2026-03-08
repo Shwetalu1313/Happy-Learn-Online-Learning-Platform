@@ -1,22 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-
     @php
-    use App\Models\Course;
-    use App\Models\CourseEnrollUser;
-    use App\Models\User;
-    use App\Enums\CourseStateEnums;
-    use App\Models\CurrencyExchange;
-    use App\Enums\CourseTypeEnums;
-
-    $us_ex = CurrencyExchange::getUSD();
-    $basicCourseEnum = CourseTypeEnums::BASIC->value;
-    $newCourses = Course::getNewCourseLimitSix();
-    $popularCourses = CourseEnrollUser::PopularCourses();
-    $students = User::students();
-    $titlePage = 'home';
- @endphp
+        use App\Enums\CourseStateEnums;
+    @endphp
 
     <section class="container-fluid w-100 h-100 py-5 mb-3">
         <div class="d-flex flex-column justify-content-center align-items-center">
@@ -90,7 +77,7 @@
                         @endif
                             <hr>
                         <div class="d-flex justify-content-around">
-                            <p>{{$newCourse->lessons->count()}} - lessons</p>
+                            <p>{{$newCourse->lessons_count}} - lessons</p>
                             <details>
                                 <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
                                 <ol>
@@ -146,7 +133,7 @@
 
                             <hr>
                         <div class="d-flex justify-content-around">
-                            <p>{{$newCourse->course->lessons->count()}} - lessons</p>
+                            <p>{{$newCourse->course->lessons_count}} - lessons</p>
                             <details>
                                 <summary class="myHover"><i class="bi bi-person-video3 me-2"></i> Teachers</summary>
                                 <ol>
@@ -177,13 +164,13 @@
                     <p>Become a part of our dynamic community and seize the opportunity to excel! With a total student count reaching new heights, now is the perfect time to join us. Don't let the fear of missing out hold you back—embrace the chance to grow, learn, and succeed alongside your peers. Your journey towards success starts here. Enroll now and be part of something extraordinary!</p>
 
                     <div class="text-md-center">
-                        <button class="button-design-primary" onclick="window.location.href='{{ route('users.top_pts') }}'"><i class="bi bi-people"></i> Total Students - {{$students->count()}}</button>
+                        <button class="button-design-primary" onclick="window.location.href='{{ route('users.top_pts') }}'"><i class="bi bi-people"></i> Total Students - {{$studentCount}}</button>
                         <button class="button-design-success ms-3 margin-small-top" onclick="window.location.href='{{ route('register') }}'"><i class="bi bi-person-fill-add"></i> Join Here</button>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-around align-items-center">
-                <img src="{{ asset('./storage/webstyle/owl_pupils.jpg') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image">
+                <img src="{{ asset('./storage/webstyle/owl_pupils.jpg') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -193,7 +180,7 @@
         {{--<h1 class="fw-bold text-center mb-5">Community</h1>--}}
         <div class="row">
             <div class="col-md-6 d-flex justify-content-around align-items-center">
-                <img src="{{ asset('./storage/webstyle/owl_teacher.webp') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image">
+                <img src="{{ asset('./storage/webstyle/owl_teacher.webp') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image" loading="lazy" decoding="async">
             </div>
 
             <div class="col-md-6 d-flex justify-content-around align-items-center">

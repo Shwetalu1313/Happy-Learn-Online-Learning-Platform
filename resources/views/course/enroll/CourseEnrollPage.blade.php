@@ -150,7 +150,7 @@
                                 <div class="d-grid gap-2 col-6 mx-auto">
                                     <button type="submit" class="btn btn-primary">Pay Now</button>
                                 </div>
-                                <div id="cardTypeIcons" class="mt-3"><i class="fa-brands fa-cc-visa fs-3 text-primary-emphasis"></i> <i class="fa-brands fa-cc-mastercard fs-3 text-danger-emphasis"></i></div>
+                                <div id="cardTypeIcons" class="mt-3"><i class="bi bi-credit-card-2-front-fill fs-3 text-primary-emphasis"></i> <i class="bi bi-credit-card-fill fs-3 text-danger-emphasis"></i></div>
                                 <small class="text-secondary"> <span class="text-secondary-emphasis">Visa</span> and <span class="text-secondary-emphasis">Master</span> Card Payment are <span class="text-success-emphasis">available</span>.</small>
                             </form>
                         @endif
@@ -163,8 +163,8 @@
                     document.getElementById('cardNumber').addEventListener('input', function() {
                         let cardNumber = this.value.replace(/\s/g, '');
                         let cardTypeIcons = document.getElementById('cardTypeIcons');
-                        let visaIcon = '<i class="fa-brands fa-cc-visa fs-3 text-primary-emphasis"></i>';
-                        let mastercardIcon = '<i class="fa-brands fa-cc-mastercard fs-3 text-danger-emphasis"></i>';
+                        let visaIcon = '<i class="bi bi-credit-card-2-front-fill fs-3 text-primary-emphasis"></i>';
+                        let mastercardIcon = '<i class="bi bi-credit-card-fill fs-3 text-danger-emphasis"></i>';
 
                         if (/^4/.test(cardNumber)) {
                             cardTypeIcons.innerHTML = visaIcon;

@@ -4,6 +4,7 @@
 use App\Enums\UserRoleEnums;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\CourseController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
@@ -76,8 +78,12 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //authenticator +++++++++++++
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/search', [SearchController::class, 'index'])->name('global.search');
+
     //dashboard
-    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard')->middleware('isAdmin');
+    Route::get('/dashboard/export/csv', [AdminDashboardController::class, 'exportCsv'])->name('dashboard.export.csv')->middleware('isAdmin');
+    Route::get('/dashboard/print/{paper?}', [AdminDashboardController::class, 'printView'])->name('dashboard.print')->middleware('isAdmin');
     Route::get('user/dashboard', [PageController::class, 'UserDashboard'])->name('user.dashboard');
 
 
@@ -215,5 +221,3 @@ Route::get('/fetch-data', function () {
         return response()->json(['error' => 'Error fetching data'], 500);
     }
 });
-
-

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CourseTypeEnums;
 use App\Enums\UserRoleEnums;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
+use App\Models\CourseEnrollUser;
+use App\Models\CurrencyExchange;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -13,11 +17,11 @@ class HomeController extends Controller
      *
      * @return void
      */
-    /*we can comment this construct cuz we use middle at web.php*/
-//    public function __construct()
-//    {
-//        $this->middleware('auth');
-//    }
+    /* we can comment this construct cuz we use middle at web.php */
+    //    public function __construct()
+    //    {
+    //        $this->middleware('auth');
+    //    }
 
     /**
      * Show the application dashboard.
@@ -26,11 +30,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-//        if (Auth::user()->role === UserRoleEnums::ADMIN->value){
-//            view('dashboard');
-//        }
-        return view('home');
-        //dd(Auth::user()->id);
-    }
+        $homeData = Cache::remember('home-page-payload-v1', now()->addMinutes(3), function () {
+            return [
+                'us_ex' => CurrencyExchange::getUSD(),
+                'basicCourseEnum' => CourseTypeEnums::BASIC->value,
+                'newCourses' => Course::getNewCourseLimitSix(),
+                'popularCourses' => CourseEnrollUser::PopularCourses(),
+                'studentCount' => User::where('role', UserRoleEnums::STUDENT->value)->count(),
+                'titlePage' => 'home',
+            ];
+        });
 
+        return view('home', $homeData);
+    }
 }

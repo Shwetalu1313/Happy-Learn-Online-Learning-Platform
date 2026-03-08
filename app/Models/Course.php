@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\UserRoleEnums;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Enums\UserRoleEnums;
 
 class Course extends Model
 {
@@ -29,7 +29,6 @@ class Course extends Model
     {
         return $this->belongsTo(User::class, 'approvedUser_id', 'id');
     }
-
 
     public function contribute_courses(): HasMany
     {
@@ -58,48 +57,57 @@ class Course extends Model
         }
     }
 
-
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class);
     }
 
-    public function enrollCourses(): HasMany {
+    public function enrollCourses(): HasMany
+    {
         return $this->hasMany(CourseEnrollUser::class, 'course_id');
     }
 
-
     /**
      * @return mixed
-     * if there is completely no course that is created within 7 days, show the lasted 6 item.
-     * but if there is/are item/s within that day, just show.
-     * but item is less than 1 or equal, add the last item to 3.
-     * we don't show the course which has no lessons.
+     *               if there is completely no course that is created within 7 days, show the lasted 6 item.
+     *               but if there is/are item/s within that day, just show.
+     *               but item is less than 1 or equal, add the last item to 3.
+     *               we don't show the course which has no lessons.
      */
-    public static function getNewCourseLimitSix(){
+    public static function getNewCourseLimitSix()
+    {
+        $limit = 6;
         $sevenDaysAgo = Carbon::now()->subDays(7);
-        $newCourses = Course::where('created_at', '>=', $sevenDaysAgo)
-                            ->has('lessons')
-                            ->orderBy('created_at', 'desc')
-                            ->get();
+        $baseQuery = self::query()
+            ->select(['id', 'title', 'courseType', 'fees', 'state', 'createdUser_id', 'created_at'])
+            ->has('lessons')
+            ->with([
+                'creator:id,name,role',
+                'contribute_courses' => fn ($query) => $query
+                    ->select(['id', 'course_id', 'user_id'])
+                    ->with(['user:id,name,role']),
+            ])
+            ->withCount('lessons');
 
-        if ($newCourses->isNotEmpty()){
-            if ($newCourses->count() <= 1){
-                $remainingLimit = 6 - $newCourses->count();
-                $lastedCourses = Course::has('lessons')
-                                        ->orderBy('created_at','desc')
-                                        ->limit($remainingLimit)
-                                        ->get();
-                $newCourses = $newCourses->merge($lastedCourses);
-            }
+        $newCourses = (clone $baseQuery)
+            ->where('created_at', '>=', $sevenDaysAgo)
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
+
+        if ($newCourses->count() >= $limit) {
             return $newCourses;
         }
-        else{
-            return Course::has('lessons')
-                            ->orderBy('id','desc')
-                            ->limit(6)
-                            ->get();
+
+        $remainingLimit = $limit - $newCourses->count();
+        $fallbackQuery = (clone $baseQuery)
+            ->orderByDesc('created_at');
+
+        if ($newCourses->isNotEmpty()) {
+            $fallbackQuery->whereNotIn('id', $newCourses->pluck('id'));
         }
+
+        return $newCourses->concat($fallbackQuery->limit($remainingLimit)->get());
 
     }
 

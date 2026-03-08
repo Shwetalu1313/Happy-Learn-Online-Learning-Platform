@@ -17,13 +17,8 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
     {{-- icon --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-        integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{asset('./assets/vendor/bootstrap-icons/bootstrap-icons.css')}}">
 
 
     <link href="{{asset('./assets/vendor/quill/quill.snow.css')}}" rel="stylesheet">
@@ -82,30 +77,8 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{asset('./assets/vendor/quill/quill.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @if (Auth::check())
-            <script>
-            const userImageElement = document.getElementById("user_image");
-
-            if (userImageElement) {
-                axios
-                    .get("/api/user/{{ Auth::id() }}")
-                    .then(function(response) {
-                        const userData = response.data;
-                        const imageUrl = userData.avatar;
-                        if (userData.avatar) {
-                            userImageElement.src = imageUrl;
-                        }
-                        console.log("User Data: success");
-                    })
-                    .catch(function(error) {
-                        console.error("Error fetching user data:", error);
-                    });
-            }
-            </script>
-        @endif
 
         @yield('scripts')
 
