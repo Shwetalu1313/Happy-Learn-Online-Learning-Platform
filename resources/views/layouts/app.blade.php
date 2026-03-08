@@ -3,6 +3,7 @@
 @php
     use Illuminate\Support\Facades\Route;
         $currentRoute = Route::currentRouteName();
+        $publicAppName = 'Happy Learn';
 @endphp
 <head>
     <meta charset="utf-8">
@@ -11,7 +12,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} | {{$titlePage}}</title>
+    <title>{{ $publicAppName }} | {{$titlePage}}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -66,6 +67,14 @@
             box-shadow: var(--hl-shadow);
             padding: 0.55rem 0;
             z-index: 1030;
+            transition: padding 0.26s ease, background-color 0.26s ease, border-color 0.26s ease, box-shadow 0.26s ease;
+        }
+
+        .hl-navbar.is-compact {
+            padding: 0.3rem 0;
+            background: rgba(8, 13, 25, 0.95);
+            border-bottom-color: rgba(126, 161, 232, 0.4);
+            box-shadow: 0 14px 30px rgba(1, 8, 24, 0.44);
         }
 
         .hl-brand {
@@ -76,6 +85,12 @@
             align-items: center;
             gap: 0.55rem;
             text-decoration: none;
+            transition: transform 0.24s ease, letter-spacing 0.24s ease;
+        }
+
+        .hl-navbar.is-compact .hl-brand {
+            transform: scale(0.97);
+            letter-spacing: 0.01em;
         }
 
         .hl-brand:hover {
@@ -88,6 +103,12 @@
             border-radius: 999px;
             background: linear-gradient(135deg, var(--hl-accent), var(--hl-accent-2));
             box-shadow: 0 0 0 6px rgba(71, 215, 172, 0.16);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .hl-brand:hover .hl-brand-dot {
+            transform: scale(1.12) rotate(-9deg);
+            box-shadow: 0 0 0 7px rgba(90, 166, 255, 0.2);
         }
 
         .hl-nav-link {
@@ -97,12 +118,33 @@
             padding: 0.5rem 0.75rem;
             border-radius: 10px;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .hl-nav-link:hover,
         .hl-nav-link.active {
             color: #ffffff;
             background: rgba(90, 166, 255, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .hl-nav-link::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 4px;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--hl-accent), var(--hl-accent-2));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.22s ease;
+        }
+
+        .hl-nav-link:hover::after,
+        .hl-nav-link.active::after {
+            transform: scaleX(1);
         }
 
         .hl-nav-toggler {
@@ -119,6 +161,13 @@
             border-radius: 12px;
             padding: 0.28rem;
             min-width: 260px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .hl-search:focus-within {
+            border-color: rgba(133, 182, 255, 0.85);
+            box-shadow: 0 0 0 3px rgba(90, 166, 255, 0.18);
+            transform: translateY(-1px);
         }
 
         .hl-search-wrap {
@@ -164,6 +213,7 @@
             color: #ffffff;
             border-color: rgba(155, 185, 244, 0.38);
             background: rgba(83, 128, 214, 0.18);
+            transform: translateY(-1px);
         }
 
         .hl-dropdown {
@@ -291,7 +341,7 @@
             <div class="container-xl">
                 <a class="navbar-brand hl-brand fs-4" href="{{ url('/') }}">
                     <span class="hl-brand-dot"></span>
-                    {{ config('app.name', 'Laravel') }}
+                    {{ $publicAppName }}
                 </a>
                 <button class="navbar-toggler hl-nav-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -323,6 +373,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{asset('./assets/vendor/quill/quill.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nav = document.querySelector('.hl-navbar');
+            if (!nav) {
+                return;
+            }
+
+            const threshold = 16;
+            let ticking = false;
+
+            const setCompactState = () => {
+                nav.classList.toggle('is-compact', window.scrollY > threshold);
+                ticking = false;
+            };
+
+            setCompactState();
+            window.addEventListener('scroll', function () {
+                if (ticking) {
+                    return;
+                }
+                ticking = true;
+                window.requestAnimationFrame(setCompactState);
+            }, { passive: true });
+        });
+    </script>
 
         @yield('scripts')
 

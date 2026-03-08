@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row g-4 pb-4">
             <div class="col-lg-4">
-                <h5 class="hl-footer-title mb-3">{{ config('app.name', 'Happy Learn') }}</h5>
+                <h5 class="hl-footer-title mb-3">{{ $publicAppName ?? 'Happy Learn' }}</h5>
                 <p class="hl-footer-text mb-3">{{ __('footer.about_us_content') }}</p>
                 <div class="d-flex gap-2">
                     <a href="#" class="hl-social" title="Facebook"><i class="bi bi-facebook"></i></a>
@@ -35,7 +35,7 @@
 
     <div class="hl-footer-bottom py-3">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-            <div>&copy; {{ Date('Y') }} {{ config('app.name', 'Happy Learn') }}. All rights reserved.</div>
+            <div>&copy; {{ Date('Y') }} {{ $publicAppName ?? 'Happy Learn' }}. All rights reserved.</div>
             <div class="small">Built for modern learning experience.</div>
         </div>
     </div>
