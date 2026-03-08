@@ -1,0 +1,21 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10163c"/>
+      <stop offset="100%" stop-color="#064e63"/>
+    </linearGradient>
+    <linearGradient id="owl" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="700" fill="url(#bg)"/>
+  <ellipse cx="500" cy="390" rx="230" ry="205" fill="url(#owl)"/>
+  <circle cx="420" cy="340" r="58" fill="#fff"/>
+  <circle cx="580" cy="340" r="58" fill="#fff"/>
+  <circle cx="420" cy="340" r="20" fill="#0f172a"/>
+  <circle cx="580" cy="340" r="20" fill="#0f172a"/>
+  <polygon points="500,372 458,435 542,435" fill="#f59e0b"/>
+  <path d="M330 250 Q500 150 670 250" stroke="#67e8f9" stroke-width="24" fill="none" stroke-linecap="round"/>
+  <text x="66" y="620" font-size="44" fill="#c7d2fe" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Career Owl</text>
+</svg>

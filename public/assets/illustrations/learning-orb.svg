@@ -1,0 +1,31 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1530"/>
+      <stop offset="55%" stop-color="#102248"/>
+      <stop offset="100%" stop-color="#0f2d4e"/>
+    </linearGradient>
+    <radialGradient id="orb" cx="50%" cy="40%" r="52%">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <circle cx="240" cy="100" r="190" fill="#22d3ee" opacity="0.15"/>
+  <circle cx="1040" cy="620" r="250" fill="#14b8a6" opacity="0.18"/>
+  <g transform="translate(600 385)">
+    <circle r="220" fill="url(#orb)"/>
+    <ellipse cx="-58" cy="-72" rx="105" ry="72" fill="url(#glass)"/>
+    <path d="M-220 22 C -135 -40, 130 -38, 220 22" stroke="#93c5fd" stroke-opacity="0.45" stroke-width="9" fill="none"/>
+    <path d="M-198 84 C -104 28, 106 30, 196 84" stroke="#67e8f9" stroke-opacity="0.45" stroke-width="7" fill="none"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#dbeafe">
+    <text x="70" y="635" font-size="50" font-weight="700">Happy Learn</text>
+    <text x="70" y="688" font-size="28" fill="#93c5fd">3D Learning Universe</text>
+  </g>
+</svg>

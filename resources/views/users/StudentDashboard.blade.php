@@ -319,7 +319,11 @@
 
                     @if($course)
                         <article class="student-course">
-                            <img src="{{ asset('storage/'.ltrim($course->image, '/')) }}" alt="{{ $course->title }}">
+                            <img src="{{ $course->image ? asset('storage/' . ltrim($course->image, '/')) : asset('assets/illustrations/course-placeholder.svg') }}"
+                                 alt="{{ $course->title }}"
+                                 loading="lazy"
+                                 decoding="async"
+                                 onerror="this.onerror=null;this.src='{{ asset('assets/illustrations/course-placeholder.svg') }}';">
                             <div class="body">
                                 <h6>{{ $course->title }}</h6>
                                 <p class="student-meta">

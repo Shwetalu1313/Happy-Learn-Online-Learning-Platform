@@ -15,7 +15,7 @@
             </div>
             <div class="col-lg-5 col-12 jobimg-intro-column  overflow-hidden"
                 style="height: 100%; margin-left:0; margin-top:0;">
-                <img src="{{ '/storage/webstyle/wol.webp' }}" class="image-fluid jobOwl"
+                <img src="{{ asset('assets/illustrations/career-owl.svg') }}" class="image-fluid jobOwl"
                     alt="{{ __('jobapplication.owl') }}">
             </div>
         </section>
@@ -27,7 +27,7 @@
             <div class="row g-5">
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="card">
-                        <img src="/storage/webstyle/happy_tiger_money.webp" class="card-img-top" alt="...">
+                        <img src="{{ asset('assets/illustrations/benefit-money.svg') }}" class="card-img-top" alt="Salary benefit illustration" loading="lazy" decoding="async">
                         <div class="card-body">
                             <p class="card-title text-info" style="text-decoration-line: underline;">
                                 {{ __('jobapplication.salary') }}</p>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="card">
-                        <img src="/storage/webstyle/dopphin_work.webp" class="card-img-top" alt="...">
+                        <img src="{{ asset('assets/illustrations/benefit-remote.svg') }}" class="card-img-top" alt="Work from home illustration" loading="lazy" decoding="async">
                         <div class="card-body">
                             <p class="card-title text-info" style="text-decoration-line: underline;">
                                 {{ __('jobapplication.wfh') }}</p>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="card">
-                        <img src="/storage/webstyle/lion_think.webp" class="card-img-top" alt="...">
+                        <img src="{{ asset('assets/illustrations/benefit-idea.svg') }}" class="card-img-top" alt="Creative ideas illustration" loading="lazy" decoding="async">
                         <div class="card-body">
                             <p class="card-title text-info" style="text-decoration-line: underline;">
                                 {{ __('jobapplication.newIDA') }}</p>

@@ -11,7 +11,7 @@
                 <h1 class="fw-bolder mb-4 gradient-text">Unlock Your Potential. Start Learning Today.</h1>
 
             </div>
-            <img src="{{ asset('./storage/webstyle/owl_learn.webp') }}" class="img-fluid mt-4 owl-center" style="width: 20rem;" alt="Owl Learning Image">
+            <img src="{{ asset('assets/illustrations/learning-orb.svg') }}" class="img-fluid mt-4 owl-center" style="width: 20rem;" alt="3D learning illustration" loading="lazy" decoding="async">
             <div class="container text-center">
                 <p class="mb-5 fs-4 border-animate">Unlock your potential with curated learning experiences. Start today!</p><br>
                 <a href="{{route('register')}}" class="button button--hoo d-inline-block">
@@ -170,7 +170,7 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-around align-items-center">
-                <img src="{{ asset('./storage/webstyle/owl_pupils.jpg') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image" loading="lazy" decoding="async">
+                <img src="{{ asset('assets/illustrations/community-pupils.svg') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="3D learning community illustration" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -180,7 +180,7 @@
         {{--<h1 class="fw-bold text-center mb-5">Community</h1>--}}
         <div class="row">
             <div class="col-md-6 d-flex justify-content-around align-items-center">
-                <img src="{{ asset('./storage/webstyle/owl_teacher.webp') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="Owl Learning Image" loading="lazy" decoding="async">
+                <img src="{{ asset('assets/illustrations/mentor-teacher.svg') }}" class="img-fluid mt-4 owl-right rounded-5" style="width: 20rem;" alt="3D mentor illustration" loading="lazy" decoding="async">
             </div>
 
             <div class="col-md-6 d-flex justify-content-around align-items-center">

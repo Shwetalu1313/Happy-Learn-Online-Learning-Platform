@@ -48,7 +48,12 @@
         <div class="row">
             <div class="col-md-8 p-5">
 
-                <img src="{{ asset('storage/'.$course->image) }}" class="text-center object-fit-cover w-100 h-50 mx-auto mb-5" alt="Course Image">
+                <img src="{{ $course->image ? asset('storage/' . ltrim($course->image, '/')) : asset('assets/illustrations/course-placeholder.svg') }}"
+                     class="text-center object-fit-cover w-100 h-50 mx-auto mb-5"
+                     alt="Course Image"
+                     loading="lazy"
+                     decoding="async"
+                     onerror="this.onerror=null;this.src='{{ asset('assets/illustrations/course-placeholder.svg') }}';">
                 <p class="text-secondary fs-4">Total Lessons: <span class="text-forth">{{ $course->lessons->count() }}</span> </p>
                 <div class="d-flex align-items-baseline" title="course Fee">
                     <i class="bi bi-cash-coin me-4 fs-5 text-primary-emphasis"></i>
