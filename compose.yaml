@@ -20,6 +20,7 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html:cached'
+            - './docker/php/99-performance.ini:/etc/php/8.4/cli/conf.d/99-performance.ini'
             - 'sail-public-storage:/var/www/html/public/storage'
         networks:
             - sail
