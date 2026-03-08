@@ -159,6 +159,13 @@
                             <span >{{__('Activities Logs')}}</span>
                         </a>
                     </li><!-- End Dashboard Nav -->
+
+                    <li class="nav-item" >
+                        <a class="nav-link collapsed {{is_active_route('admin.notifications.config')}}" href="{{ route('admin.notifications.config') }}">
+                            <i class="bi bi-bell"></i>
+                            <span>Notification Config</span>
+                        </a>
+                    </li>
         @endif
     </ul>
 

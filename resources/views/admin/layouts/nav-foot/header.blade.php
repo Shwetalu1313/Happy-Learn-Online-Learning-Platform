@@ -27,80 +27,75 @@
                 </a>
             </li><!-- End Search Icon-->
 
+            @php
+                $latestNotifications = Auth::user()->notifications()->latest()->take(6)->get();
+                $unreadNotificationsCount = Auth::user()->unreadNotifications()->count();
+            @endphp
             <li class="nav-item dropdown">
-
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
-                </a><!-- End Notification Icon -->
+                    @if($unreadNotificationsCount > 0)
+                        <span class="badge bg-primary badge-number">{{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                    <li class="dropdown-header d-flex justify-content-between align-items-center">
+                        <span>You have {{ $unreadNotificationsCount }} new notifications</span>
+                        <a href="{{ route('notifications.index') }}">
+                            <span class="badge rounded-pill bg-primary p-2 ms-2">View all</span>
+                        </a>
                     </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                    <li><hr class="dropdown-divider"></li>
 
-                    <li class="notification-item">
-                        <i class="bi bi-exclamation-circle text-warning"></i>
-                        <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
-                        </div>
-                    </li>
+                    @forelse($latestNotifications as $notification)
+                        @php
+                            $title = $notification->data['title'] ?? 'Notification';
+                            $line = $notification->data['line'] ?? 'You have a new update.';
+                            $isUnread = is_null($notification->read_at);
+                        @endphp
+                        <li class="notification-item {{ $isUnread ? 'bg-light' : '' }}">
+                            <i class="bi bi-info-circle text-primary"></i>
+                            <div class="w-100">
+                                <h4 class="mb-1">{{ $title }}</h4>
+                                <p class="mb-1">{{ $line }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0">{{ $notification->created_at->diffForHumans() }}</p>
+                                    @if($isUnread)
+                                        <form action="{{ route('notifications.markRead', $notification->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                                            <button type="submit" class="btn btn-link btn-sm p-0">Mark read</button>
+                                        </form>
+                                    @endif
+                                </div>
+                                <a class="small text-primary" href="{{ route('notifications.open', $notification->id) }}">Open</a>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    @empty
+                        <li class="notification-item">
+                            <i class="bi bi-bell-slash text-muted"></i>
+                            <div>
+                                <h4>No notifications</h4>
+                                <p class="mb-0">You are all caught up.</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    @endforelse
 
-                    <li>
-                        <hr class="dropdown-divider">
+                    <li class="dropdown-footer d-flex justify-content-between align-items-center px-3">
+                        <a href="{{ route('notifications.index') }}">Show all notifications</a>
+                        @if($unreadNotificationsCount > 0)
+                            <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                                <button type="submit" class="btn btn-link btn-sm p-0">Mark all</button>
+                            </form>
+                        @endif
                     </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-x-circle text-danger"></i>
-                        <div>
-                            <h4>Atque rerum nesciunt</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>1 hr. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-check-circle text-success"></i>
-                        <div>
-                            <h4>Sit rerum fuga</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>2 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-info-circle text-primary"></i>
-                        <div>
-                            <h4>Dicta reprehenderit</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>4 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-
-                </ul><!-- End Notification Dropdown Items -->
-
-            </li><!-- End Notification Nav -->
+                </ul>
+            </li>
 
             <li class="nav-item dropdown">
 

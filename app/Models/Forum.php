@@ -31,4 +31,9 @@ class Forum extends Model
     {
         return $this->hasMany(Comment::class,'forum_id');
     }
+
+    public function rootComments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'forum_id')->whereNull('parent_id');
+    }
 }

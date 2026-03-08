@@ -1,5 +1,10 @@
 <ul class="navbar-nav ms-auto">
     @auth
+        @php
+            $latestNotifications = Auth::user()->notifications()->latest()->take(6)->get();
+            $unreadNotificationsCount = Auth::user()->unreadNotifications()->count();
+        @endphp
+
         <li class="nav-item my-auto me-2 d-none d-lg-block">
             <form action="{{ route('global.search') }}" method="GET" class="d-flex">
                 <input
@@ -16,11 +21,68 @@
                 </button>
             </form>
         </li>
+
+        <li class="nav-item dropdown my-auto me-2">
+            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-bell fs-5"></i>
+                @if($unreadNotificationsCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}
+                    </span>
+                @endif
+            </a>
+            <div class="dropdown-menu dropdown-menu-end p-0" style="min-width: 340px; max-width: 380px;">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                    <div>
+                        <strong>Notifications</strong>
+                        <div class="small text-muted">{{ $unreadNotificationsCount }} unread</div>
+                    </div>
+                    @if($unreadNotificationsCount > 0)
+                        <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                            <button class="btn btn-sm btn-outline-secondary" type="submit">Mark all</button>
+                        </form>
+                    @endif
+                </div>
+
+                @forelse($latestNotifications as $notification)
+                    @php
+                        $title = $notification->data['title'] ?? 'Notification';
+                        $line = $notification->data['line'] ?? 'You have a new update.';
+                        $isUnread = is_null($notification->read_at);
+                    @endphp
+                    <div class="px-3 py-2 border-bottom {{ $isUnread ? 'bg-primary bg-opacity-10' : '' }}">
+                        <a class="text-decoration-none d-block mb-1" href="{{ route('notifications.open', $notification->id) }}">
+                            <div class="fw-semibold text-light">{{ $title }}</div>
+                            <div class="small text-muted">{{ $line }}</div>
+                        </a>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                            @if($isUnread)
+                                <form action="{{ route('notifications.markRead', $notification->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                                    <button class="btn btn-sm btn-link p-0 text-info" type="submit">Mark read</button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-3 py-3 text-center text-muted small">No notifications yet.</div>
+                @endforelse
+
+                <div class="px-3 py-2">
+                    <a class="btn btn-sm btn-outline-secondary w-100" href="{{ route('notifications.index') }}">View all notifications</a>
+                </div>
+            </div>
+        </li>
     @endauth
+
     <li class="nav-item my-auto">
         @include('language-switch')
     </li>
-    <!-- Authentication Links -->
+
     @guest
         @if (Route::has('login'))
             <li class="nav-item">
@@ -42,7 +104,6 @@
                          src="{{ asset('storage/' . ltrim(Auth::user()->avatar, '/')) }}" alt="profile_image"
                          style="width: 60px;height: 60px; padding: 10px; margin: 0px; ">
                 @endif
-
             </a>
 
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -67,7 +128,6 @@
                     @csrf
                 </form>
             </div>
-
         </li>
     @endguest
 </ul>
@@ -75,15 +135,9 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            // Get the initial points value
             const initialValue = parseInt($("#points-value").text());
-
-            // Set up the CountUp instance
             const countUp = new CountUp('points-value', initialValue);
-
-            // Start the animation
             countUp.start();
         });
     </script>
-
 @endsection

@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['text','forum_id','user_id'];
+    protected $fillable = ['text', 'forum_id', 'user_id', 'parent_id'];
 
     public static function getModelName(): string
     {
@@ -24,5 +25,15 @@ class Comment extends Model
     public function forum(): BelongsTo
     {
         return $this->belongsTo(Forum::class,'forum_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'parent_id')->oldest();
     }
 }

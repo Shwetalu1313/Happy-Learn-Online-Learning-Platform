@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\CourseEnrollUser;
 use App\Models\CurrencyExchange;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -52,9 +53,21 @@ class PageController extends Controller
         $user = \auth()->user();
         $courses = Course::getCoursesForUser($user);
         if (Auth::user()->role->value === UserRoleEnums::TEACHER->value) {
+            $courses->loadCount('lessons');
+            $courses->load(['sub_category:id,name,category_id', 'sub_category.category:id,name']);
             return view('users.TeacherDashboard', compact('titlePage', 'breadcrumbs', 'courses'));
         } else {
-            return view('users.StudentDashboard', compact('titlePage', 'breadcrumbs'));
+            $enrollments = $user->enrollCourses()
+                ->with([
+                    'course' => fn ($query) => $query
+                        ->select(['id', 'title', 'image', 'courseType', 'fees', 'state', 'sub_category_id', 'created_at'])
+                        ->withCount('lessons')
+                        ->with(['sub_category:id,name,category_id', 'sub_category.category:id,name']),
+                ])
+                ->latest()
+                ->get();
+
+            return view('users.StudentDashboard', compact('titlePage', 'breadcrumbs', 'enrollments'));
         }
     }
 
@@ -130,18 +143,24 @@ class PageController extends Controller
         return view('ActivityLog', compact('titlePage'));
     }
 
-    public static function showCourses()
+    public static function showCourses(Request $request)
     {
         $titlePage = 'Courses';
         $us_ex = CurrencyExchange::getUSD();
         $basicCourseEnum = CourseTypeEnums::BASIC->value;
+        $categoryId = (int) $request->query('category', 0);
+        $subCategoryId = (int) $request->query('sub_category', 0);
 
-        $categories = Cache::remember('learner-course-categories-v1', now()->addMinutes(3), function () {
-            return Category::query()
+        $cacheKey = sprintf('learner-course-categories-v2-c%s-s%s', $categoryId ?: 'all', $subCategoryId ?: 'all');
+
+        $categories = Cache::remember($cacheKey, now()->addMinutes(3), function () use ($categoryId, $subCategoryId) {
+            $collection = Category::query()
                 ->select(['id', 'name'])
+                ->when($categoryId > 0, fn ($query) => $query->where('id', $categoryId))
                 ->with([
-                    'sub_categories' => fn ($query) => $query
+                    'sub_categories' => fn ($subCategoryQuery) => $subCategoryQuery
                         ->select(['id', 'name', 'category_id'])
+                        ->when($subCategoryId > 0, fn ($query) => $query->where('id', $subCategoryId))
                         ->orderBy('name')
                         ->with([
                             'courses' => fn ($courseQuery) => $courseQuery
@@ -159,8 +178,20 @@ class PageController extends Controller
                 ])
                 ->orderBy('name')
                 ->get();
+
+            return $collection
+                ->map(function ($category) {
+                    $category->setRelation(
+                        'sub_categories',
+                        $category->sub_categories->filter(fn ($subCategory) => $subCategory->courses->isNotEmpty())->values()
+                    );
+
+                    return $category;
+                })
+                ->filter(fn ($category) => $category->sub_categories->isNotEmpty())
+                ->values();
         });
 
-        return view('course.ListforLearners', compact('titlePage', 'us_ex', 'basicCourseEnum', 'categories'));
+        return view('course.ListforLearners', compact('titlePage', 'us_ex', 'basicCourseEnum', 'categories', 'categoryId', 'subCategoryId'));
     }
 }

@@ -72,11 +72,9 @@
                                     <ul class="mb-0">
                                         @foreach($results['categories'] as $category)
                                             <li class="mb-1">
-                                                @if($isAdminSearchView)
-                                                    <a href="{{ route('category.modify', $category->id) }}">{{ $category->name }}</a>
-                                                @else
+                                                <a href="{{ $isAdminSearchView ? route('category.modify', $category->id) : route('course.list.learners', ['category' => $category->id]) }}">
                                                     {{ $category->name }}
-                                                @endif
+                                                </a>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -93,11 +91,9 @@
                                     <ul class="mb-0">
                                         @foreach($results['subCategories'] as $subCategory)
                                             <li class="mb-1">
-                                                @if($isAdminSearchView)
-                                                    <a href="{{ route('sub_category.edit', $subCategory->id) }}">{{ $subCategory->name }}</a>
-                                                @else
+                                                <a href="{{ $isAdminSearchView ? route('sub_category.edit', $subCategory->id) : route('course.list.learners', ['category' => $subCategory->category_id, 'sub_category' => $subCategory->id]) }}">
                                                     {{ $subCategory->name }}
-                                                @endif
+                                                </a>
                                                 <small class="text-muted">
                                                     | {{ $subCategory->category?->name ?? 'No category' }}
                                                 </small>

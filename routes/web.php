@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminNotificationConfigController;
 
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
@@ -165,6 +167,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::put('ptsUpdate', [CurrencyExchangeController::class, 'updatePts'])->name('ptsUpdate');
     });
 
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/notifications'], function() {
+        Route::get('config', [AdminNotificationConfigController::class, 'index'])->name('admin.notifications.config');
+        Route::post('rules/{eventKey}', [AdminNotificationConfigController::class, 'updateRule'])->name('admin.notifications.rules.update');
+        Route::post('broadcast', [AdminNotificationConfigController::class, 'broadcast'])->name('admin.notifications.broadcast');
+    });
+
     //enroll course
     Route::group(['prefix' => 'course'], function (){
         Route::get('{course_id}/detail', [PageController::class, 'courseDetail'])->name('course.detail')->middleware('enrolled');
@@ -190,6 +198,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
         Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
         Route::delete('/{comment}/comments', [CommentController::class, 'destroy'])->name('comments.destroy');
+    });
+
+    Route::group(['prefix' => 'notifications'], function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::get('/{notificationId}/open', [NotificationController::class, 'open'])->name('notifications.open');
+        Route::post('/{notificationId}/read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
+        Route::post('/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     });
 
     //Activities

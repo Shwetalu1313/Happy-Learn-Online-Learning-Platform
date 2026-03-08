@@ -10,6 +10,23 @@ class ForumController extends Controller
 {
     public function showForumList(Lesson $lesson){
         $titlePage = $lesson->title;
+        $lesson->load([
+            'course:id,title',
+            'forums' => function ($query) {
+                $query->with([
+                    'user:id,name,avatar',
+                    'rootComments' => fn ($commentQuery) => $commentQuery
+                        ->with([
+                            'user:id,name,avatar',
+                            'replies.user:id,name,avatar',
+                        ])
+                        ->oldest(),
+                ])
+                ->withCount('comments')
+                ->latest();
+            },
+        ]);
+
         return view('forum.list', compact('titlePage', 'lesson'));
     }
 

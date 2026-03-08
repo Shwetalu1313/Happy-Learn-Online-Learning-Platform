@@ -76,7 +76,7 @@ Project: Happy Learn Online Learning Platform
 
 ## 4) Rollback Notes
 
-- The DB-driven language-management implementation (admin-configurable languages + AJAX language switch) was **rolled back** as requested.
+- The DB-driven language-management implementation (admin-configurable languages + AJAX language switch) was rolled back as requested.
 - Current language behavior is restored to previous version:
   - hardcoded `en/mm` dropdown
   - form submit + full-page reload switching
@@ -116,3 +116,90 @@ Behavior:
 - Migration run for search indexes.
 - MySQL index presence verified after migration.
 
+## 8) Additional Updates Done Today (Session 2)
+
+### UI / UX
+- Converted forum UI to dark-mode style (user side).
+- Converted Student Dashboard and Teacher Dashboard to matching dark premium style.
+- Kept admin portal in light mode as requested.
+
+### Forum Improvements
+- Refactored forum listing to load optimized relations (course, forum user, comments, comment user counts).
+- Added reply support for comments (threaded under root comment).
+- Added inline reply forms + reply rendering in forum thread.
+- Added safe delete handling for comments and their replies.
+
+### New Forum Data Change
+- Added `parent_id` to `comments` table for reply relationships.
+- Migration:
+  - `database/migrations/2026_03_08_120000_add_parent_id_to_comments_table.php`
+
+### Centralized Notification Architecture
+- Implemented centralized notification service (instead of scattered direct notification calls).
+- Added notification type enum + generic notification class + manager service.
+- Rewired contributor-share and forum comment/reply flows to use centralized manager.
+- Removed legacy one-off contributor notification class.
+
+New core files:
+- `app/Enums/NotificationTypeEnums.php`
+- `app/Notifications/CentralizedNotification.php`
+- `app/Services/NotificationManager.php`
+
+Migration:
+- `database/migrations/2026_03_08_130000_create_notifications_table.php`
+
+### Notification Center (User + Admin)
+- Added real bell-based notification center:
+  - unread badge
+  - dropdown preview
+  - mark single as read
+  - mark all as read
+  - open notification target route
+- Added full notification listing pages for both user and admin layouts.
+
+New files:
+- `app/Http/Controllers/NotificationController.php`
+- `resources/views/notifications/index.blade.php`
+- `resources/views/admin/notifications/index.blade.php`
+
+Updated:
+- `resources/views/layouts/right_nav.blade.php`
+- `resources/views/admin/layouts/nav-foot/header.blade.php`
+- `routes/web.php`
+
+### Admin-Controlled Notification Configuration
+- Added admin portal page to configure notification triggering behavior centrally:
+  - enable/disable each trigger
+  - configure channels (database/mail)
+  - edit templates per trigger (title/subject/line/action/end)
+  - manual broadcast trigger from admin panel
+- Added new admin sidebar entry: `Notification Config`.
+
+New files:
+- `app/Http/Controllers/AdminNotificationConfigController.php`
+- `app/Models/NotificationRule.php`
+- `config/notification_triggers.php`
+- `resources/views/admin/notifications/config.blade.php`
+- `database/migrations/2026_03_08_140000_create_notification_rules_table.php`
+
+Updated:
+- `resources/views/admin/layouts/nav-foot/side-nav.blade.php`
+- `app/Services/NotificationManager.php` (rule-aware runtime behavior)
+- `routes/web.php`
+
+### Notification Migrations Executed
+- `2026_03_08_120000_add_parent_id_to_comments_table` -> Ran
+- `2026_03_08_130000_create_notifications_table` -> Ran
+- `2026_03_08_140000_create_notification_rules_table` -> Ran
+
+### Validation Executed for Today's Additions
+- `php -l` checks on all changed controllers/models/views/routes/migrations.
+- `php artisan route:list` verification for notification routes.
+- `php artisan migrate --force` executed in Docker.
+- `php artisan optimize:clear` and `php artisan view:cache` executed successfully.
+
+## 9) Next Recommended Steps
+
+- Add per-trigger "Send Test Notification" button in admin config.
+- Add read/unread filter + bulk actions on notification listing pages.
+- Add delivery audit logs (sent, channel, status, error) for admin observability.
