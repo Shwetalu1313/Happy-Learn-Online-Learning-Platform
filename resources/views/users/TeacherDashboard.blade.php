@@ -223,6 +223,19 @@
             color: var(--muted);
         }
 
+        .js-appear {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 420ms ease, transform 420ms ease;
+            transition-delay: var(--appear-delay, 0ms);
+            will-change: opacity, transform;
+        }
+
+        .js-appear.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         @media (max-width: 1199px) {
             .teacher-stat-grid {
                 grid-template-columns: repeat(2, minmax(170px, 1fr));
@@ -239,10 +252,19 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .js-appear {
+                opacity: 1;
+                transform: none;
+                transition: none;
+                will-change: auto;
+            }
+        }
     </style>
 
     <div class="container py-4 teacher-premium">
-        <section class="teacher-hero">
+        <section class="teacher-hero js-appear">
             <h2>Teaching Command Center</h2>
             <p>
                 Focused workspace for course delivery and updates.
@@ -258,22 +280,22 @@
             </div>
 
             <div class="teacher-stat-grid">
-                <article class="teacher-stat">
+                <article class="teacher-stat js-appear" style="--appear-delay: 40ms;">
                     <p class="label">Total Courses</p>
                     <p class="value">{{ number_format($courses->count()) }}</p>
                     <p class="hint">All assigned/owned courses</p>
                 </article>
-                <article class="teacher-stat">
+                <article class="teacher-stat js-appear" style="--appear-delay: 80ms;">
                     <p class="label">Approved</p>
                     <p class="value">{{ number_format($approvedCount) }}</p>
                     <p class="hint">Ready for learners</p>
                 </article>
-                <article class="teacher-stat">
+                <article class="teacher-stat js-appear" style="--appear-delay: 120ms;">
                     <p class="label">Pending</p>
                     <p class="value">{{ number_format($pendingCount) }}</p>
                     <p class="hint">Awaiting approval</p>
                 </article>
-                <article class="teacher-stat">
+                <article class="teacher-stat js-appear" style="--appear-delay: 160ms;">
                     <p class="label">Total Lessons</p>
                     <p class="value">{{ number_format($totalLessons) }}</p>
                     <p class="hint">Across all courses</p>
@@ -282,15 +304,15 @@
         </section>
 
         @if($courses->isEmpty())
-            <section class="teacher-empty">
+            <section class="teacher-empty js-appear" style="--appear-delay: 80ms;">
                 <h5 class="mb-2">No courses yet</h5>
                 <p class="mb-3">Create your first course to start building your teaching library.</p>
                 <a href="{{ route('course.create') }}" class="btn btn-primary">Create First Course</a>
             </section>
         @else
             <section class="teacher-grid">
-                @foreach($courses as $course)
-                    <article class="teacher-course">
+                @foreach($courses as $courseIndex => $course)
+                    <article class="teacher-course js-appear" style="--appear-delay: {{ min(($courseIndex % 8) * 40, 280) }}ms;">
                         <img src="{{ $course->image ? asset('storage/' . ltrim($course->image, '/')) : asset('assets/illustrations/course-placeholder.svg') }}"
                              alt="{{ $course->title }}"
                              loading="lazy"
@@ -321,4 +343,34 @@
             </section>
         @endif
     </div>
+
+    @section('scripts')
+        <script>
+            (function () {
+                const animatedItems = document.querySelectorAll('.js-appear');
+                if (!animatedItems.length) {
+                    return;
+                }
+
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                    animatedItems.forEach((el) => el.classList.add('is-visible'));
+                    return;
+                }
+
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -8% 0px'
+                });
+
+                animatedItems.forEach((el) => observer.observe(el));
+            })();
+        </script>
+    @endsection
 @endsection

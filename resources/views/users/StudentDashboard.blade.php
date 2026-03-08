@@ -223,6 +223,19 @@
             color: var(--muted);
         }
 
+        .js-appear {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 420ms ease, transform 420ms ease;
+            transition-delay: var(--appear-delay, 0ms);
+            will-change: opacity, transform;
+        }
+
+        .js-appear.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         @media (max-width: 1199px) {
             .student-stat-grid {
                 grid-template-columns: repeat(2, minmax(170px, 1fr));
@@ -239,10 +252,19 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .js-appear {
+                opacity: 1;
+                transform: none;
+                transition: none;
+                will-change: auto;
+            }
+        }
     </style>
 
     <div class="container py-4 student-premium">
-        <section class="student-hero">
+        <section class="student-hero js-appear">
             <h2>Learning Workspace</h2>
             <p>
                 Premium learner dashboard for tracking your course library and study flow.
@@ -257,22 +279,22 @@
             </div>
 
             <div class="student-stat-grid">
-                <article class="student-stat">
+                <article class="student-stat js-appear" style="--appear-delay: 40ms;">
                     <p class="label">Enrolled Courses</p>
                     <p class="value">{{ number_format($enrolledCount) }}</p>
                     <p class="hint">Total in your library</p>
                 </article>
-                <article class="student-stat">
+                <article class="student-stat js-appear" style="--appear-delay: 80ms;">
                     <p class="label">Free Courses</p>
                     <p class="value">{{ number_format($freeCount) }}</p>
                     <p class="hint">Basic courses</p>
                 </article>
-                <article class="student-stat">
+                <article class="student-stat js-appear" style="--appear-delay: 120ms;">
                     <p class="label">Paid Courses</p>
                     <p class="value">{{ number_format($paidCount) }}</p>
                     <p class="hint">Premium courses</p>
                 </article>
-                <article class="student-stat">
+                <article class="student-stat js-appear" style="--appear-delay: 160ms;">
                     <p class="label">Total Spent</p>
                     <p class="value">{{ number_format($spentMmk) }} MMK</p>
                     <p class="hint">Enrollment payments</p>
@@ -305,20 +327,20 @@
         @endif
 
         @if($enrollments->isEmpty())
-            <section class="student-empty">
+            <section class="student-empty js-appear" style="--appear-delay: 80ms;">
                 <h5 class="mb-2">Your library is empty</h5>
                 <p class="mb-3">Explore courses and enroll to start your learning journey.</p>
                 <a href="{{ route('course.list.learners') }}" class="btn btn-primary">Explore Courses</a>
             </section>
         @else
             <section class="student-grid">
-                @foreach($enrollments as $enrollment)
+                @foreach($enrollments as $courseIndex => $enrollment)
                     @php
                         $course = $enrollment->course;
                     @endphp
 
                     @if($course)
-                        <article class="student-course">
+                        <article class="student-course js-appear" style="--appear-delay: {{ min(($courseIndex % 8) * 40, 280) }}ms;">
                             <img src="{{ $course->image ? asset('storage/' . ltrim($course->image, '/')) : asset('assets/illustrations/course-placeholder.svg') }}"
                                  alt="{{ $course->title }}"
                                  loading="lazy"
@@ -356,4 +378,34 @@
             </section>
         @endif
     </div>
+
+    @section('scripts')
+        <script>
+            (function () {
+                const animatedItems = document.querySelectorAll('.js-appear');
+                if (!animatedItems.length) {
+                    return;
+                }
+
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                    animatedItems.forEach((el) => el.classList.add('is-visible'));
+                    return;
+                }
+
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -8% 0px'
+                });
+
+                animatedItems.forEach((el) => observer.observe(el));
+            })();
+        </script>
+    @endsection
 @endsection
