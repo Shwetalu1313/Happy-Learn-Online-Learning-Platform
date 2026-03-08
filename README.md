@@ -1,71 +1,156 @@
+# Happy Learn Online Learning Platform
 
-# Happy Learn: Online Learning
+Happy Learn is a Laravel 12 web platform that combines:
+- online learning
+- course management and enrollment
+- teacher/student dashboards
+- forum discussion with replies
+- admin analytics, export, and print reporting
+- centralized in-app notification system
 
-<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/admin-dashboard.png" alt="Admin Dashboard" width="600"/>
+This repository is actively updated. For detailed session-by-session changes, see:
+- `PROJECT_UPDATE_REPORT.md`
 
-<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/final-year-home.png" alt="User Home Page" width="500"/>
+## Current Stack
 
-<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/Galaxy-Fold-user-profile.png" alt="User Profile (Galaxy Fold)" width="600"/>
+- Laravel `^12.0`
+- PHP `^8.2` (Sail runtime uses PHP 8.4 image)
+- MySQL
+- Redis
+- Mailpit
+- Vite + Bootstrap 5 + Sass
+- Docker Compose (Laravel Sail based)
 
-<img src="https://github.com/Shwetalu1313/Happy-Learn-Online-Learning-Platform/blob/main/storage/app/public/Shared%20Photos/iPhone-13-PRO-MAX-home.png" alt="User Home Page (iPhone 13 Pro)" width="300"/>
+## Major Features (Current)
 
-## Introduction
+- Authentication and email verification
+- Google OAuth login
+- Role-based access (admin/teacher/student)
+- Category, subcategory, course, lesson, exercise, question flows
+- Course enrollment and payments (free/points/card flow in app)
+- Job opportunities module
+- Forum with comment reply threading
+- Global search (MySQL-backed, not Elasticsearch)
+- Admin dashboard with:
+  - metrics
+  - timeline chart
+  - CSV export
+  - print layouts: `A5`, `A4`, `A3`, `A1`
+- Centralized notifications with admin configuration
+- Premium dark-mode UI for student/teacher side
+- Light-mode admin portal
 
-Welcome to the Online Learning and Job Opportunities Platform! This project is developed as a final year graduate project using the DSDM Agile methodology. It provides an online platform for learning, job opportunities, and language services. The system is developed solo, adhering to the ethics and laws of the BCS (British Computer Society).
+## Recommended Run Mode: Docker (Sail)
 
-## System Scope
+This project is configured to run in Docker using `compose.yaml`.
 
-| ID   | Functional Requirement                                                 |
-|------|------------------------------------------------------------------------|
-| FR1  | User registration and authentication                                   |
-| FR2  | Course creation and management                                         |
-| FR3  | Enrollment in courses                                                  |
-| FR4  | Job listings and applications                                          |
-| FR5  | Language translation services                                          |
-| FR6  | User profile management                                                |
-| FR7  | Course and Question and Answers progress tracking                      |
-| FR8  | Messaging system between users and instructors                         |
-| FR9  | Review and rating system for courses and jobs                          |
-| FR10 | Administrative dashboard for managing users, courses, and job listings |
-| FR11 | Course Contributor Access Sharing |                                     |
+### 1. Prerequisites
 
-## Installation Instructions
+- Docker Desktop (with Compose)
+- Git
 
-To set up the project locally, follow these steps:
+### 2. Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
+```bash
+git clone <your-repo-url>
+cd Happy-Learn-Online-Learning-Platform
+cp .env.example .env
+```
 
-2. **Install composer dependencies**
-   ```bash
-   composer install
-   
-3. **Copy the example environment file and configure it**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   
-4. **Configure the `.env` file**
-   ```bash
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=your_database
-   DB_USERNAME=your_username
-   DB_PASSWORD=your_password
-   
-5. **Run Database Migrations**
-   ```bash
-   php artisan migrate
-   
-6. **Seed the database (optional)**
-   ```bash
-   php artisan serve
+### 3. Start Containers
 
-## Ethics and Laws
-This project is developed in adherence to the ethical standards and laws of the British Computer Society (BCS). The platform ensures user privacy, data security, and fair use policies.
+```bash
+docker compose up -d
+```
 
-## Conclusion
-Thank you for checking out the Online Learning and Job Opportunities Platform. For any issues or contributions, feel free to open an issue or submit a pull request on the GitHub repository.
+### 4. Install Dependencies in Container
+
+```bash
+docker compose exec -T laravel.test composer install
+docker compose exec -T laravel.test php artisan key:generate
+docker compose exec -T laravel.test php artisan migrate --force
+```
+
+### 5. Frontend Build
+
+```bash
+npm install
+npm run build
+```
+
+### 6. Open App
+
+- App: `http://localhost` (or your `APP_PORT`)
+- Mailpit: `http://localhost:8025` (default)
+
+## Common Commands
+
+```bash
+# Rebuild Blade cache
+docker compose exec -T laravel.test php artisan view:cache
+
+# Clear caches
+docker compose exec -T laravel.test php artisan optimize:clear
+
+# Run tests
+docker compose exec -T laravel.test php artisan test
+
+# Check routes
+docker compose exec -T laravel.test php artisan route:list
+```
+
+## Storage and Upload Notes
+
+- Public storage is mapped to a Docker volume:
+  - `sail-public-storage:/var/www/html/public/storage`
+- This keeps uploaded images persistent across container restarts.
+- UI image rendering now includes fallbacks to prevent broken image links on missing assets.
+
+## Performance Notes
+
+- Runtime tuning is mounted via:
+  - `docker/php/99-performance.ini`
+- Includes opcache tuning and reduced debug overhead for better route response.
+- Heavy admin JS initialization was refactored to lazy-load where possible.
+- Student/teacher dashboard animations use performance-safe reveal strategy:
+  - `IntersectionObserver`
+  - `opacity + transform` only
+  - `prefers-reduced-motion` support
+
+## Troubleshooting
+
+### `vendor/autoload.php` missing when running `php artisan`
+
+Cause: dependencies not installed in current runtime.
+
+Fix:
+- Use Docker flow above and run `composer install` in `laravel.test` container.
+
+### Docker container name conflict
+
+If you see a conflict like an existing `...-mysql-1` container:
+
+```bash
+docker ps -a
+docker rm -f <conflicting-container-name-or-id>
+docker compose up -d
+```
+
+### Images not showing
+
+- Ensure `public/storage` mapping is active in `compose.yaml`.
+- Recheck uploaded path data in DB.
+- Fallbacks are implemented for course visuals, but invalid custom paths can still affect legacy records.
+
+## Project Documentation
+
+- Ongoing update log:
+  - `PROJECT_UPDATE_REPORT.md`
+- Route definitions:
+  - `routes/web.php`
+- Docker config:
+  - `compose.yaml`
+
+## License
+
+This project currently inherits Laravel skeleton licensing context (`MIT`) unless your organization policy overrides it.
