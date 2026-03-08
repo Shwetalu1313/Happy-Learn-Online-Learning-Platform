@@ -8,6 +8,12 @@
     <title>{{$titlePage}}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+    @php
+        use Illuminate\Support\Facades\Route;
+        $currentRouteName = Route::currentRouteName();
+        $needsApexCharts = $currentRouteName === 'dashboard';
+        $needsChartJs = $currentRouteName === 'exchange.edit';
+    @endphp
 
     <!-- Favicons -->
     <link href="{{asset('/webstyle/img/favicon.png')}}" rel="icon">
@@ -135,27 +141,22 @@
         class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="{{asset('./assets/vendor/apexcharts/apexcharts.min.js')}}"></script>
-<script src="{{asset('./assets/vendor/chart.js/chart.umd.js')}}"></script>
-<script src="{{asset('./assets/vendor/echarts/echarts.min.js')}}"></script>
-<script src="{{asset('./assets/vendor/quill/quill.min.js')}}"></script>
-<script src="{{asset('./assets/vendor/simple-datatables/simple-datatables.js')}}"></script>
-<script src="{{asset('./assets/vendor/tinymce/tinymce.min.js')}}"></script>
-<script src="{{asset('./assets/vendor/php-email-form/validate.js')}}"></script>
+@if($needsApexCharts)
+    <script src="{{asset('./assets/vendor/apexcharts/apexcharts.min.js')}}"></script>
+@endif
+
+@if($needsChartJs)
+    <script src="{{asset('./assets/vendor/chart.js/chart.umd.js')}}"></script>
+@endif
+
 <script src="{{asset('./assets/js/ImageLargeSizeTracker.js')}}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
 
 
 <!-- Template Main JS File -->
 {{--  <script src="{{'./assets/js/main.js'}}"></script>--}}
 @php
-    use Illuminate\Support\Facades\Route;
-
     $currentRouter = Route::currentRouteName();
     $data = '';
 
