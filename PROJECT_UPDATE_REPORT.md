@@ -203,3 +203,64 @@ Updated:
 - Add per-trigger "Send Test Notification" button in admin config.
 - Add read/unread filter + bulk actions on notification listing pages.
 - Add delivery audit logs (sent, channel, status, error) for admin observability.
+
+## 10) Additional Updates Done Today (Session 3 - 2026-03-09)
+
+### Public UI Branding + Navigation/Footer Polish
+- Updated public-facing branding to **Happy Learn** on user-side pages (student/teacher-facing layout).
+- Added premium nav polish:
+  - micro-interactions
+  - active underline indicator
+  - sticky compact-on-scroll behavior
+- Redesigned non-admin top navigation and footer for a more consistent premium dark theme.
+
+Key files:
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/left_nav.blade.php`
+- `resources/views/layouts/right_nav.blade.php`
+- `resources/views/layouts/footer.blade.php`
+- `resources/views/language-switch.blade.php`
+
+### Learner Course Card Redesign + Broken Image Fixes
+- Rebuilt learner course cards with:
+  - cleaner hierarchy
+  - improved pricing display
+  - stronger CTA usability
+  - premium visual style and hover states
+- Replaced missing user-side page styling images (old `storage/webstyle/*` dependencies) with locally generated 3D-style SVG illustrations.
+- Added safe fallback image behavior for dynamic course images to prevent broken image links when records are missing or invalid.
+
+Key files:
+- `resources/views/course/ListforLearners.blade.php`
+- `resources/views/home.blade.php`
+- `resources/views/job/intro.blade.php`
+- `resources/views/course/enroll/CourseEnrollPage.blade.php`
+- `resources/views/users/StudentDashboard.blade.php`
+- `resources/views/users/TeacherDashboard.blade.php`
+- `public/assets/illustrations/*`
+
+New generated illustration assets:
+- `learning-orb.svg`
+- `community-pupils.svg`
+- `mentor-teacher.svg`
+- `career-owl.svg`
+- `benefit-money.svg`
+- `benefit-remote.svg`
+- `benefit-idea.svg`
+- `course-placeholder.svg`
+
+### Student/Teacher Dashboard Appear Animations (Performance-Aware)
+- Added entrance animations to student and teacher dashboard blocks/cards.
+- Implemented using **IntersectionObserver** (one-time reveal, unobserve after appear).
+- Animates only `opacity` and `transform` for low paint/composite cost.
+- Added `prefers-reduced-motion` handling and graceful fallback for unsupported browsers.
+
+### Validation Executed for Session 3
+- `php artisan view:cache` run in Docker after each major blade update.
+- Non-admin `webstyle` broken references were removed from user-facing pages.
+
+### Session 3 Commits
+- `3c35a91` - `feat(ui): redesign non-admin top nav and footer with premium dark layout`
+- `4f8c7f1` - `feat(ui): set public brand to Happy Learn and add polished compact sticky nav interactions`
+- `19e314e` - `feat(ui): redesign learner course cards and replace broken style images with local 3D illustrations`
+- `cd8bffb` - `feat(ui): add performant appear animations to student and teacher dashboards`
