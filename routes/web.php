@@ -31,9 +31,15 @@ use App\Http\Controllers\AdminNotificationConfigController;
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
 
-// google 0-Auth login
-Route::get('/login/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('login.google');
-Route::get('/login/google/callback', [GoogleLoginController::class, 'redirectToGoogleCallback']);
+// Social login
+Route::get('/login/google', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'google')->name('login.google');
+Route::get('/login/google/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'google')->name('login.google.callback');
+
+Route::get('/login/github', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'github')->name('login.github');
+Route::get('/login/github/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'github')->name('login.github.callback');
+
+Route::get('/login/microsoft', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'microsoft')->name('login.microsoft');
+Route::get('/login/microsoft/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'microsoft')->name('login.microsoft.callback');
 
 Auth::routes(['verify' => true]);
 
