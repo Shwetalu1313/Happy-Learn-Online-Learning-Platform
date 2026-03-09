@@ -2,10 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\EnrolledUserMiddleware;
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isTeacher;
 use App\Http\Middleware\notStudent;
-use App\Http\Middleware\EnrolledUserMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -41,12 +41,14 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\LanguageMiddleware::class,
+            \App\Http\Middleware\TrackSystemHealthMetrics::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\TrackSystemHealthMetrics::class,
         ],
     ];
 

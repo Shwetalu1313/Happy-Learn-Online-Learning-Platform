@@ -153,12 +153,12 @@
         @if($authUser === UserRoleEnums::ADMIN->value)
             <li class="nav-heading">{{__('Settings')}}</li>
             <li class="nav-item">
-                <a class="nav-link {{is_active_route(['activities', 'admin.notifications.config', 'admin.sso.providers.index'])}}"
+                <a class="nav-link {{is_active_route(['activities', 'admin.notifications.config', 'admin.sso.providers.index', 'admin.system-health.index'])}}"
                    data-bs-target="#settings_page" data-bs-toggle="collapse" href="#">
-                    <i class="bi {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index'], 'bi-gear-wide-connected active', 'bi-gear-wide-connected')}}"></i>
+                    <i class="bi {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index', 'admin.system-health.index'], 'bi-gear-wide-connected active', 'bi-gear-wide-connected')}}"></i>
                     <span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="settings_page" class="nav-content collapse {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                <ul id="settings_page" class="nav-content collapse {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index', 'admin.system-health.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('activities') }}" class="{{is_active_route('activities')}}">
                             <i class="bi bi-circle"></i><span>Activities Logs</span>
@@ -172,6 +172,11 @@
                     <li>
                         <a href="{{ route('admin.sso.providers.index') }}" class="{{is_active_route('admin.sso.providers.index')}}">
                             <i class="bi bi-circle"></i><span>SSO Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.system-health.index') }}" class="{{is_active_route('admin.system-health.index')}}">
+                            <i class="bi bi-circle"></i><span>System Health</span>
                         </a>
                     </li>
                 </ul>

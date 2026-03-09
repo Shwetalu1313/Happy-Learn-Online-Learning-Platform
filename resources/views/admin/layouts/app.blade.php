@@ -11,7 +11,7 @@
     @php
         use Illuminate\Support\Facades\Route;
         $currentRouteName = Route::currentRouteName();
-        $needsApexCharts = $currentRouteName === 'dashboard';
+        $needsApexCharts = in_array($currentRouteName, ['dashboard', 'admin.system-health.index'], true);
         $needsChartJs = $currentRouteName === 'exchange.edit';
     @endphp
 

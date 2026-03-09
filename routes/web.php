@@ -1,33 +1,31 @@
 <?php
 
-
-use App\Enums\UserRoleEnums;
-use App\Http\Controllers\Auth\GoogleLoginController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\CurrencyExchangeController;
+use App\Http\Controllers\AdminNotificationConfigController;
+use App\Http\Controllers\AdminSystemHealthController;
+use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CourseContributorController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseEnrollController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\LessonController;
-use App\Http\Controllers\JobPostController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubCategoryController;
-use App\Http\Controllers\CourseContributorController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\ForumController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\AdminNotificationConfigController;
-
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\UserController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
 
@@ -44,7 +42,6 @@ Route::get('/login/microsoft', [GoogleLoginController::class, 'redirectToProvide
 Route::get('/login/microsoft/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('providerKey', 'microsoft')->name('login.microsoft.callback');
 
 Auth::routes(['verify' => true]);
-
 
 // email verification
 
@@ -63,44 +60,41 @@ Route::post('/email/verification-notification', function (Request $request) {
 
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-/*========================================================================================*/
+/* ======================================================================================== */
 
+// guest +++++++++++++++
 
-//guest +++++++++++++++
-
-//job
+// job
 Route::get('/job/intro', [PageController::class, 'jobformIntro'])->name('job.intro');
 Route::get('/job/listV2', [JobPostController::class, 'joblist'])->name('job.listV2');
 Route::get('job/{JobPost}/detail', [JobPostController::class, 'jobDetail'])->name('job.detail');
 
-//users
+// users
 Route::get('users/top_pts', [PageController::class, 'TopPointsUserList'])->name('users.top_pts');
 Route::get('users/teachers', [PageController::class, 'teacherLists'])->name('users.teachers');
 
-//course
+// course
 Route::get('course/{course_id}/enroll', [PageController::class, 'CourseEnroll'])->name('course.enroll');
 Route::get('/list/learner', [PageController::class, 'showCourses'])->name('course.list.learners');
 
-//home
+// home
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-//authenticator +++++++++++++
+// authenticator +++++++++++++
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/search', [SearchController::class, 'index'])->name('global.search');
 
-    //dashboard
+    // dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard')->middleware('isAdmin');
     Route::get('/dashboard/export/csv', [AdminDashboardController::class, 'exportCsv'])->name('dashboard.export.csv')->middleware('isAdmin');
     Route::get('/dashboard/print/{paper?}', [AdminDashboardController::class, 'printView'])->name('dashboard.print')->middleware('isAdmin');
     Route::get('user/dashboard', [PageController::class, 'UserDashboard'])->name('user.dashboard');
 
-
     // Job
-    Route::group(['prefix' => '/job'], function (){
+    Route::group(['prefix' => '/job'], function () {
         Route::get('/list', [JobPostController::class, 'list'])->name('job.list')->middleware('isAdmin');
-        Route::group(['middleware' => 'isAdmin'], function (){
+        Route::group(['middleware' => 'isAdmin'], function () {
             Route::get('/post', [JobPostController::class, 'index'])->name('job.post');
             Route::post('/store', [JobPostController::class, 'store'])->name('job.store');
             Route::put('/{JobPost}/update', [JobPostController::class, 'update'])->name('job.update');
@@ -109,11 +103,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         });
     });
 
-    //user
+    // user
     Route::get('profile/{id}', [UserController::class, 'showProfile'])->name('user.profile');
     Route::post('/profile/update/', [UserController::class, 'updateUserProfile'])->name('user.profile.update');
     Route::post('/profile/change/', [UserController::class, 'changeUserPassword'])->name('user.password.change');
-    Route::group(['prefix' => '/user', 'middleware'=>'isAdmin'], function (){
+    Route::group(['prefix' => '/user', 'middleware' => 'isAdmin'], function () {
 
         Route::resource('/dtl', UserController::class)->names([
             'index' => 'user.dtl.index',
@@ -126,12 +120,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         ]);
         Route::post('/dtl/pf_update/', [UserController::class, 'updateProfile'])->name('user.dtl.pf_update');
         Route::post('/dtl/ch_pass/', [UserController::class, 'changePassword'])->name('user.dtl.ch_pass');
-        Route::put('/role/{id}/update',[UserController::class, 'roleUpdate'])->name('role.update');
+        Route::put('/role/{id}/update', [UserController::class, 'roleUpdate'])->name('role.update');
         Route::post('/role/bulkInsert', [\App\Http\Controllers\UserRoleController::class, 'bulkInsert'])->name('user.role.bulkInsert');
     });
 
-    //category
-    //အကယ်၍ page 404 error ဖြစ်ပေါ်ပါက custom route များကို resource route များပေါ်တွင်ထားရမည်။
+    // category
+    // အကယ်၍ page 404 error ဖြစ်ပေါ်ပါက custom route များကို resource route များပေါ်တွင်ထားရမည်။
     Route::get('/category/lst', [CategoryController::class, 'listingV1'])->name('category.lst_V1')->middleware('isAdmin');
     Route::get('category/mdf/{category}', [CategoryController::class, 'showV2'])->name('category.modify')->middleware('isAdmin');
     Route::resource('category', CategoryController::class)->names([
@@ -152,15 +146,15 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         'destroy' => 'sub_category.destroy',
     ])->middleware('isAdmin');
 
-    Route::group(['middleware' => 'notStudent'], function (){
+    Route::group(['middleware' => 'notStudent'], function () {
         Route::any('course/toApprove/{id}', [CourseController::class, 'updateToApproveState'])->name('course.toApprove');
         Route::resource('course', CourseController::class);
         Route::resource('contributor', CourseContributorController::class);
         Route::get('lesson/{lesson_id}/review', [LessonController::class, 'showAtAdmin'])->name('lesson.review');
         Route::any('lesson/{course_id}/createForm', [LessonController::class, 'createForm'])->name('lesson.createForm');
         Route::resource('lesson', LessonController::class);
-        Route::post('exercise/restore/{exercise_id}',[ExerciseController::class, 'restore'])->name('exercise.restore');
-        Route::delete('exercise/force_del/{exercise_id}',[ExerciseController::class, 'forceDelete'])->name('exercise.force_del');
+        Route::post('exercise/restore/{exercise_id}', [ExerciseController::class, 'restore'])->name('exercise.restore');
+        Route::delete('exercise/force_del/{exercise_id}', [ExerciseController::class, 'forceDelete'])->name('exercise.force_del');
         Route::get('question/{exercise_id}/form', [ExerciseController::class, 'showQuestionCreateForm'])->name('question.show.form');
         Route::resource('exercise', ExerciseController::class);
         Route::put('question/{question}/{exercise_id}', [QuestionController::class, 'updateQuestion'])->name('question.updateQuestion');
@@ -169,19 +163,19 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('enroll/list', [CourseEnrollController::class, 'ListPage'])->name('enroll.list');
     });
 
-    Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function() {
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'exchange'], function () {
         Route::get('edit', [CurrencyExchangeController::class, 'edit'])->name('exchange.edit');
         Route::put('usUpdate', [CurrencyExchangeController::class, 'updateUSDollar'])->name('usUpdate');
         Route::put('ptsUpdate', [CurrencyExchangeController::class, 'updatePts'])->name('ptsUpdate');
     });
 
-    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/notifications'], function() {
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/notifications'], function () {
         Route::get('config', [AdminNotificationConfigController::class, 'index'])->name('admin.notifications.config');
         Route::post('rules/{eventKey}', [AdminNotificationConfigController::class, 'updateRule'])->name('admin.notifications.rules.update');
         Route::post('broadcast', [AdminNotificationConfigController::class, 'broadcast'])->name('admin.notifications.broadcast');
     });
 
-    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/sso/providers'], function() {
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/sso/providers'], function () {
         Route::get('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'index'])->name('admin.sso.providers.index');
         Route::post('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'store'])->name('admin.sso.providers.store');
         Route::put('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'update'])->name('admin.sso.providers.update');
@@ -189,8 +183,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::delete('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'destroy'])->name('admin.sso.providers.destroy');
     });
 
-    //enroll course
-    Route::group(['prefix' => 'course'], function (){
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/system-health'], function () {
+        Route::get('/', [AdminSystemHealthController::class, 'index'])->name('admin.system-health.index');
+        Route::get('/snapshot', [AdminSystemHealthController::class, 'snapshot'])->name('admin.system-health.snapshot');
+    });
+
+    // enroll course
+    Route::group(['prefix' => 'course'], function () {
         Route::get('{course_id}/detail', [PageController::class, 'courseDetail'])->name('course.detail')->middleware('enrolled');
         Route::post('ptsPayment', [CourseEnrollController::class, 'PtsPayment'])->name('course.ptsPayment');
         Route::post('cardPayment', [CourseEnrollController::class, 'cardPayment'])->name('course.cardPayment');
@@ -198,16 +197,16 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::delete('enroll/{enrollCourse}/delete', [CourseEnrollController::class, 'deleteEnroll'])->name('enroll.delete');
     });
 
-    //Exercises
-    Route::group(['prefix' => 'exercise'], function (){
+    // Exercises
+    Route::group(['prefix' => 'exercise'], function () {
         Route::get('list/{id}', [ExerciseController::class, 'showExerciseList'])->name('exercise.list');
         Route::get('{exercise}/questions_learner_form', [ExerciseController::class, 'showToLearners'])->name('exercise.questions_learner_form');
         Route::post('{exercise}/submit_answer', [ExerciseController::class, 'submitAnswers'])->name('exercise.submit');
         Route::get('/{exercise}/answer-form', [ExerciseController::class, 'answerForm'])->name('exercise.answer_form');
     });
 
-    //Forum
-    Route::group(['prefix' => 'forum'], function (){
+    // Forum
+    Route::group(['prefix' => 'forum'], function () {
         Route::get('{lesson}', [ForumController::class, 'showForumList'])->name('forums');
         Route::post('', [ForumController::class, 'store'])->name('forums.store');
         Route::delete('{forum}', [ForumController::class, 'destroy'])->name('forums.destroy');
@@ -223,13 +222,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     });
 
-    //Activities
+    // Activities
     Route::get('activities/log', [PageController::class, 'showAllActivities'])->name('activities')->middleware('isAdmin');
 
 });
 
-
-//language switching
+// language switching
 Route::post('/language-switch', [LanguageController::class, 'languageSwitch'])->name('language.switch');
 
 Route::get('/fetch-data', function () {
@@ -246,7 +244,7 @@ Route::get('/fetch-data', function () {
         return $dataResponse->json();
     } catch (Exception $e) {
         // Log the error
-        \Log::error('Error fetching data: ' . $e->getMessage());
+        \Log::error('Error fetching data: '.$e->getMessage());
 
         // Return an error response
         return response()->json(['error' => 'Error fetching data'], 500);
