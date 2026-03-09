@@ -2,12 +2,21 @@
 
 @section('content')
     @php
+        use App\Enums\CoursePaymentTypeEnums;
         use App\Enums\CourseTypeEnums;
 
         $enrolledCount = $enrollments->count();
         $freeCount = $enrollments->filter(fn ($item) => $item->course && $item->course->courseType === CourseTypeEnums::BASIC->value)->count();
         $paidCount = $enrolledCount - $freeCount;
-        $spentMmk = (int) $enrollments->sum('amount');
+        $spentMmk = (int) $enrollments->sum(function ($item) {
+            $paymentType = $item->payment_type instanceof CoursePaymentTypeEnums
+                ? $item->payment_type->value
+                : (string) $item->payment_type;
+
+            return $paymentType === CoursePaymentTypeEnums::FREE->value
+                ? 0
+                : (int) $item->amount;
+        });
         $latestEnrollment = $enrollments->first();
     @endphp
 
