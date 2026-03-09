@@ -39,6 +39,58 @@
                            <strong>{{ $message }}</strong>
                         </span>
                 @enderror
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <label for="video_provider" class="form-label">Video Provider</label>
+                        <select id="video_provider" name="video_provider" class="form-select border-black">
+                            <option value="">No video</option>
+                            @foreach($videoProviders as $videoProvider)
+                                <option value="{{ $videoProvider }}" {{ old('video_provider') === $videoProvider ? 'selected' : '' }}>
+                                    {{ config('lesson_video.providers.' . $videoProvider . '.label', ucfirst($videoProvider)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="video_source" class="form-label">YouTube URL or Video ID</label>
+                        <input
+                            type="text"
+                            name="video_source"
+                            id="video_source"
+                            class="form-control border-black"
+                            value="{{ old('video_source') }}"
+                            placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX or XXXXXXXXXXX"
+                        >
+                        <small class="text-secondary">Only YouTube is enabled for now. Architecture is provider-ready for future upgrades.</small>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="video_start_at" class="form-label">Start At (seconds)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            max="86400"
+                            name="video_start_at"
+                            id="video_start_at"
+                            class="form-control border-black"
+                            value="{{ old('video_start_at', 0) }}"
+                        >
+                        <div class="form-check mt-2">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="1"
+                                id="video_is_preview"
+                                name="video_is_preview"
+                                {{ old('video_is_preview') ? 'checked' : '' }}
+                            >
+                            <label class="form-check-label" for="video_is_preview">
+                                Mark as preview lesson
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="quill-editor-full" id="req">
                     <p>Hello world</p>
                 </div>

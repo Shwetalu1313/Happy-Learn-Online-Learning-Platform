@@ -69,12 +69,84 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                 </div>
             @endif
             {{--end alert--}}
+            @if($lesson->video_embed_url)
+                <div class="mb-4">
+                    <h6 class="text-primary-emphasis">Lesson Video</h6>
+                    <div class="ratio ratio-16x9 rounded overflow-hidden border">
+                        <iframe
+                            src="{{ $lesson->video_embed_url }}"
+                            title="{{ $lesson->title }} video"
+                            loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                    <small class="text-secondary d-block mt-2">
+                        Provider: {{ config('lesson_video.providers.' . $lesson->video_provider . '.label', ucfirst((string) $lesson->video_provider)) }}
+                        @if($lesson->video_is_preview)
+                            | Preview lesson enabled
+                        @endif
+                    </small>
+                </div>
+            @endif
             <div class="" id="lesson-body"></div>
 
             <form method="POST" action="{{ route('lesson.update', $lesson->id) }}" id="lesson-form" style="display: none;">
                 @csrf
                 @method('PUT')
                 <h5 class="card-title" contenteditable="true" id="title">{{ $lesson->title }}</h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <label for="video_provider" class="form-label">Video Provider</label>
+                        <select id="video_provider" name="video_provider" class="form-select border-black">
+                            <option value="">No video</option>
+                            @foreach($videoProviders as $videoProvider)
+                                <option value="{{ $videoProvider }}" {{ old('video_provider', $lesson->video_provider) === $videoProvider ? 'selected' : '' }}>
+                                    {{ config('lesson_video.providers.' . $videoProvider . '.label', ucfirst($videoProvider)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="video_source" class="form-label">YouTube URL or Video ID</label>
+                        <input
+                            type="text"
+                            name="video_source"
+                            id="video_source"
+                            class="form-control border-black"
+                            value="{{ old('video_source', $lesson->video_source) }}"
+                            placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX or XXXXXXXXXXX"
+                        >
+                    </div>
+                    <div class="col-md-3">
+                        <label for="video_start_at" class="form-label">Start At (seconds)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            max="86400"
+                            name="video_start_at"
+                            id="video_start_at"
+                            class="form-control border-black"
+                            value="{{ old('video_start_at', $lesson->video_start_at ?? 0) }}"
+                        >
+                        <div class="form-check mt-2">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="1"
+                                id="video_is_preview"
+                                name="video_is_preview"
+                                {{ old('video_is_preview', $lesson->video_is_preview) ? 'checked' : '' }}
+                            >
+                            <label class="form-check-label" for="video_is_preview">
+                                Mark as preview lesson
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="quill-editor-full" id="req"></div>
                 <input type="hidden" name="title" id="title_input">
                 <input type="hidden" name="requirements" id="req_input">

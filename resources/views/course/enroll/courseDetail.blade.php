@@ -67,6 +67,18 @@
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $lesson->title }}</h5>
+                            @if($lesson->video_embed_url)
+                                <div class="ratio ratio-16x9 rounded overflow-hidden mb-3 border">
+                                    <iframe
+                                        src="{{ $lesson->video_embed_url }}"
+                                        title="{{ $lesson->title }} video"
+                                        loading="lazy"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen
+                                    ></iframe>
+                                </div>
+                            @endif
                             <div class="ql-editor lesson-body-{{ $lesson->id }}"></div>
                         </div>
                     </div>
