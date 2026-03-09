@@ -151,28 +151,31 @@
         @endif
 
         @if($authUser === UserRoleEnums::ADMIN->value)
-            <li class="nav-heading">{{__('Log')}}</li>
-
-                    <li class="nav-item" >
-                        <a class="nav-link collapsed {{is_active_route('activities')}}" href="{{route('activities')}}">
-                            <i class="bi bi-gear-wide-connected"></i>
-                            <span >{{__('Activities Logs')}}</span>
-                        </a>
-                    </li><!-- End Dashboard Nav -->
-
-                    <li class="nav-item" >
-                        <a class="nav-link collapsed {{is_active_route('admin.notifications.config')}}" href="{{ route('admin.notifications.config') }}">
-                            <i class="bi bi-bell"></i>
-                            <span>Notification Config</span>
+            <li class="nav-heading">{{__('Settings')}}</li>
+            <li class="nav-item">
+                <a class="nav-link {{is_active_route(['activities', 'admin.notifications.config', 'admin.sso.providers.index'])}}"
+                   data-bs-target="#settings_page" data-bs-toggle="collapse" href="#">
+                    <i class="bi {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index'], 'bi-gear-wide-connected active', 'bi-gear-wide-connected')}}"></i>
+                    <span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="settings_page" class="nav-content collapse {{is_active_route_val(['activities', 'admin.notifications.config', 'admin.sso.providers.index'], 'show', '')}}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('activities') }}" class="{{is_active_route('activities')}}">
+                            <i class="bi bi-circle"></i><span>Activities Logs</span>
                         </a>
                     </li>
-
-                    <li class="nav-item" >
-                        <a class="nav-link collapsed {{is_active_route('admin.sso.providers.index')}}" href="{{ route('admin.sso.providers.index') }}">
-                            <i class="bi bi-shield-lock"></i>
-                            <span>SSO Config</span>
+                    <li>
+                        <a href="{{ route('admin.notifications.config') }}" class="{{is_active_route('admin.notifications.config')}}">
+                            <i class="bi bi-circle"></i><span>Notification Config</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.sso.providers.index') }}" class="{{is_active_route('admin.sso.providers.index')}}">
+                            <i class="bi bi-circle"></i><span>SSO Config</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
         @endif
     </ul>
 
