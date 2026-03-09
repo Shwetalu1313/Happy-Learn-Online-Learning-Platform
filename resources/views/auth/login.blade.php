@@ -69,22 +69,18 @@
                         </div>
                     </form>
 
-                    <div class="my-4 text-center text-secondary">or continue with</div>
+                    @if(isset($ssoProviders) && $ssoProviders->isNotEmpty())
+                        <div class="my-4 text-center text-secondary">or continue with</div>
 
-                    <div class="d-grid gap-2 col-md-8 mx-auto">
-                        <a href="{{ route('login.google') }}" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-google"></i>
-                            <span>Continue with Google</span>
-                        </a>
-                        <a href="{{ route('login.github') }}" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-github"></i>
-                            <span>Continue with GitHub</span>
-                        </a>
-                        <a href="{{ route('login.microsoft') }}" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-microsoft"></i>
-                            <span>Continue with Microsoft</span>
-                        </a>
-                    </div>
+                        <div class="d-grid gap-2 col-md-8 mx-auto">
+                            @foreach($ssoProviders as $ssoProvider)
+                                <a href="{{ route('login.sso.redirect', ['providerKey' => $ssoProvider->provider_key]) }}" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi {{ $ssoProvider->icon_class ?: 'bi-box-arrow-in-right' }}"></i>
+                                    <span>Continue with {{ $ssoProvider->display_name }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

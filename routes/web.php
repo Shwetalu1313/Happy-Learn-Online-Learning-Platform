@@ -31,15 +31,17 @@ use App\Http\Controllers\AdminNotificationConfigController;
 
 Route::get('/', [PageController::class, 'welcome'])->name('/');
 
-// Social login
-Route::get('/login/google', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'google')->name('login.google');
-Route::get('/login/google/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'google')->name('login.google.callback');
+// Social login (DB-configurable providers)
+Route::get('/login/sso/{providerKey}', [GoogleLoginController::class, 'redirectToProvider'])->name('login.sso.redirect');
+Route::get('/login/sso/{providerKey}/callback', [GoogleLoginController::class, 'handleProviderCallback'])->name('login.sso.callback');
 
-Route::get('/login/github', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'github')->name('login.github');
-Route::get('/login/github/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'github')->name('login.github.callback');
-
-Route::get('/login/microsoft', [GoogleLoginController::class, 'redirectToProvider'])->defaults('provider', 'microsoft')->name('login.microsoft');
-Route::get('/login/microsoft/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('provider', 'microsoft')->name('login.microsoft.callback');
+// Backward-compatible aliases
+Route::get('/login/google', [GoogleLoginController::class, 'redirectToProvider'])->defaults('providerKey', 'google')->name('login.google');
+Route::get('/login/google/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('providerKey', 'google')->name('login.google.callback');
+Route::get('/login/github', [GoogleLoginController::class, 'redirectToProvider'])->defaults('providerKey', 'github')->name('login.github');
+Route::get('/login/github/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('providerKey', 'github')->name('login.github.callback');
+Route::get('/login/microsoft', [GoogleLoginController::class, 'redirectToProvider'])->defaults('providerKey', 'microsoft')->name('login.microsoft');
+Route::get('/login/microsoft/callback', [GoogleLoginController::class, 'handleProviderCallback'])->defaults('providerKey', 'microsoft')->name('login.microsoft.callback');
 
 Auth::routes(['verify' => true]);
 
@@ -177,6 +179,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('config', [AdminNotificationConfigController::class, 'index'])->name('admin.notifications.config');
         Route::post('rules/{eventKey}', [AdminNotificationConfigController::class, 'updateRule'])->name('admin.notifications.rules.update');
         Route::post('broadcast', [AdminNotificationConfigController::class, 'broadcast'])->name('admin.notifications.broadcast');
+    });
+
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/sso/providers'], function() {
+        Route::get('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'index'])->name('admin.sso.providers.index');
+        Route::post('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'store'])->name('admin.sso.providers.store');
+        Route::put('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'update'])->name('admin.sso.providers.update');
+        Route::delete('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'destroy'])->name('admin.sso.providers.destroy');
     });
 
     //enroll course

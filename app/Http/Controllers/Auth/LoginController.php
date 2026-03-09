@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRoleEnums;
 use App\Http\Controllers\Controller;
+use App\Services\SsoProviderService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -27,6 +29,14 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function showLoginForm(SsoProviderService $ssoProviderService): View
+    {
+        $titlePage = __('nav.login');
+        $ssoProviders = $ssoProviderService->getPublicEnabledProviders();
+
+        return view('auth.login', compact('titlePage', 'ssoProviders'));
     }
 
     /**

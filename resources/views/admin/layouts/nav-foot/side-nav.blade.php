@@ -166,6 +166,13 @@
                             <span>Notification Config</span>
                         </a>
                     </li>
+
+                    <li class="nav-item" >
+                        <a class="nav-link collapsed {{is_active_route('admin.sso.providers.index')}}" href="{{ route('admin.sso.providers.index') }}">
+                            <i class="bi bi-shield-lock"></i>
+                            <span>SSO Config</span>
+                        </a>
+                    </li>
         @endif
     </ul>
 
