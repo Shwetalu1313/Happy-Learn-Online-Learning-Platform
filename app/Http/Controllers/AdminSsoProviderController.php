@@ -6,6 +6,7 @@ use App\Models\SsoProvider;
 use App\Services\SsoProviderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -86,6 +87,47 @@ class AdminSsoProviderController extends Controller
         $provider->delete();
 
         return redirect()->back()->with('success', 'SSO provider deleted.');
+    }
+
+    public function testConnection(SsoProvider $provider, SsoProviderService $ssoProviderService): RedirectResponse
+    {
+        if (! $provider->is_enabled) {
+            return redirect()->back()->with('error', "Provider '{$provider->display_name}' is disabled.");
+        }
+
+        if (empty($provider->client_id) || empty($provider->client_secret)) {
+            return redirect()->back()->with('error', "Provider '{$provider->display_name}' is missing client credentials.");
+        }
+
+        try {
+            $driver = $ssoProviderService->buildProviderDriver($provider);
+            $authUrl = $driver->redirect()->getTargetUrl();
+            $host = parse_url($authUrl, PHP_URL_HOST) ?: 'unknown-host';
+
+            $response = Http::timeout(8)
+                ->withOptions(['allow_redirects' => false, 'http_errors' => false])
+                ->get($authUrl);
+
+            $status = (int) $response->status();
+            if ($status >= 200 && $status < 500) {
+                return redirect()->back()->with(
+                    'success',
+                    "Connection test passed for '{$provider->display_name}' (endpoint: {$host}, HTTP {$status})."
+                );
+            }
+
+            return redirect()->back()->with(
+                'error',
+                "Connection test failed for '{$provider->display_name}' (endpoint: {$host}, HTTP {$status})."
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->back()->with(
+                'error',
+                "Connection test failed for '{$provider->display_name}'. Please verify credentials and callback URL."
+            );
+        }
     }
 
     private function validateProvider(Request $request, SsoProviderService $ssoProviderService, ?int $ignoreId = null): array

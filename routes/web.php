@@ -185,6 +185,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'index'])->name('admin.sso.providers.index');
         Route::post('/', [\App\Http\Controllers\AdminSsoProviderController::class, 'store'])->name('admin.sso.providers.store');
         Route::put('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'update'])->name('admin.sso.providers.update');
+        Route::post('/{provider}/test', [\App\Http\Controllers\AdminSsoProviderController::class, 'testConnection'])->name('admin.sso.providers.test');
         Route::delete('/{provider}', [\App\Http\Controllers\AdminSsoProviderController::class, 'destroy'])->name('admin.sso.providers.destroy');
     });
 

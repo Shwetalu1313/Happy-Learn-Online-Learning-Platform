@@ -180,9 +180,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 d-flex gap-2">
+                                    <div class="col-12 d-flex gap-2 flex-wrap">
                                         <button type="submit" class="btn btn-primary">Save Provider</button>
-                                        <a href="{{ route('login.sso.redirect', ['providerKey' => $provider->provider_key]) }}" class="btn btn-outline-secondary" target="_blank">Test Redirect</a>
+                                        <form action="{{ route('admin.sso.providers.test', $provider) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-success">Test Connection</button>
+                                        </form>
+                                        <a href="{{ route('login.sso.redirect', ['providerKey' => $provider->provider_key]) }}" class="btn btn-outline-secondary" target="_blank">Manual Redirect Test</a>
                                     </div>
                                 </form>
 
