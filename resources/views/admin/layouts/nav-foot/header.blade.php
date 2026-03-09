@@ -196,7 +196,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('user.dtl.show', Auth::user()) }}">
                             <i class="bi bi-gear"></i>
                             <span>Account Settings</span>
                         </a>
@@ -204,6 +204,33 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
+
+                    @if(Auth::user()->role->value === \App\Enums\UserRoleEnums::ADMIN->value)
+                        <li class="dropdown-header">
+                            <h6 class="mb-0">Settings</h6>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.notifications.config') }}">
+                                <i class="bi bi-bell"></i>
+                                <span>Notification Config</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.sso.providers.index') }}">
+                                <i class="bi bi-shield-lock"></i>
+                                <span>SSO Config</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('activities') }}">
+                                <i class="bi bi-gear-wide-connected"></i>
+                                <span>Activities Logs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                    @endif
 
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
