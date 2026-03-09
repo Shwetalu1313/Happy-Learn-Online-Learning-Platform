@@ -24,18 +24,36 @@ This repository is actively updated. For detailed session-by-session changes, se
 ## Major Features (Current)
 
 - Authentication and email verification
-- Google OAuth login
+- Social SSO login:
+  - Google
+  - GitHub
+  - Microsoft
+  - dynamic provider configs managed by admin (encrypted credentials + test connection)
 - Role-based access (admin/teacher/student)
 - Category, subcategory, course, lesson, exercise, question flows
 - Course enrollment and payments (free/points/card flow in app)
 - Job opportunities module
 - Forum with comment reply threading
 - Global search (MySQL-backed, not Elasticsearch)
+- Admin settings center (left nav `Settings`) for:
+  - Activities Logs
+  - Notification Config
+  - SSO Config
+  - System Health
 - Admin dashboard with:
   - metrics
   - timeline chart
   - CSV export
   - print layouts: `A5`, `A4`, `A3`, `A1`
+- System Health dashboard with live operational metrics:
+  - responses per minute/hour
+  - API/Web split load
+  - average response time
+  - server error rate
+  - DB connectivity + latency
+  - server load/memory
+  - container runtime info
+  - 60-minute and 24-hour charts (auto-refresh)
 - Centralized notifications with admin configuration
 - Premium dark-mode UI for student/teacher side
 - Light-mode admin portal
@@ -112,6 +130,7 @@ docker compose exec -T laravel.test php artisan route:list
   - `docker/php/99-performance.ini`
 - Includes opcache tuning and reduced debug overhead for better route response.
 - Heavy admin JS initialization was refactored to lazy-load where possible.
+- System Health request metrics are tracked via lightweight cache buckets (minute/hour) to avoid heavy per-request DB writes.
 - Student/teacher dashboard animations use performance-safe reveal strategy:
   - `IntersectionObserver`
   - `opacity + transform` only
@@ -150,6 +169,14 @@ docker compose up -d
   - `routes/web.php`
 - Docker config:
   - `compose.yaml`
+
+## Operations Notes
+
+- System Health page route:
+  - `admin/system-health`
+- Snapshot JSON route:
+  - `admin/system-health/snapshot`
+- Health charts and counters are traffic-based; values become more meaningful after normal app usage.
 
 ## License
 

@@ -264,3 +264,97 @@ New generated illustration assets:
 - `4f8c7f1` - `feat(ui): set public brand to Happy Learn and add polished compact sticky nav interactions`
 - `19e314e` - `feat(ui): redesign learner course cards and replace broken style images with local 3D illustrations`
 - `cd8bffb` - `feat(ui): add performant appear animations to student and teacher dashboards`
+
+## 11) Additional Updates Done Today (Session 4 - 2026-03-09)
+
+### Social SSO Completed (Admin-Managed)
+- Enabled dynamic social login providers:
+  - Google
+  - GitHub
+  - Microsoft
+- Implemented DB-backed provider configuration with encrypted client credentials.
+- Added admin CRUD for SSO providers and activation toggles.
+- Added non-login **Test Connection** action so admins can validate provider config safely.
+- Added backward-compatible alias routes for existing login links.
+
+Key files:
+- `app/Http/Controllers/Auth/GoogleLoginController.php`
+- `app/Http/Controllers/AdminSsoProviderController.php`
+- `app/Services/SsoProviderService.php`
+- `app/Models/SsoProvider.php`
+- `resources/views/admin/sso/config.blade.php`
+- `resources/views/auth/login.blade.php`
+- `config/services.php`
+- `routes/web.php`
+
+Migrations:
+- `database/migrations/2026_03_09_110000_add_oauth_columns_to_users_table.php`
+- `database/migrations/2026_03_09_120000_create_sso_providers_table.php`
+
+### Admin Navigation Settings Group (Left Sidebar)
+- Grouped operational links under left nav `Settings`:
+  - Activities Logs
+  - Notification Config
+  - SSO Config
+  - System Health
+- Reverted earlier right-nav grouping attempt and finalized left-nav grouping as requested.
+
+### New Admin System Health Dashboard
+- Added a dedicated admin portal health page for operational observability.
+- Live metrics now include:
+  - responses per minute and hour
+  - API/Web split traffic
+  - avg response time (1m/1h)
+  - server error rate (1h)
+  - DB connectivity and latency
+  - server load and memory usage
+  - container runtime info
+  - route totals
+- Added live charts:
+  - last 60-minute traffic/latency trend
+  - last 24-hour throughput trend
+- Added auto-refresh behavior (30s) + manual refresh button.
+
+Implementation details:
+- Added request-metrics middleware using cache-based minute/hour buckets (low overhead, avoids DB-heavy write amplification).
+- Added health snapshot JSON endpoint for live refresh.
+
+Key files:
+- `app/Http/Middleware/TrackSystemHealthMetrics.php`
+- `app/Services/SystemHealthMetricsService.php`
+- `app/Http/Controllers/AdminSystemHealthController.php`
+- `resources/views/admin/system_health/index.blade.php`
+- `app/Http/Kernel.php`
+- `resources/views/admin/layouts/app.blade.php`
+- `resources/views/admin/layouts/nav-foot/side-nav.blade.php`
+- `routes/web.php`
+
+### Validation Done for Session 4
+- `vendor/bin/pint --dirty --format agent`
+- `php artisan route:list --name=admin.system-health`
+- `php artisan view:cache`
+
+### Session 4 Commits
+- `3f30a80` - `feat(auth): enable social SSO for Google, GitHub, and Microsoft`
+- `e3d3256` - `feat(auth): add admin-managed encrypted SSO providers with dynamic social login`
+- `9115073` - `feat(auth): add non-login SSO test connection action in admin config`
+- `a8fb398` - `feat(admin-nav): group logs, notification and sso under left sidebar settings`
+- `4aef731` - `feat(admin): add live system health dashboard with traffic, API, DB, server and container metrics`
+
+## 12) Current Active Function Scope (As of 2026-03-09)
+
+- Admin portal:
+  - Executive dashboard with export/print (`A5`, `A4`, `A3`, `A1`)
+  - Settings center (logs/notification/SSO/system health)
+  - Notification trigger/channel/template config
+  - SSO provider management with secure credentials and test action
+  - Live system health monitoring surface
+- User side:
+  - Premium dark student/teacher dashboards
+  - Forum with reply threading
+  - Global search result page
+  - Improved course cards + safer image fallback behavior
+- Platform:
+  - Docker-first run mode (Sail)
+  - Persistent uploaded file storage via Docker volume
+  - Centralized notification architecture
