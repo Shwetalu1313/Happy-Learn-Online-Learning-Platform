@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminDataRetentionController;
 use App\Http\Controllers\AdminNotificationConfigController;
 use App\Http\Controllers\AdminSystemHealthController;
 use App\Http\Controllers\Auth\GoogleLoginController;
@@ -173,6 +174,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('config', [AdminNotificationConfigController::class, 'index'])->name('admin.notifications.config');
         Route::post('rules/{eventKey}', [AdminNotificationConfigController::class, 'updateRule'])->name('admin.notifications.rules.update');
         Route::post('broadcast', [AdminNotificationConfigController::class, 'broadcast'])->name('admin.notifications.broadcast');
+    });
+
+    Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/data-retention'], function () {
+        Route::get('/', [AdminDataRetentionController::class, 'index'])->name('admin.data-retention.index');
+        Route::put('/policies', [AdminDataRetentionController::class, 'updatePolicies'])->name('admin.data-retention.policies.update');
+        Route::post('/dry-run', [AdminDataRetentionController::class, 'dryRun'])->name('admin.data-retention.dry-run');
+        Route::post('/run', [AdminDataRetentionController::class, 'runNow'])->name('admin.data-retention.run');
     });
 
     Route::group(['middleware' => 'isAdmin', 'prefix' => 'admin/sso/providers'], function () {
