@@ -23,16 +23,9 @@ class CourseEnrollUser extends Model
         'amount',
         'receive_amount',
         'payment_type',
-        'card_number',
         'card_last_four',
         'expired_date',
-        'cvv',
         'cardHolderName',
-    ];
-
-    protected $hidden = [
-        'card_number',
-        'cvv',
     ];
 
     protected $casts = [
@@ -40,7 +33,6 @@ class CourseEnrollUser extends Model
         'amount' => 'integer',
         'receive_amount' => 'integer',
         'card_last_four' => 'string',
-        'cvv' => 'integer',
     ];
 
     public static function getModelName(): string

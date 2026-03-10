@@ -82,10 +82,8 @@ class CourseEnrollController extends Controller
             'amount' => $amount,
             'receive_amount' => $amount,
             'payment_type' => CoursePaymentTypeEnums::CARD->value,
-            'card_number' => null,
             'card_last_four' => $lastFour,
             'expired_date' => $data['expired_date'],
-            'cvv' => null,
             'cardHolderName' => $data['cardHolderName'],
         ]);
 

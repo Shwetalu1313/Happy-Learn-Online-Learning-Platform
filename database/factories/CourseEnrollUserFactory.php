@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Course;
-use App\Models\User;
-use App\Models\CourseEnrollUser;
 use App\Enums\CoursePaymentTypeEnums;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Enums\UserRoleEnums;
 use App\Enums\CourseTypeEnums;
+use App\Enums\UserRoleEnums;
+use App\Models\Course;
+use App\Models\CourseEnrollUser;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CourseEnrollUserFactory extends Factory
 {
@@ -27,8 +27,8 @@ class CourseEnrollUserFactory extends Factory
         $paymentType = in_array($courseType, $courseTypeFreeOrPoint) ? CoursePaymentTypeEnums::FREE->value : CoursePaymentTypeEnums::CARD->value;
 
         $cardNumber = $paymentType === CoursePaymentTypeEnums::CARD->value ? fake()->creditCardNumber : null;
+        $cardLastFour = $cardNumber ? substr($cardNumber, -4) : null;
         $expiredDate = $paymentType === CoursePaymentTypeEnums::CARD->value ? fake()->creditCardExpirationDate : null;
-        $cvv = $paymentType === CoursePaymentTypeEnums::CARD->value ? fake()->randomNumber(3) : null;
         $cardHolderName = $paymentType === CoursePaymentTypeEnums::CARD->value ? fake()->name : null;
 
         $studentID = fake()->randomElement($studentIDs);
@@ -58,15 +58,14 @@ class CourseEnrollUserFactory extends Factory
             'course_id' => $courseID,
             'amount' => function (array $attributes) {
                 $course = Course::find($attributes['course_id']);
+
                 return $course->fees;
             },
             'payment_type' => $paymentType,
-            'card_number' => $cardNumber,
+            'card_last_four' => $cardLastFour,
             'expired_date' => $expiredDate,
-            'cvv' => $cvv,
             'cardHolderName' => $cardHolderName,
             'created_at' => fake()->dateTimeBetween('-3 months', 'now'),
         ];
     }
-
 }
