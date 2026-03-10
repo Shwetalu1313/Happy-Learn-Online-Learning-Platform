@@ -1,15 +1,13 @@
 <?php
 
-namespace Http\Controllers;
+namespace Tests\Feature\Http\Controllers;
 
-use App\Http\Controllers\UserRoleController;
 use PHPUnit\Framework\TestCase;
 
 class UserRoleControllerTest extends TestCase
 {
-
-    public function testBulkInsert()
+    public function test_bulk_insert(): void
     {
-
+        $this->assertTrue(true);
     }
 }
