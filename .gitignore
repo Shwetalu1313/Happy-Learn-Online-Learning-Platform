@@ -37,3 +37,4 @@ yarn-error.log
 *.crt
 *.p12
 SECURITY_VULNERABILITY_REPORT.md
+FUTURE_PLAN_PRIVATE.md
