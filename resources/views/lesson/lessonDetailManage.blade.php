@@ -5,8 +5,18 @@
         use App\Models\Lesson;
 
         $exercises = $lesson->exercises;
-$delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->get();
+        $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->get();
     @endphp
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h5 class="mb-0">{{ $lesson->title }}</h5>
+            <small class="text-muted">Lesson editor and exercise management panel.</small>
+        </div>
+        <a class="btn btn-outline-secondary" href="{{ route('lesson.index') }}">
+            <i class="bi bi-arrow-left me-1"></i>Back To Lesson List
+        </a>
+    </div>
+
     <div class="card">
         <div class="card-body p-3">
             <div class="d-flex flex-row-reverse mb-3 align-items-baseline">
@@ -44,31 +54,6 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
 
 
 
-            {{--alert--}}
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                {{$error}}
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @if(Session::has('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-bag-x me-3"></i> {{ Session::pull('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check2-circle text-success me-3"></i> {{ Session::pull('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            {{--end alert--}}
             @if($lesson->video_embed_url)
                 <div class="mb-4">
                     <h6 class="text-primary-emphasis">Lesson Video</h6>
@@ -170,6 +155,11 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                 </tr>
             </thead>
             <tbody>
+            @if($exercises->isEmpty())
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No exercises created for this lesson yet.</td>
+                </tr>
+            @endif
             @foreach($exercises as $i => $exercise)
                 <tr>
                     <td class="text-primary-emphasis text-center">{{$i+1}}</td>
@@ -190,13 +180,13 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
                                             <button onclick="return confirm('Are You Sure 🤨')" class="btn btn-danger w-100"><i class="bi bi-journal-x me-3"></i> {{__('btnText.delete')}}</button>
                                         </form>
                                     </li>
-                                    <li class="dropdown-item d-flex justify-content-between align-items-center">
-                                        <div class="w-100">
-                                            <button class="btn border-0 btn-secondary w-100" title="create a new question for this exercise">
-                                                <i class="bi bi-share"></i> {{__('Create a New Question')}}
-                                            </button>
-                                        </div>
-                                    </li>
+                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <div class="w-100">
+                                        <button class="btn border-0 btn-secondary w-100" title="create a new question for this exercise" onclick="window.location='{{ route('question.show.form', [$exercise->id]) }}'">
+                                            <i class="bi bi-share"></i> {{__('Create a New Question')}}
+                                        </button>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </td>
@@ -223,6 +213,11 @@ $delete_exercises = Exercise::where('lesson_id', $lesson->id)->onlyTrashed()->ge
             </tr>
             </thead>
             <tbody>
+            @if($delete_exercises->isEmpty())
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No deleted exercises found.</td>
+                </tr>
+            @endif
             @foreach($delete_exercises as $i => $exercise)
                 <tr>
                     <td class="text-primary-emphasis text-center">{{$i+1}}</td>

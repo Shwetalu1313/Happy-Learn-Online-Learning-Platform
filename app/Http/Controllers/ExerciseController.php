@@ -216,7 +216,9 @@ class ExerciseController extends Controller
      */
     public function show(string $id)
     {
-        $exercise = Exercise::findOrFail($id);
+        $exercise = Exercise::query()
+            ->with(['questions.answers:id,question_id,text,is_correct'])
+            ->findOrFail($id);
         $titlePage = $exercise->title;
         return view('exercise.QuestionList', compact('exercise', 'titlePage'));
     }
@@ -228,7 +230,7 @@ class ExerciseController extends Controller
 
     public function showQuestionCreateForm(string $id)
     {
-        $exercise = Exercise::findOrFail($id);
+        $exercise = Exercise::query()->select(['id', 'title', 'lesson_id'])->findOrFail($id);
         $titlePage = $exercise->title;
         return view('exercise.createQuestion', compact('exercise', 'titlePage'));
     }

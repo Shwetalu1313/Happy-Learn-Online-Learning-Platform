@@ -18,23 +18,12 @@
         $approveState = CourseStateEnums::APPROVED->value;
     @endphp
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check2-circle text-success"></i> {{session('success')}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Update Course</h5>
+        <a href="{{ route('course.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back To Course List
+        </a>
+    </div>
 
     <div class="card">
         <div class="card-body">
@@ -67,7 +56,7 @@
                            name="name"
                            required
                            placeholder="How to Play Guitar like a Pro"
-                           value={{$course->title}}>
+                           value="{{ old('name', $course->title) }}">
                     @error('name')
                     <span class="invalid-feedback" role="alert">
                        <strong>{{ $message }}</strong>
@@ -85,7 +74,7 @@
                                name="courseType"
                                id="basic"
                                value="{{$basicTypeEnumVal}}"
-                               @if($course->courseType == $basicTypeEnumVal) checked @endif>
+                               @if(old('courseType', $course->courseType) == $basicTypeEnumVal) checked @endif>
 
                         <label class="form-check-label" for="basic">
                             {{__('course.label_t_basic')}}
@@ -97,7 +86,7 @@
                                name="courseType"
                                id="advanced"
                                value="{{$advancedTypeEnumVal}}"
-                        @if($course->courseType == $advancedTypeEnumVal) checked @endif>
+                        @if(old('courseType', $course->courseType) == $advancedTypeEnumVal) checked @endif>
                         <label class="form-check-label" for="advanced">
                             {{__('course.label_t_advanced')}}
                         </label>
@@ -117,7 +106,7 @@
                                    name="fee"
                                    required
                                    placeholder="5000"
-                                   value="{{$course->fees}}"
+                                   value="{{ old('fee', $course->fees) }}"
                                    min="0"
                                    max="100000">
                             <span class="input-group-text">{{__('course.label_kyat')}}</span>
@@ -140,7 +129,7 @@
                                    id="sub_cate"
                                    name="sub_cate"
                                    required
-                                   value="{{$course->sub_category->name}}"
+                                   value="{{ old('sub_cate', $course->sub_category->name) }}"
                                    placeholder="somethings...." disabled>
 
                             <button type="button"
@@ -235,6 +224,16 @@
 
 @section('scripts')
     <script src="{{asset('./assets/js/imagePreviewForm.js')}}"></script>
+    @if(old('requirements'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const editor = document.querySelector('#req .ql-editor');
+                if (editor) {
+                    editor.innerHTML = @json(old('requirements'));
+                }
+            });
+        </script>
+    @endif
     <script>
         $(document).ready(function() {
             // Initialize tooltips

@@ -2,47 +2,36 @@
 
 @section('content')
     @php
-        $betaFound = true;
+        $hasBetaCourse = $courses->contains(fn ($course) => !isset($course->approvedUser_id));
      @endphp
     <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h5 class="mb-0">{{__('lesson.list_title')}}</h5>
+                <small class="text-muted">Open a course to create, review, and manage lessons.</small>
+            </div>
+            <a class="btn btn-outline-primary" href="{{ route('course.index') }}">
+                <i class="bi bi-journal-bookmark me-1"></i>Open Course List
+            </a>
+        </div>
         <div class="card p-3">
-            <div class="card-title">{{__('lesson.list_title')}}</div>
-            {{--alert--}}
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                {{$error}}
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-bag-x me-3"></i> {{session('error')}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check2-circle text-success me-3"></i> {{session('success')}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            {{--end alert--}}
             <div class="card-body">
-                @if($betaFound)
+                @if($hasBetaCourse)
                     <small class="mb-3">Beta version are the courses that are awaiting approval.</small>
                 @endif
+
+                @if($courses->isEmpty())
+                    <div class="alert alert-secondary mb-0">
+                        No courses available yet for your account. Create or request course access first.
+                    </div>
+                @endif
+
                 <div class="row g-3">
                     @foreach($courses as $course)
                         @php
                             $newBadgeDays = 7;
                             $isNew = now()->diffInDays($course->created_at) <= $newBadgeDays;
                             $isBeta = !isset($course->approvedUser_id);
-                            $betaFound = $isBeta;
                         @endphp
                         <div class="col-md-6">
                             <div class="accordion" id="accordionPanelsStayOpenExample{{$loop->iteration}}">
@@ -64,11 +53,13 @@
                                             <a href="{{ url('course/'.$course->id.'/edit') }}">Click here to edit {{ $course->title }}.</a>
                                             <hr>
                                             @if($course->lessons->count() === 0)
-                                                No Lesson Found!
+                                                <div class="text-muted mb-2">No lesson found.</div>
                                             @else
                                                 @foreach($course->lessons as $lesson)
-                                                    <a href="{{url('lesson/'.$lesson->id.'/review')}}" class="text-black mb-3">{{$loop->iteration}}. {{$lesson->title}}</a><br>
-                                                    <button class="btn btn-danger btn-sm mb-3" onclick="document.getElementById('lesson{{$lesson->id}}-destroy').submit()"><i class="bi bi-trash"></i></button><br>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <a href="{{url('lesson/'.$lesson->id.'/review')}}" class="text-black">{{$loop->iteration}}. {{$lesson->title}}</a>
+                                                        <button class="btn btn-danger btn-sm" onclick="document.getElementById('lesson{{$lesson->id}}-destroy').submit()"><i class="bi bi-trash"></i></button>
+                                                    </div>
                                                     <form action="{{route('lesson.destroy', $lesson->id)}}" class="d-none" method="post" id="lesson{{$lesson->id}}-destroy">
                                                         @csrf
                                                         @method('DELETE')

@@ -15,7 +15,9 @@
                         @foreach($subcategories as $subcategory)
                             <option
                                 value="{{ $subcategory->id }}"
-                                @if($subcategory->id === $course->sub_category_id) selected @endif>{{ $loop->iteration }}. {{ $subcategory->name }}</option>
+                                @if((int) old('sub_cate_select', $course->sub_category_id) === (int) $subcategory->id) selected @endif>
+                                {{ $loop->iteration }}. {{ $subcategory->name }}
+                            </option>
                         @endforeach
                     </select>
                     @error('sub_cate_select')
@@ -50,9 +52,13 @@
         const okButton = document.querySelector('#staticBackdrop .modal-footer button.btn-primary');
         okButton.addEventListener('click', function() {
             copySubcategoryText();
+            const modalElement = document.getElementById('staticBackdrop');
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modalInstance.hide();
         });
+
+        copySubcategoryText();
     });
 </script>
-
 
 

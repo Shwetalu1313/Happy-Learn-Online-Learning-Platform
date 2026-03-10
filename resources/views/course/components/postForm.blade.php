@@ -1,8 +1,4 @@
-@php
-    use App\Enums\CourseTypeEnums;
-    use Illuminate\Support\Facades\Route;
-    $currentRoute = Route::currentRouteName();
-@endphp
+@php use App\Enums\CourseTypeEnums; @endphp
 
 <form action="{{ route('course.store')}}"
       class="px-lg-5 py-lg-2"
@@ -18,7 +14,8 @@
                id="name"
                name="name"
                required
-               placeholder="How to Play Guitar like a Pro">
+               placeholder="How to Play Guitar like a Pro"
+               value="{{ old('name') }}">
         @error('name')
         <span class="invalid-feedback" role="alert">
            <strong>{{ $message }}</strong>
@@ -35,7 +32,8 @@
                    type="radio"
                    name="courseType"
                    id="basic"
-                   value="{{CourseTypeEnums::BASIC->value}}">
+                   value="{{CourseTypeEnums::BASIC->value}}"
+                   {{ old('courseType') === CourseTypeEnums::BASIC->value ? 'checked' : '' }}>
             <label class="form-check-label" for="basic">
                 {{__('course.label_t_basic')}}
             </label>
@@ -45,7 +43,8 @@
                    type="radio"
                    name="courseType"
                    id="advanced"
-                   value="{{CourseTypeEnums::ADVANCED->value}}">
+                   value="{{CourseTypeEnums::ADVANCED->value}}"
+                   {{ old('courseType') === CourseTypeEnums::ADVANCED->value ? 'checked' : '' }}>
             <label class="form-check-label" for="advanced">
                 {{__('course.label_t_advanced')}}
             </label>
@@ -65,6 +64,7 @@
                        name="fee"
                        required
                        placeholder="5000"
+                       value="{{ old('fee') }}"
                        min="0"
                        max="100000">
                 <span class="input-group-text">{{__('course.label_kyat')}}</span>
@@ -87,7 +87,9 @@
                        id="sub_cate"
                        name="sub_cate"
                        required
-                       placeholder="somethings...." disabled>
+                       placeholder="Choose a sub-category"
+                       value="{{ old('sub_cate') }}"
+                       disabled>
 
                 <button type="button"
                         class="btn btn-outline-info"

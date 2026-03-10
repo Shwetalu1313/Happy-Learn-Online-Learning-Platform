@@ -15,35 +15,16 @@
     @endphp
     <div class="row">
         <div class="col-lg-12">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                {{$error}}
-                            </li>
-                        @endforeach
-                    </ul>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h5 class="mb-0">Course Management</h5>
+                    <small class="text-muted">Manage courses, lesson access, and contributors from one place.</small>
                 </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-bag-x me-3"></i> {{session('error')}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check2-circle text-success me-3"></i> {{session('success')}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-{{--            <div class="d-flex align-items-center alert alert-info ">--}}
-{{--                <div class="spinner-border text-info" role="status">--}}
-{{--                    <span class="visually-hidden">Loading...</span>--}}
-{{--                </div>--}}
-{{--                <span class="ms-3">Mail is sending....</span>--}}
-{{--            </div>--}}
+                <a href="{{ route('course.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>New Course
+                </a>
+            </div>
+
             <div class="card">
                 <div class="card-body table-responsive">
                     <h5 class="card-title">{{__('nav.data_tbl')}}</h5>
@@ -64,12 +45,25 @@
                         </tr>
                         </thead>
                         <tbody>
+                        @if($courses->isEmpty())
+                            <tr>
+                                <td colspan="9" class="text-center py-4 text-muted">
+                                    No course found yet. Create your first course to start lesson publishing.
+                                </td>
+                            </tr>
+                        @endif
                         @foreach($courses as $i => $course)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
 
                                 <td class="hover-name" data-toggle="tooltip" title="{{__('nav.click_to_see_dtl')}}" onclick="window.location='{{url('course/'.$course->id.'/edit')}}';">
-                                    <img src="{{asset('/storage/'.$course->image)}}" style="width: 25px; height: 25px" class="border rounded-5 border-success me-3" alt="profile">
+                                    <x-initials-avatar
+                                        :src="$course->image ? asset('/storage/'.$course->image) : null"
+                                        :name="$course->title"
+                                        size="25"
+                                        class="border border-success me-3"
+                                        img-class="rounded-circle"
+                                    />
                                     {{ $course->title }}
                                 </td>
 
@@ -193,7 +187,6 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>

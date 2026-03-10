@@ -14,7 +14,10 @@
                     <select class="form-select" aria-label="Choose Sub-Category" id="sub_category" name="sub_cate_select">
                         @foreach($subcategories as $subcategory)
                             <option
-                                value="{{ $subcategory->id }}">{{ $loop->iteration }}. {{ $subcategory->name }}</option>
+                                value="{{ $subcategory->id }}"
+                                {{ (int) old('sub_cate_select') === (int) $subcategory->id ? 'selected' : '' }}>
+                                {{ $loop->iteration }}. {{ $subcategory->name }}
+                            </option>
                         @endforeach
                     </select>
                     @error('sub_cate_select')
@@ -49,10 +52,14 @@
         const okButton = document.querySelector('#staticBackdrop .modal-footer button.btn-primary');
         okButton.addEventListener('click', function() {
             copySubcategoryText();
+            const modalElement = document.getElementById('staticBackdrop');
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modalInstance.hide();
         });
+
+        copySubcategoryText();
     });
 
 
 </script>
-
 

@@ -1,453 +1,186 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    @php
-        use App\Enums\QuestionTypeEnums;
-        use App\Models\Exercise;
-    @endphp
+    @php use App\Enums\QuestionTypeEnums; @endphp
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h5 class="mb-0">Create Question</h5>
+            <small class="text-muted">Exercise: {{ $exercise->title }}</small>
+        </div>
+        <a href="{{ route('exercise.show', $exercise) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back To Questions
+        </a>
+    </div>
+
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            {{--alert--}}
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                {{$error}}
-                            </li>
-                        @endforeach
-                    </ul>
+        <div class="col-md-9 col-lg-8">
+            <div class="card">
+                <div class="card-body pt-3">
+                    <form action="{{ route('question.storeQuestion', $exercise) }}" method="post" id="question_store_form">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="question_text" class="form-label">Question Text</label>
+                            <textarea id="question_text" name="question_text" class="form-control" rows="3" required>{{ old('question_text') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="question_type" class="form-label">Question Type</label>
+                            <select id="question_type" name="question_type" class="form-select" required>
+                                <option value="{{ QuestionTypeEnums::BLANK->value }}" {{ old('question_type', QuestionTypeEnums::BLANK->value) === QuestionTypeEnums::BLANK->value ? 'selected' : '' }}>Blank</option>
+                                <option value="{{ QuestionTypeEnums::TRUEorFALSE->value }}" {{ old('question_type') === QuestionTypeEnums::TRUEorFALSE->value ? 'selected' : '' }}>True/False</option>
+                                <option value="{{ QuestionTypeEnums::MULTIPLE_CHOICE->value }}" {{ old('question_type') === QuestionTypeEnums::MULTIPLE_CHOICE->value ? 'selected' : '' }}>Multiple Choice</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="blank_group">
+                            <label for="blank_answer" class="form-label">Correct Answer (Blank)</label>
+                            <input type="text" id="blank_answer" name="blank_answer" class="form-control" value="{{ old('blank_answer') }}">
+                        </div>
+
+                        <div class="mb-3 d-none" id="tf_group">
+                            <label class="form-label">Is the statement true?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="true_answer" name="correct_answer" value="{{ QuestionTypeEnums::TRUE->value }}" {{ old('correct_answer') === QuestionTypeEnums::TRUE->value ? 'checked' : '' }}>
+                                <label class="form-check-label" for="true_answer">True</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="false_answer" name="correct_answer" value="{{ QuestionTypeEnums::FALSE->value }}" {{ old('correct_answer') === QuestionTypeEnums::FALSE->value ? 'checked' : '' }}>
+                                <label class="form-check-label" for="false_answer">False</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 d-none" id="mc_group">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Multiple Choice Options</label>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="add_option_btn">Add Option</button>
+                            </div>
+                            <div id="mc_options_container"></div>
+                            <small class="text-muted">Select at least one correct option.</small>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{{ route('exercise.show', $exercise) }}" class="btn btn-secondary">Cancel</a>
+                            <button class="btn btn-primary" type="submit">{{ __('btnText.save') }}</button>
+                        </div>
+                    </form>
                 </div>
-            @endif
-            @if(Session::has('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-bag-x me-3"></i> {{ Session::pull('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check2-circle text-success me-3"></i> {{ Session::pull('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            {{--end alert--}}
-
-
-            <form action="{{route('question.storeQuestion', $exercise)}}" method="post" id="question_store_form">
-                @csrf
-                @method('POST')
-
-                <div class="form-group">
-                    <label for="question_text">Question Text:</label>
-                    <textarea id="question_text" name="question_text" class="form-control"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="question_type">Question Type:</label>
-                    <select id="question_type" name="question_type" class="form-control" onchange="handleQuestionTypeChange()">
-                        <option value="{{ QuestionTypeEnums::BLANK }}">Blank</option>
-                        <option value="{{ QuestionTypeEnums::TRUEorFALSE }}">True/False</option>
-                        <option value="{{ QuestionTypeEnums::MULTIPLE_CHOICE }}">Multiple Choice</option>
-                    </select>
-                </div>
-
-
-                <div class="form-group my-3" id="blank" style="display: block;">  {{-- Initially hidden --}}
-                    <label for="blank">Correct Answer</label>
-                    <input type="text" id="blank" name="answers[]" class="form-control" required>
-                </div>
-
-                <div class="form-group my-3" id="multiple_choice_options" style="display: none;">  {{-- Initially hidden --}}
-                    <label for="answer_1">Answer 1:</label>
-                    <input type="text" id="answer_1" name="answers[]" class="form-control" required>
-
-                    <input type="checkbox" id="correct_answer_1" name="correct_answers[]" value="0">  {{-- Correctly associate with answer 1 --}}
-                    <label for="correct_answer_1">Correct Answer</label><br>
-
-                    <label for="answer_2">Answer 2:</label>
-                    <input type="text" id="answer_2" name="answers[]" class="form-control" required>
-
-                    <input type="checkbox" id="correct_answer_2" name="correct_answers[]" value="1">  {{-- Correctly associate with answer 2 --}}
-                    <label for="correct_answer_2">Correct Answer</label>
-
-                    <div id="dynamic_answer_options"></div>  {{-- Container for dynamic options --}}
-
-                    <button type="button" class="btn btn-primary" onclick="addAnswerOption()">Add Answer Option</button>
-                </div>
-
-                <div class="form-group my-3" id="true_or_false_options" style="display: none;">
-                    <label for="true_answer">Is the statement true?</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="true_answer" name="correct_answer" value="{{ QuestionTypeEnums::TRUE }}" required>
-                        <label class="form-check-label" for="true_answer">True</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="false_answer" name="correct_answer" value="{{ QuestionTypeEnums::FALSE }}" required>
-                        <label class="form-check-label" for="false_answer">False</label>
-                    </div>
-                </div>
-
-
-                <div class="form-group my-3 d-flex flex-row-reverse">
-                    <button class="btn btn-info mx-3" type="submit" id="submit_question_form">{{__('btnText.save')}}</button>
-                    <input type="reset" value="Reset" class="btn btn-secondary">
-                </div>
-
-                <script>
-                    const QuestionSubmitBtn = document.getElementById('submit_question_form');
-                    const QuestionForm = document.getElementById('question_store_form');
-                    QuestionSubmitBtn.addEventListener('click', function (){
-                        QuestionForm.submit();
-                    });
-
-
-                    function handleQuestionTypeChange() {
-                        const questionType = document.getElementById('question_type').value;
-                        const multipleChoiceOptions = document.getElementById('multiple_choice_options');
-                        const trueOrFalseOptions = document.getElementById('true_or_false_options');
-                        const blankOption = document.getElementById('blank');
-
-                        if (questionType === '{{ QuestionTypeEnums::MULTIPLE_CHOICE }}') {
-                            multipleChoiceOptions.style.display = 'block';
-                            trueOrFalseOptions.style.display = 'none';
-                            blankOption.style.display = 'none';
-                        } else if (questionType === '{{ QuestionTypeEnums::TRUEorFALSE }}') {
-                            multipleChoiceOptions.style.display = 'none';
-                            trueOrFalseOptions.style.display = 'block';
-                            blankOption.style.display = 'none';
-                        } else {
-                            multipleChoiceOptions.style.display = 'none';
-                            trueOrFalseOptions.style.display = 'none';
-                            blankOption.style.display = 'block';
-                            // Clear dynamic answer options (if any)
-                            document.getElementById('dynamic_answer_options').innerHTML = '';
-                        }
-                    }
-
-                    function addAnswerOption() {
-                        const dynamicAnswerOptions = document.getElementById('dynamic_answer_options');
-                        const currentAnswerCount = dynamicAnswerOptions.children.length + 3;  {{-- Account for initial two options --}}
-
-                        if (currentAnswerCount > 10) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops!',
-                                text: 'Maximum 10 answer options allowed.'
-                            });
-                            return;
-                        }
-
-                        const newOption = document.createElement('div');
-                        newOption.classList.add('form-group');  {{-- Add class for styling --}}
-
-                        const labelText = `Answer ${currentAnswerCount}:`;
-                        const label = document.createElement('label');
-                        label.setAttribute('for', `answer_${currentAnswerCount}`);
-                        label.textContent = labelText;
-
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.id = `answer_${currentAnswerCount}`;
-                        input.name = 'answers[]';
-                        input.classList.add('form-control');
-                        input.required = true;
-
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = `correct_answer_${currentAnswerCount}`;
-                        checkbox.name = 'correct_answers[]';  {{-- Array to store multiple correct answers --}}
-                            checkbox.value = currentAnswerCount-1;  {{-- Value to identify the answer --}}
-
-                        const checkboxLabel = document.createElement('label');
-                        checkboxLabel.setAttribute('for', `correct_answer_${currentAnswerCount}`);
-                        checkboxLabel.textContent = 'Correct Answer';
-
-                        newOption.appendChild(label);
-                        newOption.appendChild(input);
-                        newOption.appendChild(checkbox);
-                        newOption.appendChild(checkboxLabel);
-
-                        dynamicAnswerOptions.appendChild(newOption);
-                    }
-                </script>
-
-            </form>
+            </div>
         </div>
     </div>
 @endsection
 
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const QuestionType = {
+                BLANK: @json(QuestionTypeEnums::BLANK->value),
+                TF: @json(QuestionTypeEnums::TRUEorFALSE->value),
+                MC: @json(QuestionTypeEnums::MULTIPLE_CHOICE->value),
+            };
 
+            const questionType = document.getElementById('question_type');
+            const blankGroup = document.getElementById('blank_group');
+            const tfGroup = document.getElementById('tf_group');
+            const mcGroup = document.getElementById('mc_group');
+            const blankAnswer = document.getElementById('blank_answer');
+            const trueRadio = document.getElementById('true_answer');
+            const falseRadio = document.getElementById('false_answer');
+            const mcOptionsContainer = document.getElementById('mc_options_container');
+            const addOptionBtn = document.getElementById('add_option_btn');
 
+            const oldAnswers = @json(array_values(old('answers', [''])));
+            const oldCorrectIndexes = @json(array_map('intval', old('correct_answers', [])));
 
+            function renderMcOptions(initialValues, correctIndexes) {
+                mcOptionsContainer.innerHTML = '';
+                const values = initialValues.length >= 2 ? initialValues : ['', ''];
+                values.forEach((value, index) => appendOption(value, correctIndexes.includes(index)));
+            }
 
+            function appendOption(value = '', checked = false) {
+                const index = mcOptionsContainer.querySelectorAll('[data-mc-index]').length;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'border rounded p-2 mb-2';
+                wrapper.dataset.mcIndex = index;
 
+                wrapper.innerHTML = `
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="answers[]" value="${value.replace(/"/g, '&quot;')}">
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="correct_answers[]" value="${index}" ${checked ? 'checked' : ''}>
+                                <label class="form-check-label">Correct</label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-option">x</button>
+                        </div>
+                    </div>
+                `;
 
+                mcOptionsContainer.appendChild(wrapper);
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{{--
-@extends('admin.layouts.app')
-
-@section('content')
-    @php
-        use App\Enums\QuestionTypeEnums;
-        use App\Models\Exercise;
-    @endphp
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            --}}
-{{--alert--}}{{--
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                {{$error}}
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @if(Session::has('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-bag-x me-3"></i> {{ Session::pull('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check2-circle text-success me-3"></i> {{ Session::pull('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            --}}
-{{--end alert--}}{{--
-
-
-
-            <form action="{{ route('exercise.update', $exercise->id) }}" class="mb-3" method="post" id="exercise_form">
-                @csrf
-                @method('PUT')
-                <input class="form-control mb-3" type="text" name="content" id="exercise_content_input" value="{{ $exercise->content }}">
-                <button type="submit" id="update_button" class="btn btn-primary d-none mb-3">{{ __('btnText.update') }}</button>
-            </form>
-            <script>
-                const contentInput = document.getElementById('exercise_content_input');
-                const updateButton = document.getElementById('update_button');
-                const originalValue = contentInput.value;
-
-                contentInput.addEventListener('input', function (){
-                    // If input field value changes and it's different from the original value, show the submit button
-                    if (contentInput.value !== originalValue) {
-                        updateButton.classList.remove('d-none');
-                    } else {
-                        // If input field value is the same as the original value, hide the submit button
-                        updateButton.classList.add('d-none');
+            function resequenceOptions() {
+                const wrappers = mcOptionsContainer.querySelectorAll('[data-mc-index]');
+                wrappers.forEach((wrapper, index) => {
+                    wrapper.dataset.mcIndex = index;
+                    const checkbox = wrapper.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        checkbox.value = index;
                     }
-                })
-
-                document.getElementById('exercise_form').addEventListener('submit', function() {
-                    // Before form submission, hide the submit button
-                    updateButton.classList.add('d-none');
                 });
-            </script>
+            }
 
-            <hr>
-            --}}
-{{--exercise update form--}}{{--
+            function setRequiredState() {
+                const selectedType = questionType.value;
+                blankGroup.classList.toggle('d-none', selectedType !== QuestionType.BLANK);
+                tfGroup.classList.toggle('d-none', selectedType !== QuestionType.TF);
+                mcGroup.classList.toggle('d-none', selectedType !== QuestionType.MC);
 
+                blankAnswer.required = selectedType === QuestionType.BLANK;
+                trueRadio.required = selectedType === QuestionType.TF;
+                falseRadio.required = selectedType === QuestionType.TF;
 
-            <form action="{{route('question.storeQuestion', $exercise)}}" method="post" id="question_store_form">
-                @csrf
-                @method('POST')
+                mcOptionsContainer.querySelectorAll('input[name="answers[]"]').forEach((input) => {
+                    input.required = selectedType === QuestionType.MC;
+                });
+            }
 
-                <div class="form-group">
-                    <label for="question_text">Question Text:</label>
-                    <textarea id="question_text" name="question_text" class="form-control"></textarea>
-                </div>
+            addOptionBtn.addEventListener('click', function () {
+                const currentCount = mcOptionsContainer.querySelectorAll('[data-mc-index]').length;
+                if (currentCount >= 10) {
+                    Swal.fire({ icon: 'error', title: 'Limit reached', text: 'Maximum 10 options allowed.' });
+                    return;
+                }
+                appendOption();
+                setRequiredState();
+            });
 
-                <div class="form-group">
-                    <label for="question_type">Question Type:</label>
-                    <select id="question_type" name="question_type" class="form-control" onchange="handleQuestionTypeChange()">
-                        <option value="{{ QuestionTypeEnums::BLANK }}">Blank</option>
-                        <option value="{{ QuestionTypeEnums::TRUEorFALSE }}">True/False</option>
-                        <option value="{{ QuestionTypeEnums::MULTIPLE_CHOICE }}">Multiple Choice</option>
-                    </select>
-                </div>
+            mcOptionsContainer.addEventListener('click', function (event) {
+                if (!event.target.classList.contains('remove-option')) {
+                    return;
+                }
 
+                const wrappers = mcOptionsContainer.querySelectorAll('[data-mc-index]');
+                if (wrappers.length <= 2) {
+                    Swal.fire({ icon: 'warning', title: 'Minimum options', text: 'At least 2 options are required.' });
+                    return;
+                }
 
-                <div class="form-group my-3" id="blank" style="display: block;">  --}}
-{{-- Initially hidden --}}{{--
+                event.target.closest('[data-mc-index]')?.remove();
+                resequenceOptions();
+                setRequiredState();
+            });
 
-                        <label for="blank">Correct Answer</label>
-                        <input type="text" id="blank" name="answers[]" class="form-control" required>
-                </div>
+            questionType.addEventListener('change', setRequiredState);
 
-                <div class="form-group my-3" id="multiple_choice_options" style="display: none;">  --}}
-{{-- Initially hidden --}}{{--
-
-                    <label for="answer_1">Answer 1:</label>
-                    <input type="text" id="answer_1" name="answers[]" class="form-control" required>
-
-                    <input type="checkbox" id="correct_answer_1" name="correct_answers[]" value="1">  --}}
-{{-- Correctly associate with answer 1 --}}{{--
-
-                    <label for="correct_answer_1">Correct Answer</label>
-
-                    <label for="answer_2">Answer 2:</label>
-                    <input type="text" id="answer_2" name="answers[]" class="form-control" required>
-
-                    <input type="checkbox" id="correct_answer_2" name="correct_answers[]" value="2">  --}}
-{{-- Correctly associate with answer 2 --}}{{--
-
-                    <label for="correct_answer_2">Correct Answer</label>
-
-                    <div id="dynamic_answer_options"></div>  --}}
-{{-- Container for dynamic options --}}{{--
-
-
-                    <button type="button" class="btn btn-primary" onclick="addAnswerOption()">Add Answer Option</button>
-                </div>
-
-                <div class="form-group my-3" id="true_or_false_options" style="display: none;">
-                    <label for="true_answer">Is the statement true?</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="true_answer" name="correct_answer" value="{{ QuestionTypeEnums::TRUE }}" required>
-                        <label class="form-check-label" for="true_answer">True</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="false_answer" name="correct_answer" value="{{ QuestionTypeEnums::FALSE }}" required>
-                        <label class="form-check-label" for="false_answer">False</label>
-                    </div>
-                </div>
-
-
-                <div class="form-group my-3 d-flex flex-row-reverse">
-                    <button class="btn btn-info mx-3" type="submit" id="submit_question_form">{{__('btnText.save')}}</button>
-                    <input type="reset" value="Reset" class="btn btn-secondary">
-                </div>
-
-                <script>
-                    const QuestionSubmitBtn = document.getElementById('submit_question_form');
-                    const QuestionForm = document.getElementById('question_store_form');
-                    QuestionSubmitBtn.addEventListener('click', function (){
-                        QuestionForm.submit();
-                    });
-
-
-                    function handleQuestionTypeChange() {
-                        const questionType = document.getElementById('question_type').value;
-                        const multipleChoiceOptions = document.getElementById('multiple_choice_options');
-                        const trueOrFalseOptions = document.getElementById('true_or_false_options');
-                        const blankOption = document.getElementById('blank');
-
-                        if (questionType === '{{ QuestionTypeEnums::MULTIPLE_CHOICE }}') {
-                            multipleChoiceOptions.style.display = 'block';
-                            trueOrFalseOptions.style.display = 'none';
-                            blankOption.style.display = 'none';
-                        } else if (questionType === '{{ QuestionTypeEnums::TRUEorFALSE }}') {
-                            multipleChoiceOptions.style.display = 'none';
-                            trueOrFalseOptions.style.display = 'block';
-                            blankOption.style.display = 'none';
-                        } else {
-                            multipleChoiceOptions.style.display = 'none';
-                            trueOrFalseOptions.style.display = 'none';
-                            blankOption.style.display = 'block';
-                            // Clear dynamic answer options (if any)
-                            document.getElementById('dynamic_answer_options').innerHTML = '';
-                        }
-                    }
-
-                    function addAnswerOption() {
-                        const dynamicAnswerOptions = document.getElementById('dynamic_answer_options');
-                        const currentAnswerCount = dynamicAnswerOptions.children.length + 2;  --}}
-{{-- Account for initial two options --}}{{--
-
-
-                        if (currentAnswerCount > 10) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops!',
-                                text: 'Maximum 10 answer options allowed.'
-                            });
-                            return;
-                        }
-
-
-                        const newOption = document.createElement('div');
-                        newOption.classList.add('form-group');  --}}
-{{-- Add class for styling --}}{{--
-
-
-                        const labelText = `Answer ${currentAnswerCount}:`;
-                        const label = document.createElement('label');
-                        label.setAttribute('for', `answer_${currentAnswerCount}`);
-                        label.textContent = labelText;
-
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.id = `answer_${currentAnswerCount}`;
-                        input.name = 'answers[]';
-                        input.classList.add('form-control');
-                        input.required = true;
-
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = `correct_answer_${currentAnswerCount}`;
-                        checkbox.name = 'correct_answers[]';  --}}
-{{-- Array to store multiple correct answers --}}{{--
-
-                            checkbox.value = currentAnswerCount;  --}}
-{{-- Value to identify the answer --}}{{--
-
-
-                        const checkboxLabel = document.createElement('label');
-                        checkboxLabel.setAttribute('for', `correct_answer_${currentAnswerCount}`);
-                        checkboxLabel.textContent = 'Correct Answer';
-
-                        newOption.appendChild(label);
-                        newOption.appendChild(input);
-                        newOption.appendChild(checkbox);
-                        newOption.appendChild(checkboxLabel);
-
-                        dynamicAnswerOptions.appendChild(newOption);
-                    }
-                </script>
-
-                </form>
-        </div>
-    </div>
+            renderMcOptions(oldAnswers, oldCorrectIndexes);
+            setRequiredState();
+        });
+    </script>
 @endsection
---}}

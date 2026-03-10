@@ -18,7 +18,18 @@ class CourseController extends Controller
     {
         $titlePage = __('course.list_title');
         $user = \auth()->user();
-        $courses = Course::getCoursesForUser($user);
+        $courseIds = Course::getCoursesForUser($user)->pluck('id')->filter()->values();
+        $courses = Course::query()
+            ->with([
+                'creator:id,name',
+                'approver:id,name',
+                'enrollCourses:id,course_id',
+                'contribute_courses.user:id,name,email',
+            ])
+            ->whereIn('id', $courseIds)
+            ->get()
+            ->sortBy(fn (Course $course) => (int) $courseIds->search($course->id))
+            ->values();
 
         return view('course.courseList', compact('courses', 'titlePage'));
     }
@@ -96,7 +107,14 @@ class CourseController extends Controller
     public function edit(string $id)
     {
         $titlePage = __('course.title_update');
-        $course = Course::findOrFail($id);
+        $course = Course::query()
+            ->with([
+                'creator:id,name,avatar',
+                'approver:id,name',
+                'sub_category:id,name',
+                'contribute_courses.user:id,name,email',
+            ])
+            ->findOrFail($id);
         $this->authorizeCourseOwnerOrAdmin($course);
 
         return view('course.update', compact('course', 'titlePage'));

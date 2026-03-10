@@ -1,40 +1,19 @@
 @extends('admin.layouts.app')
 @section('content')
     @php use App\Enums\QuestionTypeEnums; @endphp
-    <div class="my-3">
-        <button class="btn btn-secondary" onclick="window.location = '{{url('lesson/'.$exercise->lesson_id.'/review')}}' "><i class="bi bi-arrow-bar-left me-3"></i>Back</button>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <button class="btn btn-secondary" onclick="window.location = '{{url('lesson/'.$exercise->lesson_id.'/review')}}' "><i class="bi bi-arrow-bar-left me-2"></i>Back To Lesson</button>
+        <button class="btn btn-primary" onclick="window.location='{{url('question/'.$exercise->id.'/form')}}'">
+            <i class="bi bi-plus-circle me-1"></i>Create Question
+        </button>
     </div>
     <div class="card p-5">
-        {{--alert--}}
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>
-                            {{$error}}
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        @if(Session::has('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-bag-x me-3"></i> {{ Session::pull('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        @if(Session::has('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check2-circle text-success me-3"></i> {{ Session::pull('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        {{--end alert--}}
 
         <form action="{{ route('exercise.update', $exercise->id) }}" class="mb-3" method="post" id="exercise_form">
             @csrf
             @method('PUT')
-            <input class="form-control mb-3" type="text" name="content" id="exercise_content_input" value="{{ $exercise->content }}">
+            <label class="form-label fw-semibold">Exercise Content</label>
+            <input class="form-control mb-3" type="text" name="content" id="exercise_content_input" value="{{ old('content', $exercise->content) }}">
             <button type="submit" id="update_button" class="btn btn-primary d-none mb-3">{{ __('btnText.update') }}</button>
         </form>
         <script>
@@ -59,13 +38,7 @@
         </script>
 
         <hr>
-        {{--exercise update form--}}
-
-
-        <div class="mb-3">
-            <button class="btn btn-primary" onclick="window.location='{{url('question/'.$exercise->id.'/form')}}'">Create a Question</button>
-        </div>
-        Total Questions - {{$exercise->questions->count()}}
+        <div class="mb-3">Total Questions - {{$exercise->questions->count()}}</div>
         @if($exercise->questions->count() === 0)
             <div class="card">
                 <div class="card-body">
@@ -74,7 +47,7 @@
             </div>
         @else
             @foreach($exercise->questions as $i => $question)
-                <div class="card">
+                <div class="card mb-3">
                     <div class="card-header d-flex flex-row-reverse">
                         <button class="btn btn-secondary mx-3" onclick="window.location='{{route('question.edit', $question->id)}}'"><i class="bi bi-pencil-square"></i></button>
                         <button class="btn btn-danger" onclick="document.getElementById('delete-question-form-{{$question->id}}').submit()"><i class="bi bi-trash"></i></button>

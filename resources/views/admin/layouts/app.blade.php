@@ -127,6 +127,7 @@
 
 
     <section class="section">
+        <x-flash-messages />
         @yield('content')
     </section>
 

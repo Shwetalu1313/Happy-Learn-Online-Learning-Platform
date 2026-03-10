@@ -21,7 +21,14 @@ class LessonController extends Controller
     {
         $titlePage = __('lesson.title');
         $user = \auth()->user();
-        $courses = Course::getCoursesForUser($user);
+        $courseIds = Course::getCoursesForUser($user)->pluck('id')->filter()->values();
+        $courses = Course::query()
+            ->with([
+                'lessons:id,title,course_id,created_at',
+            ])
+            ->whereIn('id', $courseIds)
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('lesson.index', compact('titlePage', 'courses'));
     }
@@ -33,7 +40,8 @@ class LessonController extends Controller
     {
         $titlePage = __('lesson.title');
         $user = \auth()->user();
-        $courses = Course::getCoursesForUser($user);
+        $courseIds = Course::getCoursesForUser($user)->pluck('id')->filter()->values();
+        $courses = Course::query()->select(['id', 'title'])->whereIn('id', $courseIds)->orderBy('title')->get();
         $course_id = null;
         $videoProviders = $this->lessonVideoService->providerKeys();
 
@@ -44,7 +52,8 @@ class LessonController extends Controller
     {
         $titlePage = __('lesson.title');
         $user = \auth()->user();
-        $courses = Course::getCoursesForUser($user);
+        $courseIds = Course::getCoursesForUser($user)->pluck('id')->filter()->values();
+        $courses = Course::query()->select(['id', 'title'])->whereIn('id', $courseIds)->orderBy('title')->get();
         $videoProviders = $this->lessonVideoService->providerKeys();
 
         return view('lesson.lessonEntry', compact('titlePage', 'course_id', 'courses', 'videoProviders'));
@@ -110,7 +119,11 @@ class LessonController extends Controller
 
     public function showAtAdmin(string $id): View
     {
-        $lesson = Lesson::findOrFail($id);
+        $lesson = Lesson::query()
+            ->with([
+                'exercises' => fn ($query) => $query->with(['questions:id,exercise_id']),
+            ])
+            ->findOrFail($id);
         $titlePage = 'Review for '.$lesson->title;
         $videoProviders = $this->lessonVideoService->providerKeys();
 
