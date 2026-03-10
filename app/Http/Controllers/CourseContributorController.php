@@ -54,7 +54,9 @@ class CourseContributorController extends Controller
             return redirect()->back()->with('error', 'Unauthorized user! User should be a teacher.');
         }
 
-        $courseID = $request->input('course_id');
+        $courseID = (int) $request->input('course_id');
+        $courseData = Course::findOrFail($courseID);
+        $this->authorizeCourseOwnerOrAdmin($courseData);
 
         $existingContributor = CourseContributor::where([
             'user_id' => $user->id,
@@ -62,7 +64,7 @@ class CourseContributorController extends Controller
         ])->exists();
 
         if ($existingContributor) {
-            return redirect()->back()->with('error', 'This course is already shared with ' . $user->name);
+            return redirect()->back()->with('error', 'This course is already shared with '.$user->name);
         }
 
         $courseContributor = CourseContributor::create([
@@ -71,7 +73,6 @@ class CourseContributorController extends Controller
         ]);
 
         if ($courseContributor) {
-            $courseData = Course::findOrFail($courseID);
             $courseName = $courseData->title;
 
             $systemActivity = [
@@ -79,8 +80,8 @@ class CourseContributorController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => 'A course(' . $courseName . ') is shared with ' . $user->name . '.',
-                'about' => Auth::user()->name . '(' . auth()->id() . ') is shared a course(' . $courseName . ') to ' . $user->name . '>>' . $user->email . '.',
+                'short' => 'A course('.$courseName.') is shared with '.$user->name.'.',
+                'about' => Auth::user()->name.'('.auth()->id().') is shared a course('.$courseName.') to '.$user->name.'>>'.$user->email.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -88,10 +89,10 @@ class CourseContributorController extends Controller
 
             $notificationManager->notifyContributorShared($user, auth()->user(), $courseData);
 
-            return redirect()->back()->with('success', 'This course is shared with ' . $user->name);
+            return redirect()->back()->with('success', 'This course is shared with '.$user->name);
         }
 
-        return redirect()->back()->with('error', 'Failed to share course with ' . $user->name);
+        return redirect()->back()->with('error', 'Failed to share course with '.$user->name);
     }
 
     /**
@@ -124,6 +125,7 @@ class CourseContributorController extends Controller
     public function destroy(string $id, Request $request, NotificationManager $notificationManager)
     {
         $contributor = CourseContributor::findOrFail($id);
+        $this->authorizeCourseOwnerOrAdmin($contributor->course);
         $contributorName = $contributor->user->name;
         $contributorEmail = $contributor->user->email;
         $courseName = $contributor->course->title;
@@ -133,8 +135,8 @@ class CourseContributorController extends Controller
             'ip_address' => $request->getClientIp(),
             'user_agent' => $request->userAgent(),
             'user_id' => auth()->id(),
-            'short' => $courseName . ' contributor permission was revoked from ' . $contributorName . '.',
-            'about' => Auth::user()->name . '(' . auth()->id() . ') revoke a course(' . $courseName . ') contributor to ' . $contributorName . '>>' . $contributorEmail . '.',
+            'short' => $courseName.' contributor permission was revoked from '.$contributorName.'.',
+            'about' => Auth::user()->name.'('.auth()->id().') revoke a course('.$courseName.') contributor to '.$contributorName.'>>'.$contributorEmail.'.',
             'target' => UserRoleEnums::ADMIN,
             'route_name' => $request->route()->getName(),
         ];
@@ -143,6 +145,24 @@ class CourseContributorController extends Controller
         $notificationManager->notifyContributorRevoked($contributor->user, auth()->user(), $contributor->course);
         $contributor->delete();
 
-        return redirect()->back()->with('success', $contributorName . '\'s contributor access permission has been revoked for \'' . $courseName . '\' course.');
+        return redirect()->back()->with('success', $contributorName.'\'s contributor access permission has been revoked for \''.$courseName.'\' course.');
+    }
+
+    private function authorizeCourseOwnerOrAdmin(Course $course): void
+    {
+        $authUser = auth()->user();
+        if (! $authUser) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($authUser->role->value === UserRoleEnums::ADMIN->value) {
+            return;
+        }
+
+        if ((int) $course->createdUser_id === (int) $authUser->id) {
+            return;
+        }
+
+        abort(403, 'You are not allowed to manage contributors for this course.');
     }
 }

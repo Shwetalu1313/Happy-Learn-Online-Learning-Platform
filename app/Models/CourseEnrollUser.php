@@ -21,16 +21,25 @@ class CourseEnrollUser extends Model
         'user_id',
         'course_id',
         'amount',
+        'receive_amount',
         'payment_type',
         'card_number',
+        'card_last_four',
         'expired_date',
         'cvv',
         'cardHolderName',
     ];
 
+    protected $hidden = [
+        'card_number',
+        'cvv',
+    ];
+
     protected $casts = [
         'payment_type' => CoursePaymentTypeEnums::class,
         'amount' => 'integer',
+        'receive_amount' => 'integer',
+        'card_last_four' => 'string',
         'cvv' => 'integer',
     ];
 

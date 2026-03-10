@@ -19,7 +19,8 @@ class CourseController extends Controller
         $titlePage = __('course.list_title');
         $user = \auth()->user();
         $courses = Course::getCoursesForUser($user);
-        return view('course.courseList', compact('courses','titlePage'));
+
+        return view('course.courseList', compact('courses', 'titlePage'));
     }
 
     /**
@@ -28,9 +29,12 @@ class CourseController extends Controller
     public function create()
     {
         $titlePage = __('course.entry_title');
+
         return view('course.courseEntry', compact('titlePage'));
     }
-    public function ToUpdatePage(){
+
+    public function ToUpdatePage()
+    {
         return view('course.update');
     }
 
@@ -49,10 +53,10 @@ class CourseController extends Controller
         ]);
         if ($request->hasFile('avatar')) {
             // Store the uploaded image and get its path
-            $img_path = $request->file('avatar')->store('course','public');
+            $img_path = $request->file('avatar')->store('course', 'public');
         }
         $course = Course::create([
-           'title' => $data['name'],
+            'title' => $data['name'],
             'description' => $data['requirements'],
             'image' => $img_path ?? 'course/sample.jpg',
             'courseType' => $data['courseType'],
@@ -61,32 +65,30 @@ class CourseController extends Controller
             'sub_category_id' => $data['sub_cate_select'],
         ]);
 
-        if ($course){
+        if ($course) {
             $systemActivity = [
                 'table_name' => Course::getModelName(),
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->title . ' was created.',
-                'about' => $course->title . ' was created by.'. Auth::user()->name.'.',
+                'short' => $course->title.' was created.',
+                'about' => $course->title.' was created by.'.Auth::user()->name.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
             SystemActivity::createActivity($systemActivity);
 
             return redirect()->back()->with('success', __('course.success_create_alert_msg'));
+        } else {
+            return redirect()->back()->with('success', __('Fail Course Creation.'));
         }
-        else return redirect()->back()->with('success', __('Fail Course Creation.'));
 
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-
-    }
+    public function show(string $id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -94,9 +96,11 @@ class CourseController extends Controller
     public function edit(string $id)
     {
         $titlePage = __('course.title_update');
-        $course = Course::find($id);
-        return view('course.update', compact('course','titlePage'));
-        //return redirect($this->ToUpdatePage())->with(['course'=>$course, 'titlePage'=> $titlePage]);
+        $course = Course::findOrFail($id);
+        $this->authorizeCourseOwnerOrAdmin($course);
+
+        return view('course.update', compact('course', 'titlePage'));
+        // return redirect($this->ToUpdatePage())->with(['course'=>$course, 'titlePage'=> $titlePage]);
     }
 
     /**
@@ -114,6 +118,7 @@ class CourseController extends Controller
         ]);
 
         $course = Course::findOrFail($id);
+        $this->authorizeCourseOwnerOrAdmin($course);
         $course->title = $data['name'];
         $course->description = $data['requirements'];
         $course->courseType = $data['courseType'];
@@ -122,7 +127,7 @@ class CourseController extends Controller
 
         if ($request->hasFile('avatar')) {
             // Store the uploaded image and get its path
-            $img_path = $request->file('avatar')->store('course','public');
+            $img_path = $request->file('avatar')->store('course', 'public');
             $course->image = $img_path ?? 'course/sample.jpg';
         }
 
@@ -133,8 +138,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->title . ' was updated.',
-                'about' => $course->title . ' was updated by.' . Auth::user()->name . '.',
+                'short' => $course->title.' was updated.',
+                'about' => $course->title.' was updated by.'.Auth::user()->name.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -142,12 +147,11 @@ class CourseController extends Controller
 
             return redirect()->back()->with('success', __('course.success_create_alert_msg'));
 
+        } else {
+            return redirect()->back()->with('success', __('Fail Course Update.'));
         }
-        else return redirect()->back()->with('success', __('Fail Course Update.'));
-
 
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -155,15 +159,17 @@ class CourseController extends Controller
     public function destroy(string $id, Request $request)
     {
         $course = Course::findOrFail($id);
-        if($course->delete()){
+        $this->authorizeCourseOwnerOrAdmin($course);
+
+        if ($course->delete()) {
 
             $systemActivity = [
                 'table_name' => Course::getModelName(),
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->title . ' was deleted.',
-                'about' => $course->title . ' was deleted by.' . Auth::user()->name . '.',
+                'short' => $course->title.' was deleted.',
+                'about' => $course->title.' was deleted by.'.Auth::user()->name.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -174,7 +180,9 @@ class CourseController extends Controller
 
     }
 
-    public function updateToApproveState(string $id, Request $request) {
+    public function updateToApproveState(string $id, Request $request)
+    {
+        $this->authorizeAdminOnly();
         $course = Course::findOrFail($id);
         $course->state = CourseStateEnums::APPROVED->value;
         $course->approvedUser_id = Auth::id();
@@ -185,8 +193,8 @@ class CourseController extends Controller
                 'ip_address' => $request->getClientIp(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'short' => $course->title . ' was confirmed.',
-                'about' => $course->title . ' was confirmed by.' . Auth::user()->name . '.',
+                'short' => $course->title.' was confirmed.',
+                'about' => $course->title.' was confirmed by.'.Auth::user()->name.'.',
                 'target' => UserRoleEnums::ADMIN,
                 'route_name' => $request->route()->getName(),
             ];
@@ -195,6 +203,32 @@ class CourseController extends Controller
             return response()->json(['success' => true, 'message' => __('course.success_update_approve_alert_msg')]);
         } else {
             return response()->json(['success' => false, 'message' => __('course.success_error_approve_alert_msg')], 500);
+        }
+    }
+
+    private function authorizeCourseOwnerOrAdmin(Course $course): void
+    {
+        $authUser = auth()->user();
+        if (! $authUser) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($authUser->role->value === UserRoleEnums::ADMIN->value) {
+            return;
+        }
+
+        if ((int) $course->createdUser_id === (int) $authUser->id) {
+            return;
+        }
+
+        abort(403, 'You are not allowed to modify this course.');
+    }
+
+    private function authorizeAdminOnly(): void
+    {
+        $authUser = auth()->user();
+        if (! $authUser || $authUser->role->value !== UserRoleEnums::ADMIN->value) {
+            abort(403, 'Admin permission required.');
         }
     }
 }

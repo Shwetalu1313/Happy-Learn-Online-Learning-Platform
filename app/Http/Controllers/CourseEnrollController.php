@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\CoursePaymentTypeEnums;
 use App\Enums\CourseTypeEnums;
+use App\Enums\UserRoleEnums;
 use App\Models\Course;
 use App\Models\CourseEnrollUser;
 use App\Models\CurrencyExchange;
@@ -73,6 +74,7 @@ class CourseEnrollController extends Controller
         }
 
         $amount = (int) $course->fees;
+        $lastFour = substr((string) $data['card_number'], -4);
 
         $enroll = CourseEnrollUser::create([
             'user_id' => auth()->id(),
@@ -80,9 +82,10 @@ class CourseEnrollController extends Controller
             'amount' => $amount,
             'receive_amount' => $amount,
             'payment_type' => CoursePaymentTypeEnums::CARD->value,
-            'card_number' => $data['card_number'],
+            'card_number' => null,
+            'card_last_four' => $lastFour,
             'expired_date' => $data['expired_date'],
-            'cvv' => $data['cvv'],
+            'cvv' => null,
             'cardHolderName' => $data['cardHolderName'],
         ]);
 
@@ -121,6 +124,8 @@ class CourseEnrollController extends Controller
 
     public function deleteEnroll(CourseEnrollUser $enrollCourse): RedirectResponse
     {
+        $this->authorizeDeleteEnrollment($enrollCourse);
+
         try {
             if ($enrollCourse->delete()) {
                 return redirect()->back()->with('success', 'Enroll Record was successfully removed.');
@@ -128,7 +133,29 @@ class CourseEnrollController extends Controller
                 throw new \Exception('Unable to delete enroll record.');
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('success', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    private function authorizeDeleteEnrollment(CourseEnrollUser $enrollCourse): void
+    {
+        $authUser = auth()->user();
+        if (! $authUser) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($authUser->role->value === UserRoleEnums::ADMIN->value) {
+            return;
+        }
+
+        if ((int) $enrollCourse->user_id === (int) $authUser->id) {
+            return;
+        }
+
+        if ((int) $enrollCourse->course?->createdUser_id === (int) $authUser->id) {
+            return;
+        }
+
+        abort(403, 'You are not allowed to delete this enrollment.');
     }
 }

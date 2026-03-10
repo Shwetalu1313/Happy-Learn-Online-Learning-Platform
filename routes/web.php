@@ -147,11 +147,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     ])->middleware('isAdmin');
 
     Route::group(['middleware' => 'notStudent'], function () {
-        Route::any('course/toApprove/{id}', [CourseController::class, 'updateToApproveState'])->name('course.toApprove');
+        Route::put('course/toApprove/{id}', [CourseController::class, 'updateToApproveState'])->name('course.toApprove');
         Route::resource('course', CourseController::class);
         Route::resource('contributor', CourseContributorController::class);
         Route::get('lesson/{lesson_id}/review', [LessonController::class, 'showAtAdmin'])->name('lesson.review');
-        Route::any('lesson/{course_id}/createForm', [LessonController::class, 'createForm'])->name('lesson.createForm');
+        Route::get('lesson/{course_id}/createForm', [LessonController::class, 'createForm'])->name('lesson.createForm');
         Route::resource('lesson', LessonController::class);
         Route::post('exercise/restore/{exercise_id}', [ExerciseController::class, 'restore'])->name('exercise.restore');
         Route::delete('exercise/force_del/{exercise_id}', [ExerciseController::class, 'forceDelete'])->name('exercise.force_del');

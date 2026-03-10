@@ -26,8 +26,8 @@
                             <td>{{$enroll->user->name}}</td>
                             <td>{{$enroll->user->email}}</td>
                             <td><a href="{{url('course/'.$enroll->course_id.'/edit')}}">{{$enroll->course->title}}</a></td>
-                            <td>{{$enroll->payment_type}}</td>
-                            <td>{{$enroll->card_number}}</td>
+                            <td>{{ $enroll->payment_type?->value ?? '-' }}</td>
+                            <td>{{ $enroll->card_last_four ? '**** **** **** ' . $enroll->card_last_four : '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($enroll->created_at)->format('Y/m/d') }}</td>
                         </tr>
                     @endforeach
